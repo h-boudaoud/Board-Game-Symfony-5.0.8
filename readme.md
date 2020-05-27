@@ -18,8 +18,7 @@ composer install
 
 
 #  Create the database           <-->  Créer la base de données
-## 
-# php bin/console doctrine:database:create
+php bin/console doctrine:database:create
 
 # perform the migrations         <-->  Exécuter les migrations
 # php bin/console doctrine:migrations:migrate
@@ -51,6 +50,26 @@ composer require maker twig validator annotations orm form && composer require p
 ```
 ### Configure Database
 In the file .env, change the parameters of variable  `DATABASE_URL`
+
+Case:  Create a new Database or generate entities from an existing database
+```
+#  Create the database           <-->  Créer la base de données
+php bin/console doctrine:database:create
+```
+
+Case: To start with an existing and immutable database model
+
+```
+#  Generate entities            <-->  Générer les modèles
+php bin/console doctrine:mapping:import "App\Entity" annotation --path=src/Entity
+```
+<span class="height:20px;">![alt text](./!.png  "Warning")</span>
+Doctrine is able to convert approximately 70-80% of the necessary mapping information based on fields
+[Doc](https://symfony.com/doc/current/doctrine/reverse_engineering.html)
+
+
+
+
 
 
 

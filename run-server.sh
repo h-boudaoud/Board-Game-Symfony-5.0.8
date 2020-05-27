@@ -4,4 +4,4 @@
 # phpstorm .
 
 # Demmarer le serveur Symfony
-php -S 127.0.0.1:3905 -t public
+php -S 127.0.0.1:3906 -t public
