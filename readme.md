@@ -32,6 +32,27 @@ composer install
 run-server.sh
 ```
 
+##  Console commands used to create this project 
+### Install project
+Install
+```
+composer create-project symfony/skeleton board-game
+```
+Initialize git 
+```
+git init && git add . && git commit -m "Initial commit"
+git remote add origin https://github.com/h-boudaoud/board-game.git
+git push -u origin master
+```
+### Install components
+```
+composer require maker twig validator annotations orm form && composer require profiler --dev
+
+```
+### Configure Database
+In the file .env, change the parameters of variable  `DATABASE_URL`
+
+
 
 ## Author
 h.boudaoud
