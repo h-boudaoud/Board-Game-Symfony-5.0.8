@@ -1,12 +1,32 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
-</html>
+{% extends 'Layout.html.twig' %}
+
+{#      the view title      #}
+{% block title controller_name %}
+
+{#      The view style sheet    #}
+{% block stylesheets %}
+{% endblock %}
+
+
+{# Replace dropdown in the header index  #}
+{% block headerDropdown  %}
+{{ parent() }}
+{% endblock %}
+
+{#      the title h1 of the view   #}
+{% block h1 "Hello "~ controller_name %}
+
+{% block LayoutBody %}
+
+<div id="content" class="bg-white container-fluid  pb-5"  style="overflow: auto" >
+
+    {% block body %}
+    Page index
+    {% endblock %}
+
+</div>
+{% endblock %}
+
+
+{#      The view JavaScript    #}
+{% block javascripts %}{% endblock %}

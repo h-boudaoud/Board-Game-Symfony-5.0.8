@@ -114,6 +114,9 @@
             "./config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "symfony/asset": {
+        "version": "v5.0.8"
+    },
     "symfony/cache": {
         "version": "v5.0.8"
     },
@@ -256,6 +259,12 @@
             "./config/packages/routing.yaml",
             "./config/routes.yaml"
         ]
+    },
+    "symfony/security-core": {
+        "version": "v5.0.8"
+    },
+    "symfony/security-csrf": {
+        "version": "v5.0.8"
     },
     "symfony/service-contracts": {
         "version": "v2.0.1"

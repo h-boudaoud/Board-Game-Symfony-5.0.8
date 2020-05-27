@@ -1,0 +1,130 @@
+@font-face {
+    font-family: 'Tippa';
+    src:
+            url('../font/Tippa/Tippa.eot?#iefix') format('embedded-opentype'),
+            url('../font/Tippa/Tippa.woff') format('woff'),
+            url('../font/Tippa/Tippa.ttf')  format('truetype'),
+            url('../font/Tippa/Tippa.svg#Tippa') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1, h2, h3, h4 {font-family: 'Love Ya Like A Sister';  font-weight: normal ; }
+
+
+.reg {
+    color:rgb(27, 38, 49);
+    background:white;
+}
+.inverse {
+    color:white;
+    background:rgb(27, 38, 49);
+}
+.btn-inverse {
+    color:white;
+    background:rgba(27, 38, 49, .9);
+}
+.btn-inverse:hover {
+    color:white;
+    background:rgb(27, 38, 49);
+}
+.right {
+    background:white;
+    width:30%; float: right;
+    font-family: sans-serif;
+    border: 1px solid black;
+    border-width: 0 0 1px 1px;
+}
+:root, html, body {
+    font-family: 'Tippa' !important;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+/ / height: 100 %;
+    background-color: rgb(27, 38, 49);
+}
+
+body > section {
+    margin: 0;
+    padding: 0;
+    width: 98%;
+    overflow: auto;
+    min-height: 90vh;
+}
+
+#navigationLeft {
+    margin: 0;
+    position: sticky;
+    padding: 1rem 0 0 0 !important;
+    background-color:rgb(27, 38, 49);
+    color: white;
+}
+
+header, footer {
+    color: white;
+    background-color: rgb(23, 32, 42 );
+}
+
+header h1, footer {
+    text-align: center;
+}
+
+nav ul{
+     list-style-type: none;
+    padding-left: 0;
+}
+
+#navigationLeft a, header a, footer a {
+    text-decoration: none;
+    color: white;
+    background-color: rgb(27, 38, 49);
+}
+
+#navigationLeft a.dropdown-item:hover {
+    color: rgb(5, 45, 49);
+    background-color: white;
+}
+.comment{
+    background-color: LightGray !important;
+    border: 2px dashed #222222 ;
+    border-radius: 10px/20px;
+
+}
+#productsList > article{
+    margin-top: 1rem;
+}
+
+
+
+/* --------------------- */
+/* SPECIAL : ROTATION des flèches */
+.dropdown-submenu {
+    position: relative;
+}
+.dropdown-submenu a::after {
+    transform: rotate(-90deg);
+    position: absolute;
+    right: 6px;
+    top: .8em;
+}
+.dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-left: .1rem;
+    margin-right: .1rem;
+}
+
+/* --------------------- */
+/* SPECIAL : ROTATION des flèches */
+/* Niveau 1 */
+li .dropdown-toggle:after {
+    transition: all 0.5s;
+}
+li.show > .dropdown-toggle:after {
+    transform: rotate(180deg);
+}
+/* sous-Niveaux suivants */
+li li.show > .dropdown-toggle:after {
+    transform: rotate(90deg);
+}
+/* --------------------- */

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="shortcut icon" sizes="200x200" href="http://cv-boudaoud.biz.ht/images/cv-hb.ico" type="image/x-icon"/>
+    <meta name="author" lang="fr" content="Housni BOUDAOUD">
+    <meta name="robots" content="Housni, BOUDAOUD, hboudaoud, projets, projets-boudaoud, projets-hboudaoud"/>
+    <meta name="viewport" content="width=device-width, initial-scale=0.9">
+    <META HTTP-EQUIV="Pragma" CONTENT="cache">
+
+    <!-- Auto-Reactualisation de la page -->
+    <!--META HTTP-EQUIV="Refresh" CONTENT="1; URL=#"-->
+
+
+    <!--  Browser color  --  Couleur du navigateur -->
+
+    <!--  Chrome  -->
+    <meta name="theme-color" content="rgb(5, 45, 49)"/>
+    <!-- Chrome, Firfox et opera -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="rgb(5, 45, 49)"/>
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="rgb(5, 45, 49)"/>
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="rgb(5, 45, 49)">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous"/>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister">
+
+
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+          rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ asset('asset/css/indexStylesheet.css') }}"/>
+    <script src="https://kit.fontawesome.com/4f1b76d32c.js" crossorigin="anonymous"></script>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+
+<header class="fixed-top p-0">
+    <div class="row">
+        <div class="col-2 d-lg-none navbar navbar-dark float-left m-0 mt-0 p-0 bg-transparent d-inline">
+            <button id="displayHeader"
+                    onclick="changeDisplayHeader()"
+                    class="navbar-toggler "
+            >
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-level-up-alt"></i>
+            </button>
+        </div>
+        <div class="col-10 m-0 p-0">
+            <nav id="navHeader" class="w-100 p-0">
+                <div class="d-flex justify-content-between p-0">
+                    <div class=" navbar navbar-expand-lg navbar-dark bg-transparent my-0 py-0 mx-auto">
+
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                data-target="#navbarContent"
+                                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                            {#                                <span class="navbar-toggler-icon" style="color: white"></span>#}
+                            <i class="fas fa-bars"></i>
+                            Menu
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="navbarContent">
+                            <ul class="navbar-nav mr-auto">
+                                <li class="nav-item  mx-1 border active">
+                                    <a class="nav-link" href="#">
+                                        <i class="fas fa-home"></i>
+                                        My store <span class="sr-only">(current)</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item mx-1 border">
+                                    <a class="nav-link" href="{ path('game_index') }}">
+                                        <i class="far fa-list-alt"></i>
+                                        All board games
+                                    </a>
+                                </li>
+                                {% block headerDropdown %}
+                                {% if principalCategories.principalCategories is defined and principalCategories.principalCategories |length >0 %}
+                                    {% set categories =  principalCategories.principalCategories[0].subCategories %}
+                                    <li class="nav-item dropdown  mx-1 border inverse">
+                                        <a class="nav-link dropdown-toggle" href="http://example.com"
+                                           id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                                           aria-expanded="false">
+                                            Board games by category
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                            {% for category in categories %}
+                                                {% if category.subCategories |length > 0  and category.id > 1 %}
+                                                    <li class="dropdown-submenu">
+                                                        <a class="dropdown-item dropdown-toggle inverse"
+                                                           href="#"> {{ category.name | replace({' ': '-'}) }}</a>
+
+                                                        <ul class="dropdown-menu">
+
+                                                            <li>
+                                                                <a class="dropdown-item inverse"
+                                                                   href="{{ path(
+                                                                       'products_by_category',
+                                                                       {'id':category.id,'name':category.name|replace({' ': '-'})}
+                                                                   ) }}"
+                                                                >
+                                                                    All {{ category.name }}
+                                                                </a>
+                                                            </li>
+                                                            {% for item in category.subCategories %}
+                                                                {% if item.subCategories |length > 0 %}
+                                                                    <li>
+                                                                        <a class="dropdown-item inverse"
+                                                                           href="{{ path(
+                                                                               'products_by_category',
+                                                                               {'id':item.id,'name':item.name|replace({' ': '-'})}
+                                                                           ) }}"
+                                                                        >
+                                                                            {{ item.name }}
+                                                                        </a>
+                                                                    </li>
+                                                                {% else %}
+                                                                    <li>
+                                                                        <a class="dropdown-item inverse"
+                                                                           href="{{ path(
+                                                                               'products_by_category',
+                                                                               {'id':item.id,'name':item.name|replace({' ': '-'})}
+                                                                           ) }}"
+                                                                        >
+                                                                            {{ item.name }}
+                                                                        </a>
+                                                                    </li>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                                {% else %}
+                                                    <li>
+                                                        <a class="dropdown-item inverse"
+                                                           href="{{ path(
+                                                               'products_by_category',
+                                                               {'id':category.id,'name':category.name|replace({' ': '-'})}
+                                                           ) }}"
+                                                        >
+                                                            {{ category.name }}
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+
+                                {% endif %}
+                                {% endblock %}
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {#                        <div class="d-inline-block">#}
+                {#                            <div class=" navbar navbar-expand-lg navbar-dark bg-transparent my-0 mx-auto">#}
+
+                {#                                <button class="navbar-toggler" type="button" data-toggle="collapse"#}
+                {#                                        data-target="#navbarConnextion"#}
+                {#                                        aria-controls="navbarConnextion" aria-expanded="false"#}
+                {#                                        aria-label="Toggle navigation">#}
+                {#                                    #}{#                                <span class="navbar-toggler-icon" style="color: white"></span>#}
+                {#                                    {% if app.user %}#}
+                {#                                        <i class="fas fa-user-cog"></i>#}
+                {#                                    {% else %}#}
+                {#                                        <i class="fas fa-user-alt-slash"></i>#}
+                {#                                    {% endif %}#}
+                {#                                </button>#}
+
+                {#                                <div class="collapse navbar-collapse" id="navbarConnextion">#}
+                {#                                    <ul class="navbar-nav mr-auto">#}
+                {#                                        {% if app.user %}#}
+                {#                                            <li class="nav-item">#}
+                {#                                                <a class="nav-link"#}
+                {#                                                   href="{{ path('user' ,{'userName' : app.user.username}) }}">#}
+                {#                                                    <i class="fas fa-user"></i>#}
+                {#                                                    {{ app.user.username }}#}
+                {#                                                </a>#}
+                {#                                            </li>#}
+                {#                                            <li class="nav-item">#}
+                {#                                                <a class="nav-link" href="{{ path('logout') }}">#}
+                {#                                                    <i class="fas fa-user-lock"></i>#}
+                {#                                                    Logout#}
+                {#                                                </a>#}
+                {#                                            </li>#}
+                {#                                        {% else %}#}
+                {#                                            <li class="nav-item">#}
+                {#                                                <a class="nav-link" href="{{ path('login') }}">#}
+                {#                                                    <i class="fa fa-unlock-alt" aria-hidden="true"></i>#}
+                {#                                                    Login#}
+                {#                                                </a>#}
+                {#                                            </li>#}
+                {#                                            <li class="nav-item">#}
+                {#                                                <a class="nav-link" href="{{ path('signup') }}">#}
+                {#                                                    <i class="fa fa-user-plus" aria-hidden="true"></i>#}
+                {#                                                    Signup#}
+                {#                                                </a>#}
+                {#                                            </li>#}
+                {#                                        {% endif %}#}
+                {#                                    </ul>#}
+
+                {#                                </div>#}
+                {#                            </div>#}
+                {#                        </div>#}
+                <div class="d-inline-block">
+
+                    <div class="collapse navbar-collapse" id="navbarform">
+
+                        {#            <form class="form-inline my-2 my-lg-0">#}
+                        {#                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">#}
+                        {#                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
+                        {#            </form>#}
+                    </div>
+                </div>
+            </nav>
+            {#      the title h1 of the view   #}
+            <div class="align-items-center w-100 m-0">
+                <h1><small>{% block h1 %}{% endblock %}</small></h1>
+            </div>
+        </div>
+
+    </div>
+</header>
+<section class="container-fluid">
+    {% block LayoutBody %}{% endblock %}
+</section>
+
+<footer>
+    footer
+</footer>
+
+<script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"
+></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"
+></script>
+<script src="{{ asset('asset/js/indexScript.js') }}"
+></script>
+
+
+{% block javascripts %}{% endblock %}
+</body>
+</html>

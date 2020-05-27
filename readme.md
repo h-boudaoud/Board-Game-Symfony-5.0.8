@@ -67,6 +67,28 @@ php bin/console doctrine:mapping:import "App\Entity" annotation --path=src/Entit
 Doctrine is able to convert approximately 70-80% of the necessary mapping information based on fields
 [Doc](https://symfony.com/doc/current/doctrine/reverse_engineering.html)
 
+### Entities (CRUD)
+#### new Entity and CRUD by CLI
+```
+php bin/console make:entity Myentity
+## Add properties at MyEntity and generate a new migration
+php bin/console make:migration
+## To push migration in database
+php bin/console doctrine:migrations:migrate
+
+## if security-csrf is not installed
+composer require security-csrf 
+
+php bin/console make:crud Myentity
+```
+#### views width Twig
+Change base.html.twig to use Bootstrap, Ajax and Jquery 
+```
+composer require symfony/asset
+```
+Add new folder `public/asset` for documents public `js, css, img, ...`
+
+Change the content of the templates according to the display requested
 
 
 

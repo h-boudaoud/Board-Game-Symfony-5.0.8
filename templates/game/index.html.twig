@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Game index{% endblock %}
+
+{% block body %}
+    <h1>Game index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>YearPublished</th>
+                <th>Players</th>
+                <th>Time</th>
+                <th>Age</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Msrp</th>
+                <th>Discount</th>
+                <th>RulesUrl</th>
+                <th>OfficialUrl</th>
+                <th>Published</th>
+                <th>Weight</th>
+                <th>Sizes</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for game in games %}
+            <tr>
+                <td>{{ game.id }}</td>
+                <td>{{ game.name }}</td>
+                <td>{{ game.yearPublished ? game.yearPublished|date('Y-m-d') : '' }}</td>
+                <td>{{ game.minPlayers }} to {{ game.maxPlayers }}</td>
+                <td>
+                    {{ game.minPlaytime ? game.minPlaytime|date('H:i:s') : '' }}
+                    to
+                    {{ game.maxPlaytime ? game.maxPlaytime|date('H:i:s') : '' }}
+                </td>
+                <td>{{ game.minAge }}</td>
+                <td>{{ game.description }}</td>
+                <td>{{ game.price }} $</td>
+                <td>{{ game.msrp }}</td>
+                <td>{{ game.discount }}</td>
+                <td>{{ game.rulesUrl }}</td>
+                <td>{{ game.officialUrl }}</td>
+                <td>{{ game.published ? 'Yes' : 'No' }}</td>
+                <td>{{ game.weightAmount }} {{ game.weightUnits }}</td>
+                <td>{{ game.sizeHeight }} x {{ game.sizeWidth }} x {{ game.sizeDepth }} {{ game.sizeUnits }}</td>
+                <td>
+                    <a href="{{ path('game_show', {'id': game.id}) }}">show</a>
+                    <a href="{{ path('game_edit', {'id': game.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="27">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('game_new') }}">Create new</a>
+{% endblock %}

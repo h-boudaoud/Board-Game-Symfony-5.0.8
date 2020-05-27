@@ -85,6 +85,9 @@
       <path value="$PROJECT_DIR$/vendor/symfony/twig-pack" />
       <path value="$PROJECT_DIR$/vendor/symfony/translation-contracts" />
       <path value="$PROJECT_DIR$/vendor/symfony/twig-bridge" />
+      <path value="$PROJECT_DIR$/vendor/symfony/security-core" />
+      <path value="$PROJECT_DIR$/vendor/symfony/security-csrf" />
+      <path value="$PROJECT_DIR$/vendor/symfony/asset" />
     </include_path>
   </component>
   <component name="ProjectId" id="1cU9ivgw3c9SL5aLC2ZgXbLP7XS" />
@@ -97,6 +100,13 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/asset" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\www\PHP\Symfony\board-game\public\asset" />
+      <recent name="F:\www\PHP\Symfony\board-game\templates" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="run-server.sh" type="ShConfigurationType" temporary="true">
@@ -123,7 +133,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1590572437007</updated>
-      <workItem from="1590572444452" duration="6773000" />
+      <workItem from="1590572444452" duration="12026000" />
     </task>
     <servers />
   </component>

@@ -1,0 +1,39 @@
+{% extends 'Layout.html.twig' %}
+
+{#      the view title      #}
+{% block title controller_name %}
+
+{#      The view style sheet    #}
+{% block stylesheets %}
+    #navigationLeft {
+    color: white;
+    background-color: #222222;
+    position: fixed;
+    //top: 0;
+    z-index: 1020;
+    }
+
+{% endblock %}
+
+{# Replace dropdown in the header index  #}
+{% block headerDropdown  %}
+{{ parent() }}
+{% endblock %}
+
+{#      the title h1 of the view   #}
+{% block h1 "Hello "~ controller_name %}
+
+{% block LayoutBody %}
+    <div class="row">
+        <div id="navigationLeft" class="col-12 col-lg-3">
+                {% block navigationLeft %} nav left {% endblock %}
+        </div>
+        <div id="content" class="col-12 col-lg-9 bg-white container-fluid pb-5" style="overflow: auto">
+            {% block body %} Page Articles {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+
+{#      The view JavaScript    #}
+{% block javascripts %}{% endblock %}

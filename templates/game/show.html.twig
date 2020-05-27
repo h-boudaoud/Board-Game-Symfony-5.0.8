@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Game{% endblock %}
+
+{% block body %}
+    <h1>Game</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ game.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ game.name }}</td>
+            </tr>
+            <tr>
+                <th>YearPublished</th>
+                <td>{{ game.yearPublished ? game.yearPublished|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>MinPlayers</th>
+                <td>{{ game.minPlayers }}</td>
+            </tr>
+            <tr>
+                <th>MaxPlayers</th>
+                <td>{{ game.maxPlayers }}</td>
+            </tr>
+            <tr>
+                <th>MinPlaytime</th>
+                <td>{{ game.minPlaytime ? game.minPlaytime|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>MaxPlaytime</th>
+                <td>{{ game.maxPlaytime ? game.maxPlaytime|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>MinAge</th>
+                <td>{{ game.minAge }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ game.description }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ game.price }}</td>
+            </tr>
+            <tr>
+                <th>Msrp</th>
+                <td>{{ game.msrp }}</td>
+            </tr>
+            <tr>
+                <th>Discount</th>
+                <td>{{ game.discount }}</td>
+            </tr>
+            <tr>
+                <th>Artists</th>
+                <td>{{ game.artists ? game.artists|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>Names</th>
+                <td>{{ game.names ? game.names|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>Publishers</th>
+                <td>{{ game.publishers ? game.publishers|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>RulesUrl</th>
+                <td>{{ game.rulesUrl }}</td>
+            </tr>
+            <tr>
+                <th>OfficialUrl</th>
+                <td>{{ game.officialUrl }}</td>
+            </tr>
+            <tr>
+                <th>GameId</th>
+                <td>{{ game.gameId }}</td>
+            </tr>
+            <tr>
+                <th>Published</th>
+                <td>{{ game.published ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>WeightAmount</th>
+                <td>{{ game.weightAmount }}</td>
+            </tr>
+            <tr>
+                <th>WeightUnits</th>
+                <td>{{ game.weightUnits }}</td>
+            </tr>
+            <tr>
+                <th>SizeHeight</th>
+                <td>{{ game.sizeHeight }}</td>
+            </tr>
+            <tr>
+                <th>SizeWidth</th>
+                <td>{{ game.sizeWidth }}</td>
+            </tr>
+            <tr>
+                <th>SizeDepth</th>
+                <td>{{ game.sizeDepth }}</td>
+            </tr>
+            <tr>
+                <th>SizeUnits</th>
+                <td>{{ game.sizeUnits }}</td>
+            </tr>
+            <tr>
+                <th>PrimaryPublisher</th>
+                <td>{{ game.primaryPublisher }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('game_index') }}">back to list</a>
+
+    <a href="{{ path('game_edit', {'id': game.id}) }}">edit</a>
+
+    {{ include('game/_delete_form.html.twig') }}
+{% endblock %}
