@@ -1,4 +1,18 @@
-{{ form_start(form) }}
+{# this tag only applies to the forms defined in this template #}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+<div class="container">
+
+    {{ form_start(form) }}
     {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+    <button class="btn btn-inverse">{{ game_form_button_label|default('Save') }}</button>
+    {{ form_end(form) }}
+
+    <div class="my-3">
+        <a href="{{ path('game_index') }}" class="btn btn-inverse">back to list</a>
+        {% if game.id is defined and game.id>0 %}
+            {{ include('game/_delete_form.html.twig') }}
+        {% endif %}
+    </div>
+</div>
+

@@ -12,8 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Game
 {
-    public const SIZE_UNITS =['inches','cm','m','mm','dm'];
-    public const WEIGHT_UNITS = ['lbs', 'g'];
+    public const SIZE_UNITS =['inches','mm','cm','dm','m'];
+    public const WEIGHT_UNITS = ['g', 'lbs', 'Kg'];
 
     /**
      * @ORM\Id()
@@ -29,17 +29,22 @@ class Game
     private $name;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="integer")
+     * @Assert\GreaterThanOrEqual(1900)
+     *
      */
     private $yearPublished;
 
     /**
      * @ORM\Column(type="integer", options={"default" : 1})
+     * @Assert\PositiveOrZero
      */
     private $minPlayers;
 
     /**
      * @ORM\Column(type="integer", options={"default" : 1})
+     * @Assert\PositiveOrZero
+     * @Assert\GreaterThanOrEqual(propertyPath ="minPlayers")
      */
     private $maxPlayers;
 
@@ -55,6 +60,8 @@ class Game
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\PositiveOrZero
+     * @Assert\LessThan(100)
      */
     private $minAge;
 
@@ -66,6 +73,7 @@ class Game
 
     /**
      * @ORM\Column(type="decimal", precision=6, scale=2)
+     * @Assert\PositiveOrZero
      */
     private $price;
 
@@ -74,11 +82,13 @@ class Game
      * Prix de détail suggéré par le fabricant (PDSF)
      *
      * @ORM\Column(type="decimal", precision=6, scale=2, nullable=true)
+     * @Assert\PositiveOrZero
      */
     private $msrp;
 
     /**
      * @ORM\Column(type="decimal", precision=3, scale=2, nullable=true)
+     * @Assert\NegativeOrZero
      */
     private $discount;
 
@@ -95,7 +105,7 @@ class Game
     /**
      * @ORM\Column(type="json", nullable=true)
      */
-    private $publishers;
+    private $publishers ;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -116,37 +126,53 @@ class Game
     private $gameId;
 
     /**
-     * @ORM\Column(type="boolean", options={"default" : true})
+     * @ORM\Column(type="boolean", options={"default" : true})* @ORM\Column(type="string", length=10, nullable=true)
+     * @Assert\Choice(
+     *     choices = { true, false },
+     *     message = "Allowed values of published are true ou false."
+     * )
      */
     private $published;
 
     /**
-     * @ORM\Column(type="integer", precision=7, scale=3, nullable=true)
+     * @ORM\Column(type="decimal", precision=7, scale=3, nullable=true)
+     * @Assert\PositiveOrZero
      */
     private $weightAmount;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
+     * @Assert\Choice(
+     *     choices=Game::WEIGHT_UNITS,
+     *     message="Allowed values of $weight units are :lbs, g"
+     * )
      */
     private $weightUnits;
 
     /**
      * @ORM\Column(type="decimal", precision=7, scale=3, nullable=true)
+     * @Assert\PositiveOrZero
      */
     private $sizeHeight;
 
     /**
      * @ORM\Column(type="decimal", precision=7, scale=3, nullable=true)
+     * @Assert\PositiveOrZero
      */
     private $sizeWidth;
 
     /**
      * @ORM\Column(type="decimal", precision=7, scale=3, nullable=true)
+     * @Assert\PositiveOrZero
      */
     private $sizeDepth;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
+     * @Assert\Choice(
+     *     choices=Game::SIZE_UNITS,
+     *     message="Allowed values of size units are :inches, cm, m, mm, dm"
+     * )
      */
     private $sizeUnits;
 
@@ -154,6 +180,18 @@ class Game
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $primaryPublisher;
+
+    /**
+     *
+     */
+    function __construct()
+    {
+        $this->minAge = $this->minAge|0;
+        $this->minPlayers = $this->minPlayers|1;
+        $this->maxPlayers = $this->maxPlayers|0;
+        $this->yearPublished = $this->yearPublished|1900;
+    }
+
 
     public function getId(): ?int
     {
@@ -172,12 +210,12 @@ class Game
         return $this;
     }
 
-    public function getYearPublished(): ?\DateTimeInterface
+    public function getYearPublished(): ?int
     {
         return $this->yearPublished;
     }
 
-    public function setYearPublished(\DateTimeInterface $yearPublished): self
+    public function setYearPublished(?int $yearPublished): self
     {
         $this->yearPublished = $yearPublished;
 

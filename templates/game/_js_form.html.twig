@@ -1,0 +1,82 @@
+<script>
+    displayElement('weightUnits');
+    displayElement('sizeUnits');
+
+    function displayElement(element) {
+
+        let divId = $('#game_' + element);
+        let divClass = $('.js-' + element);
+
+        function divClassOriginValues(divClass) {
+            console.log('values : ',values)
+            divClass.each(function () {
+                $(this).val(values[$(this).attr('id')]);
+                console.log('val', $(this).val(),' values :',values[$(this).attr('id')] );
+            })
+        }
+
+        function divClassMapValues(divClass) {
+            let vals = [];
+            divClass.each(function () {
+                vals[$(this).attr('id')] = $(this).val();
+            })
+            return vals;
+        }
+
+
+        const values = divClassMapValues(divClass);
+
+        if (divId.val().length > 0) {
+            divClass.parent().removeClass('d-none');
+        } else {
+            divClass.parent().addClass('d-none');
+        }
+        console.log('$(\'#game-element\').val()', divId.val());
+        divId.change(function () {
+            console.log(element, ' : ', values)
+            console.log('$(\'#js-element\').val()', divId.val());
+            if (divId.val().length > 0) {
+                divClass.parent().removeClass('d-none');
+                divId.prop('required', true);
+            } else {
+                divClass.parent().addClass('d-none');
+                divClassOriginValues(divClass);
+                divId.prop('required', false);
+            }
+        });
+
+        //
+        // divClass.change(function () {
+        //     console.log('divId.attr(\'required\') : ', divId.prop('required'))
+        //
+        //     if (!divId.attr('required')) {
+        //         divClass.each(function () {
+        //             if (Number(this.val()) > 0) {
+        //                 divId.attr('required', true);
+        //                 break;
+        //             } else {
+        //                 divId.attr('required', false);
+        //             }
+        //
+        //         })
+        //     }
+        //
+        //     //
+        //     //
+        //     // if (!divId.prop('required') && Number($(this).val()) > 0) {
+        //     //     console.log('if : ', divId.prop('required'), ' - ', $(this).val())
+        //     //     divId.prop('required', true);
+        //     // } else{
+        //     //     let requider = true;
+        //     //     divClass.each(function () {
+        //     //         if()
+        //     //
+        //     //     })
+        //     // }
+        //
+        //     console.log('after : ', divId.prop('required'))
+        //
+        // });
+
+    }
+</script>

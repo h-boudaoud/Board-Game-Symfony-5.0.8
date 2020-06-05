@@ -85,27 +85,26 @@
             </tr>
             <tr>
                 <th>WeightAmount</th>
-                <td>{{ game.weightAmount }}</td>
+                <td>{{ game.weightAmount }} {{ game.weightUnits }}</td>
             </tr>
             <tr>
-                <th>WeightUnits</th>
-                <td>{{ game.weightUnits }}</td>
-            </tr>
-            <tr>
-                <th>SizeHeight</th>
-                <td>{{ game.sizeHeight }}</td>
-            </tr>
-            <tr>
-                <th>SizeWidth</th>
-                <td>{{ game.sizeWidth }}</td>
-            </tr>
-            <tr>
-                <th>SizeDepth</th>
-                <td>{{ game.sizeDepth }}</td>
-            </tr>
-            <tr>
-                <th>SizeUnits</th>
-                <td>{{ game.sizeUnits }}</td>
+                <th>Size</th>
+                <td>
+                    {% if game.sizeUnits %}
+                        <span class="d-inline-block">
+                        {{ (game.sizeHeight) }}
+                    <span style="font-size: .7rem;">
+                        <i class="fas fa-times"></i>
+                    </span>
+                    {{ game.sizeWidth }}
+                    <span style="font-size: .7rem;">
+                        <i class="fas fa-times"></i>
+                    </span>
+                    {{ game.sizeDepth }}
+                    ({{ game.sizeUnits }})
+                    </span>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>PrimaryPublisher</th>
@@ -114,9 +113,10 @@
         </tbody>
     </table>
 
-    <a href="{{ path('game_index') }}">back to list</a>
+    <a href="{{ path('game_index') }}" class="btn btn-inverse"><i class="fas fa-list"></i> back to list</a>
 
-    <a href="{{ path('game_edit', {'id': game.id}) }}">edit</a>
+    <a href="{{ path('game_edit', {'id': game.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</a>
 
     {{ include('game/_delete_form.html.twig') }}
+
 {% endblock %}
