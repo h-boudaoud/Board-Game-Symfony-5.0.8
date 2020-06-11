@@ -92,6 +92,61 @@ Change the content of the templates according to the display requested
 
 
 
+#### Security : Entity User CRUD manually
+
+Add component security-bundle
+
+```
+composer require symfony/security-bundle
+```
+Update file `config/packages/security.yaml`
+
+more info in :
+  - security.yaml Symfony 5.1: [symfony.com/.../user_provider.html](https://symfony.com/doc/current/security/user_provider.html)
+  - security.yaml 4.0: [symfony.com/.../security.html](https://symfony.com/doc/4.0/security.html)
+  ```
+# config/packages/security.yaml
+security:
+    # Users in memory
+    providers:
+        in_memory:
+            memory:
+                users:
+                    john_admin: { password: '$2y$13$jxGxc ... IuqDju', roles: ['ROLE_ADMIN'] }
+    
+    firewalls:
+        main:
+            provider: users_in_memory
+    ...
+
+
+    # Example Roles hierarchy  
+    role_hierarchy:
+        ROLE_STOREKEEPER: ROLE_USER
+        ROLE_ADMIN: [ROLE_MODERATOR, ROLE_OPERATOR, ROLE_STOREKEEPER]
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
+    # Using the form_login Authentication Provider  
+    form_login:
+        login_path: login
+        check_path: login
+        default_target_path: game_index
+
+    logout:
+        path: logout
+        target: game_index
+    
+    #  Use A Different Password Encoder   
+    encoders:
+        # If No encoder has been configured for account "Symfony\Component\Security\Core\User\User"
+        Symfony\Component\Security\Core\User\User: plaintext
+        # Else
+        Symfony\Component\Security\Core\User\User:
+            algorithm: bcrypt
+            cost: 12
+  ```
+
+
 
 
 
