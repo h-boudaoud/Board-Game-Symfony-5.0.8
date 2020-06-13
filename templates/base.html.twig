@@ -18,7 +18,7 @@
 
 {% block LayoutBody %}
 
-<div id="content" class="bg-white container-fluid  pb-5"  style="overflow: auto" >
+<div id="content" class="bg-white container-fluid  p-5 my-0"  style="overflow: auto" >
 
     {% block body %}
     Page index
@@ -29,4 +29,6 @@
 
 
 {#      The view JavaScript    #}
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

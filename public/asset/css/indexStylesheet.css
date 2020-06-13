@@ -20,14 +20,15 @@ h1, h2, h3, h4 {font-family: 'Love Ya Like A Sister';  font-weight: normal ; }
     color:white;
     background:rgb(27, 38, 49);
 }
-.btn-inverse {
+.btn-inverse, .paginate_button {
     color:white;
     background:rgba(27, 38, 49, .9);
 }
-.btn-inverse:hover {
+.btn-inverse:hover, .paginate_button:hover {
     color:white;
     background:rgb(27, 38, 49);
 }
+
 .right {
     background:white;
     width:30%; float: right;

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Game;
 use App\Form\GameType;
 use App\Repository\GameRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +30,7 @@ class GameController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_STOREKEEPER", statusCode=401, message="No access! Get out!")
      * @Route("/new", name="game_new", methods={"GET","POST"})
      * @param Request $request
      * @return Response
@@ -68,6 +70,7 @@ class GameController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_STOREKEEPER", statusCode=401, message="No access! Get out!")
      * @Route("/{id}/edit", name="game_edit", methods={"GET","POST"})
      * @param Request $request
      * @param Game $game
@@ -99,6 +102,7 @@ class GameController extends AbstractController
      */
     public function delete(Request $request, Game $game): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid('delete'.$game->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($game);

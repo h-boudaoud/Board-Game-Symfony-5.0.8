@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml
+    version="1.0"
+    encoding="UTF-8"
+?>
 <!DOCTYPE html
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -31,12 +34,12 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css"/>
 
-{#    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"#}
-{#          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"#}
-{#          crossorigin="anonymous"/>#}
+    {#    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"#}
+    {#          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"#}
+    {#          crossorigin="anonymous"/>#}
 
-{#    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"#}
-{#          rel="stylesheet"/>#}
+    {#    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"#}
+    {#          rel="stylesheet"/>#}
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister">
 
@@ -49,194 +52,194 @@
 
 <body>
 
-<header class="fixed-top p-0">
-    <div class="row">
-        <div class="col-2 d-lg-none navbar navbar-dark float-left m-0 mt-0 p-0 bg-transparent d-inline">
-            <button id="displayHeader"
-                    onclick="changeDisplayHeader()"
-                    class="navbar-toggler "
+<header class="fixed-top py-0 px-auto p-1 m-0 row">
+    <div class="col-2 d-lg-none navbar navbar-dark my-0 mt-0 py-0 align-self-start">
+        <button id="displayHeader"
+                onclick="changeDisplayHeader()"
+                class="navbar-toggler d-lg-none"
+                data-toggle="collapse"
+                data-target=".js-navHeader"
+                aria-controls="navbarContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-level-up-alt rotate-90"></i>
+        </button>
+    </div>
+    <div class="col-10 col-lg-12 my-0 py-0">
+
+        <div class="d-lg-none navbar navbar-dark my-0 p-1 w-100 justify-content-end js-navHeader">
+            <button class="navbar-toggler mx-2" type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarContent"
+                    aria-controls="navbarContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+            >
+                {#                                <span class="navbar-toggler-icon" style="color: white"></span>#}
+                <i class="fas fa-bars"></i>
+                Menu
+            </button>
+            <button class="navbar-toggler mx-2" type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarConnextion"
+                    aria-controls="navbarConnextion"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
             >
                 <i class="fas fa-bars"></i>
-                <i class="fas fa-level-up-alt"></i>
+                {% if app.user %}
+                    <i class="fas fa-user-cog"></i><span id="user">{{  app.user.password }}</span>
+                {% else %}
+                    <i class="fas fa-user-alt-slash"></i>
+                {% endif %}
             </button>
         </div>
-        <div class="col-10 m-0 p-0">
-            <nav id="navHeader" class="w-100 p-0">
-                <div class="d-flex justify-content-between p-0">
-                    <div class=" navbar navbar-expand-lg navbar-dark bg-transparent my-0 py-0 mx-auto">
+        <div class="d-lg-flex justify-content-between">
+            <div class="order-lg-1 order-1 js-navHeader">
+                <nav class=" navbar navbar-expand-lg navbar-dark bg-transparent my-0 py-0 mx-auto ">
+                    <div class="collapse navbar-collapse" id="navbarContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item  mx-1 border active">
+                                <a class="nav-link" href="#">
+                                    <i class="fas fa-home"></i>
+                                    My store <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mx-1 border">
+                                <a class="nav-link" href="{{ path('game_index') }}">
+                                    <i class="far fa-list-alt"></i>
+                                    All
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
 
-                        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                                data-target="#navbarContent"
-                                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                            {#                                <span class="navbar-toggler-icon" style="color: white"></span>#}
-                            <i class="fas fa-bars"></i>
-                            Menu
-                        </button>
+                    <div class="d-inline-block  justify-content-between my-0 py-0 mx-auto">
 
-                        <div class="collapse navbar-collapse" id="navbarContent">
-                            <ul class="navbar-nav mr-auto">
-                                <li class="nav-item  mx-1 border active">
-                                    <a class="nav-link" href="#">
-                                        <i class="fas fa-home"></i>
-                                        My store <span class="sr-only">(current)</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item mx-1 border">
-                                    <a class="nav-link" href="{{path('game_index')}}">
-                                        <i class="far fa-list-alt"></i>
-                                        All board games
-                                    </a>
-                                </li>
-                                {% block headerDropdown %}
-                                    {% if principalCategories.principalCategories is defined and principalCategories.principalCategories |length >0 %}
-                                        {% set categories =  principalCategories.principalCategories[0].subCategories %}
-                                        <li class="nav-item dropdown  mx-1 border inverse">
-                                            <a class="nav-link dropdown-toggle" href="http://example.com"
-                                               id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">
-                                                Board games by category
-                                            </a>
-                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                                {% for category in categories %}
-                                                    {% if category.subCategories |length > 0  and category.id > 1 %}
-                                                        <li class="dropdown-submenu">
-                                                            <a class="dropdown-item dropdown-toggle inverse"
-                                                               href="#"> {{ category.name | replace({' ': '-'}) }}</a>
+                        <div class="collapse navbar-collapse my-0 py-0 mx-auto" id="navbarform">
 
-                                                            <ul class="dropdown-menu">
-
-                                                                <li>
-                                                                    <a class="dropdown-item inverse"
-                                                                       href="{{ path(
-                                                                           'products_by_category',
-                                                                           {'id':category.id,'name':category.name|replace({' ': '-'})}
-                                                                       ) }}"
-                                                                    >
-                                                                        All {{ category.name }}
-                                                                    </a>
-                                                                </li>
-                                                                {% for item in category.subCategories %}
-                                                                    {% if item.subCategories |length > 0 %}
-                                                                        <li>
-                                                                            <a class="dropdown-item inverse"
-                                                                               href="{{ path(
-                                                                                   'products_by_category',
-                                                                                   {'id':item.id,'name':item.name|replace({' ': '-'})}
-                                                                               ) }}"
-                                                                            >
-                                                                                {{ item.name }}
-                                                                            </a>
-                                                                        </li>
-                                                                    {% else %}
-                                                                        <li>
-                                                                            <a class="dropdown-item inverse"
-                                                                               href="{{ path(
-                                                                                   'products_by_category',
-                                                                                   {'id':item.id,'name':item.name|replace({' ': '-'})}
-                                                                               ) }}"
-                                                                            >
-                                                                                {{ item.name }}
-                                                                            </a>
-                                                                        </li>
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                            </ul>
-                                                        </li>
-                                                    {% else %}
-                                                        <li>
-                                                            <a class="dropdown-item inverse"
-                                                               href="{{ path(
-                                                                   'products_by_category',
-                                                                   {'id':category.id,'name':category.name|replace({' ': '-'})}
-                                                               ) }}"
-                                                            >
-                                                                {{ category.name }}
-                                                            </a>
-                                                        </li>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </ul>
-                                        </li>
-
-                                    {% endif %}
-                                {% endblock %}
-
-                            </ul>
+                            {#            <form class="form-inline my-2 my-lg-0">#}
+                            {#                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">#}
+                            {#                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
+                            {#            </form>#}
                         </div>
                     </div>
-                </div>
-                {#                        <div class="d-inline-block">#}
-                {#                            <div class=" navbar navbar-expand-lg navbar-dark bg-transparent my-0 mx-auto">#}
+                </nav>
+            </div>
 
-                {#                                <button class="navbar-toggler" type="button" data-toggle="collapse"#}
-                {#                                        data-target="#navbarConnextion"#}
-                {#                                        aria-controls="navbarConnextion" aria-expanded="false"#}
-                {#                                        aria-label="Toggle navigation">#}
-                {#                                    #}{#                                <span class="navbar-toggler-icon" style="color: white"></span>#}
-                {#                                    {% if app.user %}#}
-                {#                                        <i class="fas fa-user-cog"></i>#}
-                {#                                    {% else %}#}
-                {#                                        <i class="fas fa-user-alt-slash"></i>#}
-                {#                                    {% endif %}#}
-                {#                                </button>#}
+            <div class="p-0 order-lg-3 order-2 js-navHeader">
+                <nav class=" navbar navbar-expand-lg navbar-dark bg-transparent my-0 mx-auto py-0">
+                    <div class="collapse navbar-collapse" id="navbarConnextion">
+                        <ul class="navbar-nav mr-auto">
 
-                {#                                <div class="collapse navbar-collapse" id="navbarConnextion">#}
-                {#                                    <ul class="navbar-nav mr-auto">#}
-                {#                                        {% if app.user %}#}
-                {#                                            <li class="nav-item">#}
-                {#                                                <a class="nav-link"#}
-                {#                                                   href="{{ path('user' ,{'userName' : app.user.username}) }}">#}
-                {#                                                    <i class="fas fa-user"></i>#}
-                {#                                                    {{ app.user.username }}#}
-                {#                                                </a>#}
-                {#                                            </li>#}
-                {#                                            <li class="nav-item">#}
-                {#                                                <a class="nav-link" href="{{ path('logout') }}">#}
-                {#                                                    <i class="fas fa-user-lock"></i>#}
-                {#                                                    Logout#}
-                {#                                                </a>#}
-                {#                                            </li>#}
-                {#                                        {% else %}#}
-                {#                                            <li class="nav-item">#}
-                {#                                                <a class="nav-link" href="{{ path('login') }}">#}
-                {#                                                    <i class="fa fa-unlock-alt" aria-hidden="true"></i>#}
-                {#                                                    Login#}
-                {#                                                </a>#}
-                {#                                            </li>#}
-                {#                                            <li class="nav-item">#}
-                {#                                                <a class="nav-link" href="{{ path('signup') }}">#}
-                {#                                                    <i class="fa fa-user-plus" aria-hidden="true"></i>#}
-                {#                                                    Signup#}
-                {#                                                </a>#}
-                {#                                            </li>#}
-                {#                                        {% endif %}#}
-                {#                                    </ul>#}
+                            <li class="nav-item  mx-1 border ">
+                                <a class="nav-link" href="#" data-toggle="modal" data-target="#cardModalLong">
+                                        <span class="badge badge-warning">
+                                            <i class="fa fa-shopping-cart" aria-hidden="true">
+                                                <span class="badge badge-warning js-nb-games"
+                                                      id="right-cart-num"></span>
+                                            </i>
+                                        </span>
+                                    Cart
+                                </a>
+                            </li>
 
-                {#                                </div>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                <div class="d-inline-block">
+                            {% if app.user %}
+                                {#                                <li class="nav-item  mx-1 border active">#}
+                                {#                                    <a class="nav-link"#}
+                                {#                                       href="{{ path('profile_user' ,{'userName' : app.user.username}) }}">#}
+                                {#                                        <i class="fas fa-user"></i>#}
+                                {#                                        {{ app.user.username }}#}
+                                {#                                        <span class="sr-only">(current)</span>#}
+                                {#                                    </a>#}
+                                {#                                </li>#}
+                                <li class="nav-item  mx-1 border ">
+                                    <a class="nav-link" href="{{ path('logout') }}">
+                                        <i class="fas fa-user-lock"></i>
+                                        Logout
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item  mx-1 border ">
+                                    <a class="nav-link" href="{{ path('login') }}">
+                                        <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                                        Login
+                                    </a>
+                                </li>
+                                {#                                <li class="nav-item  mx-1 border ">#}
+                                {#                                    <a class="nav-link" href="{{ path('signup') }}">#}
+                                {#                                        <i class="fa fa-user-plus" aria-hidden="true"></i>#}
+                                {#                                        Signup#}
+                                {#                                    </a>#}
+                                {#                                </li>#}
+                            {% endif %}
+                        </ul>
 
-                    <div class="collapse navbar-collapse" id="navbarform">
-
-                        {#            <form class="form-inline my-2 my-lg-0">#}
-                        {#                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">#}
-                        {#                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
-                        {#            </form>#}
                     </div>
-                </div>
-            </nav>
+                </nav>
+            </div>
+
             {#      the title h1 of the view   #}
-            <div class="align-items-center w-100 m-0">
+            <div class="align-items-center m-0 order-lg-2 order-3">
                 <h1><small>{% block h1 %}{% endblock %}</small></h1>
             </div>
         </div>
 
     </div>
+
 </header>
-<section class="container-fluid">
+<section class="container-fluid p-0">
+
     {% block LayoutBody %}{% endblock %}
+
+    <!-- Example Button trigger modal -->
+    <!--button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+      Launch demo modal
+    </button-->
+
+    <!-- Modal -->
+    <div id="cardModalLong" class="modal fade "
+         tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLongTitle" aria-hidden="true"
+         style="min-width: 50% !important"
+    >
+        <div class="modal-dialog mw-100 mx-5 px-5" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cart : <span class="js-nb-games">0</span> game(s)</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-window-close text-danger" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="js-games-selected" class="container-fluid">
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="w-100 row m-0 p-0">
+                        <div class="col-4 m-0 p-0">Total</div>
+                        <div class="col-3 m-0 p-0"> : $<span id="js-total-cart" class="ml-5">0</span></div>
+                        <div class="col-5 m-0 p-0">
+                            <button type="button" class="btn btn-inverse">
+                                <i class="fa fa-">buy</i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </section>
+
 
 <footer>
     footer
@@ -264,6 +267,7 @@
 ></script>
 
 
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+{% endblock %}
 </body>
 </html>

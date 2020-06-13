@@ -24,11 +24,13 @@
 {% block h1 "Hello "~ controller_name %}
 
 {% block LayoutBody %}
-    <div class="row">
-        <div id="navigationLeft" class="col-12 col-lg-3">
+    <div class="row m-0 p-0">
+        <div id="navigationLeft" class="col-12 col-lg-3 m-0 p-5">
+            <div class="container-fluid m-2">
                 {% block navigationLeft %} nav left {% endblock %}
+            </div>
         </div>
-        <div id="content" class="col-12 col-lg-9 bg-white container-fluid pb-5" style="overflow: auto">
+        <div id="content" class="col-12 col-lg-9 bg-white container-fluid p-5" style="overflow: auto">
             {% block body %} Page Articles {% endblock %}
         </div>
     </div>
@@ -36,4 +38,6 @@
 
 
 {#      The view JavaScript    #}
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

@@ -104,7 +104,8 @@ Update file `config/packages/security.yaml`
 more info in :
   - security.yaml Symfony 5.1: [symfony.com/.../user_provider.html](https://symfony.com/doc/current/security/user_provider.html)
   - security.yaml 4.0: [symfony.com/.../security.html](https://symfony.com/doc/4.0/security.html)
-  ```
+  
+```
 # config/packages/security.yaml
 security:
     # Users in memory
@@ -117,7 +118,7 @@ security:
     firewalls:
         main:
             provider: users_in_memory
-    ...
+    ..
 
 
     # Example Roles hierarchy  
@@ -144,6 +145,29 @@ security:
         Symfony\Component\Security\Core\User\User:
             algorithm: bcrypt
             cost: 12
+ ```
+  
+  - Annotations : [symfony.com/.../security.html](https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/security.html)
+  ```
+    # Example Annotation Twig : check if the current user has a certain role ("ROLE_ADMIN")
+    {% if is_granted("ROLE_ADMIN") %}
+        <a href="...">Delete</a> 
+    {% endif %}
+    
+    # Example Annotation in controller:
+    /**
+     * @IsGranted("ROLE_ADMIN", statusCode=401, message="No access! Get out!")
+    */
+    class MyController ... or function index 
+    
+    # Example Annotation in the action method
+    public function adminDashboard()
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    
+        // ...
+    }
+
   ```
 
 
