@@ -118,6 +118,15 @@ security:
     firewalls:
         main:
             provider: users_in_memory
+        
+        # Using the form_login Authentication Provider  
+        form_login:
+            login_path: login
+            check_path: login
+            default_target_path: game_index    
+        logout:
+            path: logout
+            target: game_index
     ..
 
 
@@ -127,15 +136,6 @@ security:
         ROLE_ADMIN: [ROLE_MODERATOR, ROLE_OPERATOR, ROLE_STOREKEEPER]
         ROLE_SUPER_ADMIN: ROLE_ADMIN
 
-    # Using the form_login Authentication Provider  
-    form_login:
-        login_path: login
-        check_path: login
-        default_target_path: game_index
-
-    logout:
-        path: logout
-        target: game_index
     
     #  Use A Different Password Encoder   
     encoders:
