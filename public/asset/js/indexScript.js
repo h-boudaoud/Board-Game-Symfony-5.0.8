@@ -30,6 +30,7 @@ $(document).ready(function () {
     // clear session if user logout
     if (sessionStorage.getItem('user') !== 'anon' && user !== sessionStorage.getItem('user')) {
         sessionStorage.clear();
+        $('#cardButton').addClass('d-none')
     }
 
     if (!sessionStorage.getItem('user') || user !== sessionStorage.getItem('user')) {
@@ -39,6 +40,7 @@ $(document).ready(function () {
 
     if (getCartSession('cart').length) {
         sessionCart = JSON.parse(getCartSession('cart'))
+        $('#cardButton').removeClass('d-none')
     }
 
 
@@ -94,6 +96,9 @@ $(document).ready(function () {
 
 //  Cart management
     $('.js-add-to-cart').click(function () {
+        if($('#cardButton').hasClass('d-none')){
+            $('#cardButton').removeClass('d-none')
+        }
         const id = $(this).attr('data-value');
 
         console.log('$(this).parents(#game-id)', $(this).parents('#game-'+id).html())

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'Update User' %}
+
+{% block body %}
+    {% if user.userName %}
+    <h2>
+        Update User : {{ user.userName }}
+    </h2>
+    {% endif %}
+
+    {{ include('user/_form.html.twig') }}
+
+    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+        <a href="{{ path('user_index') }}"
+           class ="btn btn-inverse my-3"
+        ><i class="fas fa-list" aria-hidden="true"></i> back to list</a>
+    {% endif %}
+
+{% endblock %}
+
+
+
+
+
+
+{#{% extends 'base.html.twig' %}#}
+
+{#{% block title %}Edit User{% endblock %}#}
+
+{#{% block body %}#}
+{#    <h1>Edit User</h1>#}
+
+{#    {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}#}
+
+{#    <a href="{{ path('user_index') }}">back to list</a>#}
+
+{#    {{ include('user/_delete_form.html.twig') }}#}
+{#{% endblock %}#}

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Game;
+use App\Entity\User;
 use App\Form\GameType;
 use App\Repository\GameRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -23,9 +24,22 @@ class GameController extends AbstractController
      */
     public function index(GameRepository $gameRepository): Response
     {
+        $games = null;
+        if (
+            $this->getUser() &&
+            (
+                in_array('ROLE_STOREKEEPER', $this->getUser()->getRoles()) ||
+                in_array('ROLE_ADMIN', $this->getUser()->getRoles())
+            )
+        ) {
+            $games = $gameRepository->findAll();
+        } else {
+            $games = $gameRepository->findBy(['published' => true]);
+        }
+        // dd($games);
         return $this->render('game/index.html.twig', [
-            'games' => $gameRepository->findAll(),
-            'controller_name' => 'Game',
+            'games' => $games,
+            'title' => 'Games List',
         ]);
     }
 
@@ -52,7 +66,7 @@ class GameController extends AbstractController
         return $this->render('game/new.html.twig', [
             'game' => $game,
             'form' => $form->createView(),
-            'controller_name' => 'Game',
+            'title' => 'Game',
         ]);
     }
 
@@ -65,12 +79,13 @@ class GameController extends AbstractController
     {
         return $this->render('game/show.html.twig', [
             'game' => $game,
-            'controller_name' => 'Game',
+            'title' => 'Game infos',
         ]);
     }
 
     /**
      * @IsGranted("ROLE_STOREKEEPER", statusCode=401, message="No access! Get out!")
+     *
      * @Route("/{id}/edit", name="game_edit", methods={"GET","POST"})
      * @param Request $request
      * @param Game $game
@@ -90,11 +105,14 @@ class GameController extends AbstractController
         return $this->render('game/edit.html.twig', [
             'game' => $game,
             'form' => $form->createView(),
-            'controller_name' => 'Game',
+            'title' => 'Game',
         ]);
     }
 
     /**
+     *
+     * Token in form : IsGranted("ROLE_STOREKEEPER", statusCode=401, message="No access! Get out!")
+     *
      * @Route("/{id}", name="game_delete", methods={"DELETE"})
      * @param Request $request
      * @param Game $game
@@ -102,13 +120,41 @@ class GameController extends AbstractController
      */
     public function delete(Request $request, Game $game): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        if ($this->isCsrfTokenValid('delete'.$game->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($game);
-            $entityManager->flush();
+        $userRoles = [];
+        // To check an token in the request matched a user role
+//        foreach ($request->request->get('roles') as $tokenRole) {
+//            foreach (User::ROLES as $role) {
+//                if ($this->isCsrfTokenValid($role, $tokenRole)) {
+//                    $userRoles[] = $role;
+//                    break;
+//                }
+//            }
+//        }
+        foreach ($request->request->get('roles') as $tokenRole) {
+            if ($this->isCsrfTokenValid('ROLE_USER', $tokenRole)) {
+                $userRoles[] = 'ROLE_USER';
+            }if ($this->isCsrfTokenValid('ROLE_STOREKEEPER', $tokenRole)) {
+                $userRoles[] = 'ROLE_STOREKEEPER';
+            }
         }
 
+        if (
+            $this->isCsrfTokenValid('delete' . $game->getId(), $request->request->get('_token')) &&
+//            (in_array('ROLE_USER', $userRoles) || in_array('ROLE_STOREKEEPER', $userRoles))
+            Count($userRoles) > 0
+        ) {
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $game->setPublished(false);
+            if (in_array('ROLE_ADMIN', $userRoles)) {
+                $entityManager->remove($game);
+            } elseif (in_array('ROLE_STOREKEEPER', $userRoles)) {
+                $entityManager->persist($game);
+            }
+
+            $entityManager->flush();
+
+        }
         return $this->redirectToRoute('game_index');
     }
 }

@@ -137,7 +137,7 @@
                                 ><i class="fas fa-edit"></i></a>
                             </small>
                         </div>
-                        {% if is_granted("ROLE_ADMIN") %}
+{#                        {% if is_granted("ROLE_ADMIN") %}#}
                             <div class="col-sm-6 col-12 m-0 px-1">
                                 <small>
                                     {{ include('game/_delete_form.html.twig',
@@ -148,7 +148,7 @@
                                     ) }}
                                 </small>
                             </div>
-                        {% endif %}
+{#                        {% endif %}#}
 
                     </div>
                 </td>
@@ -242,7 +242,6 @@
 
     <script>
         // https://datatables.net/examples/basic_init/language.html
-        let i = 0;
         $(document).change(function () {
             console.log('dom change', $("#gamesTable > tbody  tr").length)
             if(!$('#gamesTable_paginate a').hasClass('btn')) {
@@ -278,27 +277,21 @@
 
             });
 
-            console.log( i , " -- gamesTable_filter  --" , table)
-
-            console.log( i , " -- gamesTable_filter  --" , table.row())
 
             $("#gamesTable_filter input").parent().prepend(
                 '<div id="nbSearchResult" class="d-inline-block mx-5 px-5"><span>'+$("#gamesTable > tbody  tr").length+'</span> games</div>')
 
             $('a.toggle-vis').on('click', function (e) {
                 e.preventDefault();
-                console.log('e :  ', e, ' - $(this) : ', $(this));
 
                 // Get the column API object
                 const min_max = $(this).attr('data-column').split('-');
-                console.log('min_max : ', min_max)
                 if (min_max.length === 1) {
                     let column = table.column($(this).attr('data-column'));
                     // Toggle the visibility
                     column.visible(!column.visible());
                 } else {
                     const imax = Number(min_max[1]) > Number(min_max[0]) ? Number(min_max[1]) + 1 : gamesTable.length;
-                    console.log('min_max for  imax :', imax, Number(min_max[1]) > Number(min_max[0]), Number(min_max[1]) + 1, gamesTable.length)
                     for (let i = min_max[0]; i < imax; i++) {
                         let column = table.column(i);
                         // Toggle the visibility

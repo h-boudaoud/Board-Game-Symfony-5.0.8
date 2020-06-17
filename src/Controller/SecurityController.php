@@ -16,7 +16,7 @@ class SecurityController extends AbstractController
     public function index()
     {
         return $this->render('security/index.html.twig', [
-            'controller_name' => 'SecurityController',
+            'title' => 'Welcome',
         ]);
     }
 
@@ -34,7 +34,7 @@ class SecurityController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         // dump($request->getSession());
         return $this->render('security/login.html.twig', [
-            'controller_name' => 'Security',
+            'title' => 'Login',
             'lastUserName' => $lastUserName,
             'error' => $error,
             'route' => 'login'

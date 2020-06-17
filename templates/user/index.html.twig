@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    <h1>User index</h1>
+
+    <table id="usersTable"
+           class="table table-bordered"
+           cellspacing="0">
+        <thead>
+        <tr>
+            <th class="sortable align-middle">actions</th>
+            <th class="sortable align-middle">Id</th>
+            <th class="sortable align-middle">UserName</th>
+            <th class="sortable align-middle">Email</th>
+            <th class="sortable align-middle">FirstName</th>
+            <th class="sortable align-middle">LastName</th>
+            <th class="sortable align-middle">Birthday</th>
+            <th class="sortable align-middle">Roles</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>
+                    <div class="row">
+                        <div class="col-sm-4 col-12 m-0 px-1">
+                            <small>
+                                <a href="{{ path('user_show', {'id': user.id}) }}"
+                                   title="Show" class="btn btn-info w-lg-50 w-100"
+                                ><i class="fas fa-info"></i></a>
+                            </small>
+                        </div>
+                        <div class="col-sm-4 col-12 m-0 px-1">
+                            <small>
+                                <a href="{{ path('user_edit', {'id': user.id}) }}"
+                                   title="Edit" class="btn btn-primary w-lg-50 w-100"
+                                ><i class="fas fa-edit"></i></a>
+                            </small>
+                        </div>
+                        <div class="col-sm-4 col-12 m-0 px-1">
+                            <small>
+                                {{ include('user/_delete_form.html.twig',
+                                    {
+                                        'user_delete_button_label': ' ',
+                                        'user_delete_button_class':'w-lg-50 w-100'
+                                    }
+                                ) }}
+                            </small>
+                        </div>
+
+                    </div>
+                </td>
+                <td>{{ user.id }}</td>
+                <td>{{ user.userName }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.firstName }}</td>
+                <td>{{ user.lastName }}</td>
+                <td>{{ user.birthday ? user.birthday|date('Y-m-d') : '' }}</td>
+                <td>
+                    {#  {{ user.roles ? user.roles|json_encode : '' }}#}
+                    <ul>
+                        {% for item in user.roles %}
+                            <li> {{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('user_new') }}" class="btn btn-inverse"  title="Add new user"><i class="fa fa-plus"></i> Create new</a>
+{% endblock %}

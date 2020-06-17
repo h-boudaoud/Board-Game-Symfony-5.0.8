@@ -85,10 +85,12 @@
     <div class="row">
         {% for game in games %}
             <div class="col-lg-4 col-sm-6 col-12 my-sm-2 border-1 mx-0 my-2 jum">
-                <div id="game-{{ game.id }}" class="card" style="width: 100%;">
+                <div id="game-{{ game.id }}" class="card jumbotron m-0 p-0" style="width: 100%;">
 
                     <div class="card-header inverse">
-                        <h5 class="card-title js-name text-center">{{ game.name |capitalize }}</h5>
+                        <h5 class="card-title js-name text-center">
+                            <small>{{ game.name |capitalize }}</small>
+                        </h5>
                         {% set newPrice = game.price*(1+game.discount) %}
                         <h6 class="card-title js-price align-middel text-right reg p-3 "
                             data-value="{{ newPrice |round(2, 'common') }}">
@@ -119,7 +121,10 @@
                     <div class="card-body">
                         <ul class="game-info list-group list-group-flush">
                             <li class="list-group-item">Age : {{ game.minAge ? "+"~game.minAge:"--" }}</li>
-                            <li class="list-group-item">Players : {{ game.minPlayers }} to {{ game.maxPlayers }}</li>
+                            <li class="list-group-item">Players :
+
+                                <small>{{ game.minPlayers }} to {{ game.maxPlayers }}</small>
+                            </li>
                             <li class="list-group-item"> Playtime
                                 <small>
                                     Between
@@ -128,7 +133,7 @@
                                     {{ game.maxPlaytime ? game.maxPlaytime|date('H:i:s') : '--:--:--' }}
                                 </small>
                             </li>
-                            <li class="list-group-item">Year published : {{ game.yearPublished }}</li>
+                            <li class="list-group-item"Published : {{ game.yearPublished }}</li>
                         </ul>
                     </div>
                     <div class="card-foot text-right inverse">
@@ -144,8 +149,11 @@
                         </small>
                         <small>
                             <a href="#" data-value="{{ game.id }}"
-                               title="Cart" class="btn btn-warning js-add-to-cart"
+                               title="Add to cart" class="btn btn-warning js-add-to-cart"
                             ><i class="fa fa-cart-plus" aria-hidden="true"></i>
+                                <small>
+                                    <span class="d-none d-sm-inline">Add to cart</span>
+                                </small>
                             </a>
                         </small>
                     </div>

@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Game
 {
-    public const SIZE_UNITS =['inches','mm','cm','dm','m'];
+    public const SIZE_UNITS = ['inches', 'mm', 'cm', 'dm', 'm'];
     public const WEIGHT_UNITS = ['g', 'lbs', 'Kg'];
 
     /**
@@ -38,13 +38,13 @@ class Game
     /**
      * @ORM\Column(type="integer", options={"default" : 1})
      * @Assert\PositiveOrZero
+     * @Assert\LessThan(propertyPath ="maxPlayers")
      */
     private $minPlayers;
 
     /**
-     * @ORM\Column(type="integer", options={"default" : 1})
+     * @ORM\Column(type="integer", nullable=true)
      * @Assert\PositiveOrZero
-     * @Assert\GreaterThanOrEqual(propertyPath ="minPlayers")
      */
     private $maxPlayers;
 
@@ -105,7 +105,7 @@ class Game
     /**
      * @ORM\Column(type="json", nullable=true)
      */
-    private $publishers ;
+    private $publishers;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -186,10 +186,10 @@ class Game
      */
     function __construct()
     {
-        $this->minAge = $this->minAge|0;
-        $this->minPlayers = $this->minPlayers|1;
-        $this->maxPlayers = $this->maxPlayers|0;
-        $this->yearPublished = $this->yearPublished|1900;
+        $this->minAge = $this->minAge | 0;
+        $this->minPlayers = $this->minPlayers | 1;
+        $this->maxPlayers = $this->maxPlayers | 0;
+        $this->yearPublished = $this->yearPublished | 1900;
     }
 
 
@@ -239,7 +239,7 @@ class Game
         return $this->maxPlayers;
     }
 
-    public function setMaxPlayers(int $maxPlayers): self
+    public function setMaxPlayers(?int $maxPlayers): self
     {
         $this->maxPlayers = $maxPlayers;
 
@@ -325,7 +325,7 @@ class Game
 
     public function setDiscount(?string $discount): self
     {
-        $this->discount = $discount;
+        $this->discount = $discount < 0 ? $discount : null;
 
         return $this;
     }
@@ -337,7 +337,17 @@ class Game
 
     public function setArtists(?array $artists): self
     {
-        $this->artists = $artists;
+        $this->artists = explode(',', $artists);
+
+        return $this;
+    }
+
+
+    public function addArtists(string $artist): self
+    {
+        if ($artist && in_array($artist, $this->artists)) {
+            $this->artists[] = $artist;
+        }
 
         return $this;
     }

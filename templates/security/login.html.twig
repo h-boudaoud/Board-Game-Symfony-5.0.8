@@ -1,16 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{#      the view title      #}
-{% block title controller_name %}
-
-{#      The view style sheet    #}
-{% block stylesheets %}
-{% endblock %}
-
-
-{#      the title h1 of the view   #}
-{% block h1 "Login - "~ controller_name %}
-
 {% block body %}
 
     <div id="content" class="bg-white container">
@@ -39,15 +28,12 @@
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Login</button>
                 <br /><a href="#">Forgot Password?</a>
-                <br /><a href="#">Sign up</a>
+                <br /><a href="{{ path('user_new') }}">Sign up</a>
             </div>
 
         </form>
     </div>
 {% endblock %}
 
-
-{#      The view JavaScript    #}
-{% block javascripts %}{% endblock %}
 
 

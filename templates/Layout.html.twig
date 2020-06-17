@@ -90,7 +90,7 @@
             >
                 <i class="fas fa-bars"></i>
                 {% if app.user %}
-                    <i class="fas fa-user-cog"></i><span id="user">{{  app.user.password }}</span>
+                    <i class="fas fa-user-cog"></i><span id="user">{{ app.user.userName }}</span>
                 {% else %}
                     <i class="fas fa-user-alt-slash"></i>
                 {% endif %}
@@ -102,7 +102,7 @@
                     <div class="collapse navbar-collapse" id="navbarContent">
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item  mx-1 border active">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="{{ path('home') }}">
                                     <i class="fas fa-home"></i>
                                     My store <span class="sr-only">(current)</span>
                                 </a>
@@ -110,9 +110,17 @@
                             <li class="nav-item mx-1 border">
                                 <a class="nav-link" href="{{ path('game_index') }}">
                                     <i class="far fa-list-alt"></i>
-                                    All
+                                    All games
                                 </a>
                             </li>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li class="nav-item mx-1 border">
+                                    <a class="nav-link" href="{{ path('user_index') }}">
+                                        <i class="far fa-list-alt"></i>
+                                        All Users
+                                    </a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </div>
 
@@ -134,7 +142,7 @@
                     <div class="collapse navbar-collapse" id="navbarConnextion">
                         <ul class="navbar-nav mr-auto">
 
-                            <li class="nav-item  mx-1 border ">
+                            <li id ="cardButton" class="nav-item  mx-1 border d-none">
                                 <a class="nav-link" href="#" data-toggle="modal" data-target="#cardModalLong">
                                         <span class="badge badge-warning">
                                             <i class="fa fa-shopping-cart" aria-hidden="true">
@@ -147,14 +155,14 @@
                             </li>
 
                             {% if app.user %}
-                                {#                                <li class="nav-item  mx-1 border active">#}
-                                {#                                    <a class="nav-link"#}
-                                {#                                       href="{{ path('profile_user' ,{'userName' : app.user.username}) }}">#}
-                                {#                                        <i class="fas fa-user"></i>#}
-                                {#                                        {{ app.user.username }}#}
-                                {#                                        <span class="sr-only">(current)</span>#}
-                                {#                                    </a>#}
-                                {#                                </li>#}
+                                <li class="nav-item  mx-1 border active">
+                                    <a class="nav-link"
+                                       href="{{ path('user_profile') }}">
+                                        <i class="fas fa-user"></i>
+                                        {{ app.user.username }}
+                                        <span class="sr-only">(current)</span>
+                                    </a>
+                                </li>
                                 <li class="nav-item  mx-1 border ">
                                     <a class="nav-link" href="{{ path('logout') }}">
                                         <i class="fas fa-user-lock"></i>
@@ -168,12 +176,12 @@
                                         Login
                                     </a>
                                 </li>
-                                {#                                <li class="nav-item  mx-1 border ">#}
-                                {#                                    <a class="nav-link" href="{{ path('signup') }}">#}
-                                {#                                        <i class="fa fa-user-plus" aria-hidden="true"></i>#}
-                                {#                                        Signup#}
-                                {#                                    </a>#}
-                                {#                                </li>#}
+                                <li class="nav-item  mx-1 border ">
+                                    <a class="nav-link" href="{{ path('user_new') }}">
+                                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                                        Signup
+                                    </a>
+                                </li>
                             {% endif %}
                         </ul>
 
@@ -239,7 +247,6 @@
     </div>
 
 </section>
-
 
 <footer>
     footer

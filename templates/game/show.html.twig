@@ -1,23 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Game{% endblock %}
 
 {% block body %}
-    <h1>Game</h1>
 
-    <table class="table">
+    <h2>
+        Details
+    </h2>
+
+    <table id="gameTable" class="table">
         <tbody>
+            {% if is_granted("ROLE_STOREKEEPER")%}
             <tr>
                 <th>Id</th>
                 <td>{{ game.id }}</td>
             </tr>
+            <tr>
+                <th>Published</th>
+                <td>{{ game.published ? 'Yes' : 'No' }}</td>
+            </tr>
+            {% endif %}
             <tr>
                 <th>Name</th>
                 <td>{{ game.name }}</td>
             </tr>
             <tr>
                 <th>YearPublished</th>
-                <td>{{ game.yearPublished ? game.yearPublished|date('Y-m-d') : '' }}</td>
+                <td>{{ game.yearPublished }}</td>
             </tr>
             <tr>
                 <th>MinPlayers</th>
@@ -47,10 +55,13 @@
                 <th>Price</th>
                 <td>{{ game.price }}</td>
             </tr>
+
+            {% if is_granted("ROLE_STOREKEEPER") %}
             <tr>
                 <th>Msrp</th>
                 <td>{{ game.msrp }}</td>
             </tr>
+            {% endif %}
             <tr>
                 <th>Discount</th>
                 <td>{{ game.discount }}</td>
@@ -79,16 +90,25 @@
                 <th>GameId</th>
                 <td>{{ game.gameId }}</td>
             </tr>
-            <tr>
-                <th>Published</th>
-                <td>{{ game.published ? 'Yes' : 'No' }}</td>
+
+                <th>WeightAmount {{ game.weightUnits }}</th>
+                <td>{{ game.weightAmount }}</td>
             </tr>
             <tr>
-                <th>WeightAmount</th>
-                <td>{{ game.weightAmount }} {{ game.weightUnits }}</td>
-            </tr>
-            <tr>
-                <th>Size</th>
+                <th>
+                    <span class="d-inline-block">
+                    Sizes h
+                    <span style="font-size: .7rem;">
+                        <i class="fas fa-times"></i>
+                    </span>
+                    w
+                    <span style="font-size: .7rem;">
+                        <i class="fas fa-times"></i>
+                    </span>
+                    d
+                    ({{ game.sizeUnits }})
+                </span>
+                </th>
                 <td>
                     {% if game.sizeUnits %}
                         <span class="d-inline-block">
@@ -101,11 +121,11 @@
                         <i class="fas fa-times"></i>
                     </span>
                     {{ game.sizeDepth }}
-                    ({{ game.sizeUnits }})
                     </span>
                     {% endif %}
                 </td>
             </tr>
+
             <tr>
                 <th>PrimaryPublisher</th>
                 <td>{{ game.primaryPublisher }}</td>
@@ -117,10 +137,22 @@
 
     {% if is_granted("ROLE_STOREKEEPER")%}
     <a href="{{ path('game_edit', {'id': game.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</a>
-    {% endif %}
 
-    {% if is_granted("ROLE_ADMIN")%}
     {{ include('game/_delete_form.html.twig') }}
     {% endif %}
 
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    // https://datatables.net/examples/basic_init/language.html
+    let i = 0;
+    $(document).ready(function () {
+        $('#gameTable').find('tr').each(function () {
+            if( $(this).find('td').html().trim()=='') {
+                $(this).remove();
+            }
+        })
+    });
+</script>
 {% endblock %}
