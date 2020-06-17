@@ -2,35 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02a019ab-4b9e-4960-a60f-e4ec107f3cbd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/User/RegisterUserType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/User/RoleUserType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/User/UserInfoType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Repository/UserRepository.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/user/_delete_form.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/user/_form.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/user/edit.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/user/index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/user/new.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/user/show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/board-game.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/board-game.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/asset/js/indexScript.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/asset/js/indexScript.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/asset/css/indexStylesheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/asset/css/indexStylesheet.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/GameController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/GameController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SecurityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecurityController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Game.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Game.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Layout.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Layout.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.nav.left.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.nav.left.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/game/_admins_index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/_admins_index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/_delete_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/_delete_form.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/game/_users_index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/_users_index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/edit.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/edit.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/new.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/game/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/security/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/security/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/security/login.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/security/login.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/show.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,6 +114,8 @@
       <path value="$PROJECT_DIR$/vendor/symfony/security-guard" />
       <path value="$PROJECT_DIR$/vendor/symfony/security-http" />
       <path value="$PROJECT_DIR$/vendor/symfony/security-bundle" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-fixtures-bundle" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/data-fixtures" />
     </include_path>
   </component>
   <component name="ProjectId" id="1cU9ivgw3c9SL5aLC2ZgXbLP7XS" />
@@ -195,13 +183,33 @@
       <workItem from="1591287136122" duration="17185000" />
       <workItem from="1591895604645" duration="45831000" />
       <workItem from="1592313427226" duration="24827000" />
+      <workItem from="1592395080214" duration="11466000" />
+      <workItem from="1592407337355" duration="11045000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="2" />
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
   <component name="WindowStateProjectService">
+    <state x="410" y="118" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1592398434262">
+      <screen x="0" y="0" width="1360" height="728" />
+    </state>
+    <state x="410" y="118" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1360.728@0.0.1360.728" timestamp="1592398434262" />
+    <state x="561" y="84" key="RollbackChangesDialog" timestamp="1592406880616">
+      <screen x="0" y="0" width="1360" height="728" />
+    </state>
+    <state x="561" y="84" key="RollbackChangesDialog/0.0.1360.728@0.0.1360.728" timestamp="1592406880616" />
     <state x="181" y="8" key="SettingsEditor" timestamp="1591314628694">
       <screen x="0" y="0" width="1360" height="728" />
     </state>

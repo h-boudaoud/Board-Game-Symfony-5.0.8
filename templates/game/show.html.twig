@@ -2,97 +2,158 @@
 
 
 {% block body %}
+    <div id="game-{{ game.id }}">
+        <h2>
+            <span class="js-name">{{ game.name }}</span>
+            {% if is_granted("ROLE_STOREKEEPER") %} : Details {% endif %}
+        </h2>
 
-    <h2>
-        Details
-    </h2>
+        <table id="gameTable" class="table jumbotron">
+            <tbody>
+            {% if is_granted("ROLE_STOREKEEPER") %}
+                <tr>
+                    <th>Id</th>
+                    <td>{{ game.id }}</td>
+                </tr>
 
-    <table id="gameTable" class="table">
-        <tbody>
-            {% if is_granted("ROLE_STOREKEEPER")%}
-            <tr>
-                <th>Id</th>
-                <td>{{ game.id }}</td>
-            </tr>
-            <tr>
-                <th>Published</th>
-                <td>{{ game.published ? 'Yes' : 'No' }}</td>
-            </tr>
+                <tr>
+                    <th>GameId</th>
+                    <td>{{ game.gameId }}</td>
+                </tr>
+                <tr>
+                    <th>Published</th>
+                    <td>{{ game.published ? 'Yes' : 'No' }}</td>
+                </tr>
+                <tr>
+                    <th>Msrp</th>
+                    <td>{{ game.msrp }}</td>
+                </tr>
             {% endif %}
             <tr>
-                <th>Name</th>
-                <td>{{ game.name }}</td>
+                <td colspan="3" class="text-center w-100 m-0 p-3 bg-white">
+                    <img src="{{ game.imageUrl ?game.imageUrl :asset('asset/img/no-image-available.svg') }}"
+
+                         alt="{{ game.name |capitalize }}"
+                         style="max-height: 30rem"
+                    >
+                </td>
+
+                <td>
+                    <table class="jumbotron">
+                        <tbody>
+
+                        <tr>
+                            <th>Price</th>
+                            {% set newPrice = game.price*(1+game.discount) %}
+                            <td class="js-price" data-value="{{ newPrice |round(2, 'common') }}">
+                                {% if game.discount %}
+                                    <span class="border border-warning">${{ newPrice |round(2, 'common') }}</span>
+
+                                    <small>
+                                        <span class="btn-outline-warning">
+                                            <span style="text-decoration: line-through;">${{ game.price }}</span>
+                                        </span>
+                                        <span class="badge badge-warning">{{ game.discount*100 }}%</span>
+                                    </small>
+
+                                {% else %}
+                                    ${{ game.price }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Year published</th>
+                            <td>{{ game.yearPublished }}</td>
+                        </tr>
+                        <tr>
+                            <th>Players</th>
+                            <td>For {{ game.minPlayers }} - {{ game.maxPlayers }}</td>
+                        </tr>
+                        <tr>
+                            <th>Time</th>
+                            <td>Between {{ game.minPlaytime ? game.minPlaytime|date('H:i:s') : '' }}
+                                and
+                                {{ game.maxPlaytime ? game.maxPlaytime|date('H:i:s') : '' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Age</th>
+                            <td>+{{ game.minAge }}</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <td>
+                                <a href="#" data-value="{{ game.id }}"
+                                   title="Add to cart" class="btn btn-warning js-add-to-cart"
+                                ><i class="fa fa-cart-plus" aria-hidden="true"></i>
+                                    <small>
+                                        <span class="d-none d-sm-inline">Add to cart</span>
+                                    </small>
+                                </a>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </td>
             </tr>
-            <tr>
-                <th>YearPublished</th>
-                <td>{{ game.yearPublished }}</td>
-            </tr>
-            <tr>
-                <th>MinPlayers</th>
-                <td>{{ game.minPlayers }}</td>
-            </tr>
-            <tr>
-                <th>MaxPlayers</th>
-                <td>{{ game.maxPlayers }}</td>
-            </tr>
-            <tr>
-                <th>MinPlaytime</th>
-                <td>{{ game.minPlaytime ? game.minPlaytime|date('H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>MaxPlaytime</th>
-                <td>{{ game.maxPlaytime ? game.maxPlaytime|date('H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>MinAge</th>
-                <td>{{ game.minAge }}</td>
-            </tr>
+
             <tr>
                 <th>Description</th>
-                <td>{{ game.description }}</td>
-            </tr>
-            <tr>
-                <th>Price</th>
-                <td>{{ game.price }}</td>
+                <td colspan="3">{{ game.description |raw  }}</td>
             </tr>
 
-            {% if is_granted("ROLE_STOREKEEPER") %}
-            <tr>
-                <th>Msrp</th>
-                <td>{{ game.msrp }}</td>
-            </tr>
-            {% endif %}
-            <tr>
-                <th>Discount</th>
-                <td>{{ game.discount }}</td>
-            </tr>
             <tr>
                 <th>Artists</th>
-                <td>{{ game.artists ? game.artists|json_encode : '' }}</td>
+                <td colspan="3">
+                    {% if game.artists %}
+                        <ul>
+                            {% for item in game.publishers %}
+                                <li> {{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Names</th>
-                <td>{{ game.names ? game.names|json_encode : '' }}</td>
+                <td colspan="3">
+                    {% if game.names %}
+                        <ul>
+                            {% for item in game.publishers %}
+                                <li> {{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Publishers</th>
-                <td>{{ game.publishers ? game.publishers|json_encode : '' }}</td>
+                <td colspan="3">
+                    {% if game.publishers %}
+                        <ul>
+                            {% for item in game.publishers %}
+                                <li> {{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>RulesUrl</th>
-                <td>{{ game.rulesUrl }}</td>
+                <td colspan="3">
+                    <a href="{{ game.rulesUrl }}" target="_blank">{{ game.rulesUrl }}</a>
+                </td>
             </tr>
             <tr>
                 <th>OfficialUrl</th>
-                <td>{{ game.officialUrl }}</td>
-            </tr>
-            <tr>
-                <th>GameId</th>
-                <td>{{ game.gameId }}</td>
+                <td colspan="3">
+                    <a href="{{ game.officialUrl }}" target="_blank">{{ game.officialUrl }}</a>
+                </td>
             </tr>
 
-                <th>WeightAmount {{ game.weightUnits }}</th>
-                <td>{{ game.weightAmount }}</td>
+            <th>WeightAmount {{ game.weightUnits }}</th>
+            <td colspan="3">{{ game.weightAmount }}</td>
             </tr>
             <tr>
                 <th>
@@ -109,7 +170,7 @@
                     ({{ game.sizeUnits }})
                 </span>
                 </th>
-                <td>
+                <td colspan="3">
                     {% if game.sizeUnits %}
                         <span class="d-inline-block">
                         {{ (game.sizeHeight) }}
@@ -130,29 +191,29 @@
                 <th>PrimaryPublisher</th>
                 <td>{{ game.primaryPublisher }}</td>
             </tr>
-        </tbody>
-    </table>
-
+            </tbody>
+        </table>
+    </div>
     <a href="{{ path('game_index') }}" class="btn btn-inverse"><i class="fas fa-list"></i> back to list</a>
 
-    {% if is_granted("ROLE_STOREKEEPER")%}
-    <a href="{{ path('game_edit', {'id': game.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</a>
+    {% if is_granted("ROLE_STOREKEEPER") %}
+        <a href="{{ path('game_edit', {'id': game.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</a>
 
-    {{ include('game/_delete_form.html.twig') }}
+        {{ include('game/_delete_form.html.twig') }}
     {% endif %}
 
 {% endblock %}
 
 {% block javascripts %}
-<script>
-    // https://datatables.net/examples/basic_init/language.html
-    let i = 0;
-    $(document).ready(function () {
-        $('#gameTable').find('tr').each(function () {
-            if( $(this).find('td').html().trim()=='') {
-                $(this).remove();
-            }
-        })
-    });
-</script>
+    <script>
+        // https://datatables.net/examples/basic_init/language.html
+        let i = 0;
+        $(document).ready(function () {
+            $('#gameTable').find('tr').each(function () {
+                if ($.trim($(this).find('td').html()) == '') {
+                    $(this).remove();
+                }
+            })
+        });
+    </script>
 {% endblock %}

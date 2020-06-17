@@ -18,12 +18,12 @@ class User implements UserInterface
 {
 
     public const ROLES = [
-        'ROLE_USER',
-        'ROLE_ADMIN',
         'ROLE_SUPER_ADMIN',
+        'ROLE_ADMIN',
         'ROLE_MODERATOR',
         'ROLE_OPERATOR', //operator ou packaging_operator
         'ROLE_STOREKEEPER', // storekeeper   ou inventory_manager
+        'ROLE_USER',
     ];
 
     /**
@@ -60,20 +60,21 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", length=255)
      *
-     * Assert\Length(min=8, minMessage="The password is short, it must contain at least 8 characters",
-     *     max="50", maxMessage="The password is long, it must contain a maximum of 50 characters"
-     * )
-     * Assert\Regex(
-     *     pattern="/^(((?=[.\S]*\d)(?=[.\S]*[a-z])(?=[.\S]*[A-Z])(?=[.\S]*[<>&@$#%_~¤£!§\*\(\[\)\]\/\.\|\*\-\=])).{8,})$/m",
-     *     htmlPattern="/^(((?=[.\S]*\d)(?=[.\S]*[a-z])(?=[.\S]*[A-Z])(?=[.\S]*[<>&@$#%_~¤£!§\*\(\[\)\]\/\.\|\*\-\=])).{8,})$",
-     *     match=true,
-     *     message="The password is not valid, it must contain at least one lower case letter, a capital letter, a digital and a character: <, >,  &,  @, $, #, %, _, ~, ¤, £, !, §, *, (, [, ), ], /, ., |, *, -, ="
-     * )
      */
     private $password;
 
     /**
      * @Assert\EqualTo(propertyPath="password", message="Password confirmation is invalid")
+     *
+     * @Assert\Length(min=8, minMessage="The password is short, it must contain at least 8 characters",
+     *     max="50", maxMessage="The password is long, it must contain a maximum of 50 characters"
+     * )
+     * @Assert\Regex(
+     *     pattern="/^(((?=[.\S]*\d)(?=[.\S]*[a-z])(?=[.\S]*[A-Z])(?=[.\S]*[<>&@$#%_~¤£!§\*\(\[\)\]\/\.\|\*\-\=])).{8,})$/m",
+     *     htmlPattern="/^(((?=[.\S]*\d)(?=[.\S]*[a-z])(?=[.\S]*[A-Z])(?=[.\S]*[<>&@$#%_~¤£!§\*\(\[\)\]\/\.\|\*\-\=])).{8,})$",
+     *     match=true,
+     *     message="The password is not valid, it must contain at least one lower case letter, a capital letter, a digital and a character: <, >,  &,  @, $, #, %, _, ~, ¤, £, !, §, *, (, [, ), ], /, ., |, *, -, ="
+     * )
      */
     private $confirmPassword;
 
@@ -126,7 +127,7 @@ class User implements UserInterface
 
     public function setUserName(string $userName): self
     {
-        $this->userName = $userName;
+        $this->userName = strtolower($userName);
 
         return $this;
     }
@@ -138,7 +139,7 @@ class User implements UserInterface
 
     public function setEmail(string $email): self
     {
-        $this->email = $email;
+        $this->email = strtolower($email);
 
         return $this;
     }
@@ -153,16 +154,18 @@ class User implements UserInterface
         return $this->confirmPassword;
     }
 
-    public function setConfirmPassword(string $password): self
+    public function setConfirmPassword(?string $password): self
     {
         $this->confirmPassword = $password;
 
         return $this;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
-        $this->password = $password;
+        if($password) {
+            $this->password = $password;
+        }
 
         return $this;
     }
@@ -195,7 +198,7 @@ class User implements UserInterface
 
     public function setFirstName(string $firstName): self
     {
-        $this->firstName = $firstName;
+        $this->firstName = ucwords(strtolower($firstName));
 
         return $this;
     }
@@ -207,7 +210,7 @@ class User implements UserInterface
 
     public function setLastName(string $lastName): self
     {
-        $this->lastName = $lastName;
+        $this->lastName = strtoupper($lastName);
 
         return $this;
     }

@@ -49,12 +49,15 @@ class Game
     private $maxPlayers;
 
     /**
-     * @ORM\Column(type="time", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
+     * @Assert\PositiveOrZero
+     * @Assert\LessThan(propertyPath ="maxPlaytime")
      */
     private $minPlaytime;
 
     /**
-     * @ORM\Column(type="time", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
+     * @Assert\PositiveOrZero
      */
     private $maxPlaytime;
 
@@ -182,6 +185,11 @@ class Game
     private $primaryPublisher;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $imageUrl;
+
+    /**
      *
      */
     function __construct()
@@ -246,24 +254,24 @@ class Game
         return $this;
     }
 
-    public function getMinPlaytime(): ?\DateTimeInterface
+    public function getMinPlaytime(): ?int
     {
         return $this->minPlaytime;
     }
 
-    public function setMinPlaytime(?\DateTimeInterface $minPlaytime): self
+    public function setMinPlaytime(?int $minPlaytime): self
     {
         $this->minPlaytime = $minPlaytime;
 
         return $this;
     }
 
-    public function getMaxPlaytime(): ?\DateTimeInterface
+    public function getMaxPlaytime(): ?int
     {
         return $this->maxPlaytime;
     }
 
-    public function setMaxPlaytime(?\DateTimeInterface $maxPlaytime): self
+    public function setMaxPlaytime(?int $maxPlaytime): self
     {
         $this->maxPlaytime = $maxPlaytime;
 
@@ -364,12 +372,12 @@ class Game
         return $this;
     }
 
-    public function getPublishers(): ?string
+    public function getPublishers(): ?array
     {
         return $this->publishers;
     }
 
-    public function setPublishers(string $publishers): self
+    public function setPublishers(?array $publishers): self
     {
         $this->publishers = $publishers;
 
@@ -504,6 +512,18 @@ class Game
     public function setPrimaryPublisher(?string $primaryPublisher): self
     {
         $this->primaryPublisher = $primaryPublisher;
+
+        return $this;
+    }
+
+    public function getImageUrl(): ?string
+    {
+        return $this->imageUrl;
+    }
+
+    public function setImageUrl(?string $imageUrl): self
+    {
+        $this->imageUrl = $imageUrl;
 
         return $this;
     }

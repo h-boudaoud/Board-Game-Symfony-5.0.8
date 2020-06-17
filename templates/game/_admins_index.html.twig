@@ -185,7 +185,9 @@
                 </td>
                 <td>{{ game.minAge ? "+"~game.minAge:"--" }}</td>
                 <td>{{ game.published ? 'Yes' : 'No' }}</td>
-                <td>{{ game.description }}</td>
+                <td style="overflow: hidden;text-overflow: ellipsis; max-width: 15rem; width: 15rem !important; height: 2rem;white-space: nowrap;">
+                    {{ game.description |raw }}
+                </td>
                 <td>{{ game.rulesUrl }}</td>
                 <td>{{ game.officialUrl }}</td>
                 <td>{{ game.weightAmount }} {{ game.weightUnits }}</td>

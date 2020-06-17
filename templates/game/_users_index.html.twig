@@ -57,14 +57,15 @@
             {% for game in games %}
                 <div class="carousel-item {% if loop.index ==1 %}active{% endif %}">
                     <a href="{{ path('game_show', {'id':game.id}) }}">
-                        <img class="d-block mw-100  m-auto" src="{{ asset('asset/img/no-image-available.svg') }}"
-                             style="max-width: 75%"
+                        <img class="d-block mw-75  m-auto"
+                             src="{{ game.imageUrl ?game.imageUrl :asset('asset/img/no-image-available.svg') }}"
+                             style="max-width: 75%; height:20rem;"
                              alt="{{ game.name |capitalize }}">
                     </a>
                     <div class="carousel-caption d-none d-md-block">
                         <h5>{{ game.name |capitalize }} </h5>
                         <div style="overflow: hidden;text-overflow: ellipsis; height: 2rem;white-space: nowrap; ">
-                            {{ game.description |capitalize }}
+                            {{ game.description |raw }}
                         </div>
                     </div>
                 </div>
@@ -112,11 +113,10 @@
                         </h6>
                     </div>
                     <div class="text-center">
-                    <img src="{{ asset('asset/img/no-image-available.svg') }}"
-                         class="card-img-top mw-50 "
-                         alt="{{ game.name |capitalize }}"
-                         style="height: 10rem"
-                    >
+                        <img src="{{ game.imageUrl ?game.imageUrl :asset('asset/img/no-image-available.svg') }}"
+                             alt="{{ game.name |capitalize }}"
+                             style="height: 10rem"
+                        >
                     </div>
                     <div class="card-body">
                         <ul class="game-info list-group list-group-flush">
@@ -133,7 +133,13 @@
                                     {{ game.maxPlaytime ? game.maxPlaytime|date('H:i:s') : '--:--:--' }}
                                 </small>
                             </li>
-                            <li class="list-group-item"Published : {{ game.yearPublished }}</li>
+                            <li class="list-group-item">
+                                <small>
+                                    <small>
+                                        Published in {{ game.yearPublished }}
+                                    </small>
+                                </small>
+                            </li>
                         </ul>
                     </div>
                     <div class="card-foot text-right inverse">
@@ -148,7 +154,7 @@
                             </a>
                         </small>
                         <small>
-                            <a href="#" data-value="{{ game.id }}"
+                            <a href="#game-{{ game.id }}" data-value="{{ game.id }}"
                                title="Add to cart" class="btn btn-warning js-add-to-cart"
                             ><i class="fa fa-cart-plus" aria-hidden="true"></i>
                                 <small>
