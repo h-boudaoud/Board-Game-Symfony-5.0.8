@@ -19,12 +19,30 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
+        // dd(getcwd ());
         // Api
-        $jsonGames = json_decode(
-            file_get_contents('https://www.boardgameatlas.com/api/search?order_by=popularity&ascending=false&pretty=true&client_id=SB1VGnDv7M')
-        );
+        $file = getcwd ().'\public\asset\js\games.json';
+        $jsonData=null;
+        $jsonGames=[];
+        try{
+            $jsonData = file_get_contents('https://www.boardgameatla.com/api/search?order_by=popularity&ascending=false&pretty=true&client_id=SB1VGnDv7M');
+            $jsonGames = json_decode($jsonData)->games;
+            dump('Success access: www.boardgameatlas.com/api');
+        }catch (\Exception $exception) {
+            dump($exception->getMessage());
+        }
+        if(Count($jsonGames)){
 
-        foreach ($jsonGames->games as $game) {
+            unlink($file);
+            $fileData = fopen($file, 'a+');
+            fputs($fileData, $jsonData);
+            fclose($fileData);
+        }else {
+            dump('Error access: www.boardgameatlas.com/api');
+            $jsonGames = json_decode(file_get_contents($file))->games;
+        }
+
+        foreach ($jsonGames as $game) {
             $newGame = new Game();
 
             foreach ($game as $key => $value) {
