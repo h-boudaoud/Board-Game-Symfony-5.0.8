@@ -27,7 +27,7 @@
             background: rgba(27, 38, 49, .2) !important;
         }
 
-        .paginate_button{
+        .paginate_button {
 
             display: inline-block;
             font-weight: 400;
@@ -112,7 +112,7 @@
 
         <tbody>
         {% for game in games %}
-            <tr id ="game-{{ game.id }}"  class="game-info">
+            <tr id="game-{{ game.id }}" class="game-info">
                 <td>
                     <div class="row">
                         <div class="col-sm-6 col-12 m-0 px-1">
@@ -137,18 +137,18 @@
                                 ><i class="fas fa-edit"></i></a>
                             </small>
                         </div>
-{#                        {% if is_granted("ROLE_ADMIN") %}#}
-                            <div class="col-sm-6 col-12 m-0 px-1">
-                                <small>
-                                    {{ include('game/_delete_form.html.twig',
-                                        {
-                                            'game_delete_button_label': ' ',
-                                            'game_delete_button_class':'w-lg-50 w-100'
-                                        }
-                                    ) }}
-                                </small>
-                            </div>
-{#                        {% endif %}#}
+                        {#                        {% if is_granted("ROLE_ADMIN") %}#}
+                        <div class="col-sm-6 col-12 m-0 px-1">
+                            <small>
+                                {{ include('game/_delete_form.html.twig',
+                                    {
+                                        'game_delete_button_label': ' ',
+                                        'game_delete_button_class':'w-lg-50 w-100'
+                                    }
+                                ) }}
+                            </small>
+                        </div>
+                        {#                        {% endif %}#}
 
                     </div>
                 </td>
@@ -185,8 +185,13 @@
                 </td>
                 <td>{{ game.minAge ? "+"~game.minAge:"--" }}</td>
                 <td>{{ game.published ? 'Yes' : 'No' }}</td>
-                <td style="overflow: hidden;text-overflow: ellipsis; max-width: 15rem; width: 15rem !important; height: 2rem;white-space: nowrap;">
-                    {{ game.description |raw }}
+                <td>
+                    <div style="overflow: hidden;text-overflow: ellipsis;
+                        max-width: 15rem; width: 15rem !important;
+                        height: 2rem;white-space: nowrap;"
+                    >
+                        {{ game.description |raw }}
+                    </div>
                 </td>
                 <td>{{ game.rulesUrl }}</td>
                 <td>{{ game.officialUrl }}</td>
@@ -246,10 +251,10 @@
         // https://datatables.net/examples/basic_init/language.html
         $(document).change(function () {
             console.log('dom change', $("#gamesTable > tbody  tr").length)
-            if(!$('#gamesTable_paginate a').hasClass('btn')) {
+            if (!$('#gamesTable_paginate a').hasClass('btn')) {
                 $('#gamesTable_paginate a').addClass('btn btn-inverse m-1')
             }
-            $('#nbSearchResult >span').html($("#gamesTable > tbody  tr").length)
+            // $('#nbSearchResult >span').html($("#gamesTable > tbody  tr").length)
 
         })
         $(document).ready(function () {
@@ -279,10 +284,10 @@
 
             });
 
-
+/*
             $("#gamesTable_filter input").parent().prepend(
-                '<div id="nbSearchResult" class="d-inline-block mx-5 px-5"><span>'+$("#gamesTable > tbody  tr").length+'</span> games</div>')
-
+                '<div id="nbSearchResult" class="d-inline-block mx-5 px-5"><span>' + $("#gamesTable > tbody  tr").length + '</span> games</div>')
+/**/
             $('a.toggle-vis').on('click', function (e) {
                 e.preventDefault();
 
@@ -307,7 +312,6 @@
                     $(this).addClass('visible-column');
                 }
             });
-
 
 
         });

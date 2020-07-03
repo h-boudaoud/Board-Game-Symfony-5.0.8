@@ -82,7 +82,10 @@ nav ul{
 #navigationLeft a, header a, footer a {
     text-decoration: none;
     color: white;
-    background-color: rgb(27, 38, 49);
+    // background-color: rgb(27, 38, 49);
+}
+header .navbar li{
+    border-radius: .5rem .5rem 0 .5rem;
 }
 
 #navigationLeft a.dropdown-item:hover {

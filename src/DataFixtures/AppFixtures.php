@@ -21,25 +21,29 @@ class AppFixtures extends Fixture
     {
         // dd(getcwd ());
         // Api
-        $file = getcwd ().'\public\asset\js\games.json';
-        $jsonData=null;
-        $jsonGames=[];
-        try{
-            $jsonData = file_get_contents('https://www.boardgameatla.com/api/search?order_by=popularity&ascending=false&pretty=true&client_id=SB1VGnDv7M');
-            $jsonGames = json_decode($jsonData)->games;
+        $file = getcwd() . '\public\asset\js\games.json';
+        $jsonData = null;
+        $jsonGames = [];
+        $NewJsonGames = [];
+        try {
+            $jsonData = file_get_contents('https://www.boardgameatlas.com/api/search?name=Catan&pretty=true&client_id=SB1VGnDv7M');
+
+
+            $jsonGames = json_decode($jsonData)
+                ->games;
             dump('Success access: www.boardgameatlas.com/api');
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             dump($exception->getMessage());
         }
-        if(Count($jsonGames)){
+        if (Count($jsonGames)) {
 
-            unlink($file);
+            //unlink($file);
             $fileData = fopen($file, 'a+');
-            fputs($fileData, $jsonData);
+            fputs($fileData, json_encode($jsonGames));
             fclose($fileData);
-        }else {
+        } else {
             dump('Error access: www.boardgameatlas.com/api');
-            $jsonGames = json_decode(file_get_contents($file))->games;
+            $jsonGames = json_decode(file_get_contents($file));
         }
 
         foreach ($jsonGames as $game) {
@@ -56,7 +60,7 @@ class AppFixtures extends Fixture
                         )
                     );
                 if ($key == "rules_url") {
-                    $value = null;
+                    $value = (strlen ($value)<255)?$value:null;
                 }
                 if ($key == "discount" && $value) {
 
@@ -86,23 +90,26 @@ class AppFixtures extends Fixture
             }
             $newGame->setPublished(true);
             $manager->persist($newGame);
-            dump(['newGame'=>$newGame]);
+            $NewJsonGames[$newGame->getGameId()] = $newGame;
+            dump(['newGame' => $newGame]);
         }
+
+
 
 
         foreach (User::ROLES as $role) {
 
             $username = str_replace('ROLE_', '', $role);
-            $username = str_replace('_', ' ', $username);
+            $username = str_replace('_', '-', $username);
             $user = new User();
             $date = new \DateTime();
             $date->setDate(2001, 2, 3);
-            $user->setUserName(str_replace(' ', '-', $username))
-                ->setPassword('P@ssw0rd.')
+            $user->setUserName($username)
+                ->setPassword(strstr('ADMIN', $username) ? '1Housn1.' : 'P@ssw0rd.')
                 ->encodePassword($this->encoder)
                 ->setFirstName($username)
-                ->setEmail($username . '@game.fr')
-                ->setLastName($username)
+                ->setEmail($username . '@board-game.biz.ht')
+                ->setLastName(str_replace('-', ' ', $username))
                 ->setBirthday($date)
                 ->setRoles([$role]);
 

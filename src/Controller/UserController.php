@@ -60,7 +60,11 @@ class UserController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
-            return $this->redirectToRoute('game_index');
+            $path = $this->getUser() && in_array('ROLE_ADMIN', $this->getUser()->getRoles())
+                ?'user_index'
+                :'login'
+            ;
+            return $this->redirectToRoute($path);
 //            return $this->render('security/login.html.twig', [
 //                'lastUserName' => $user->getUserName(),
 //                'title' => 'User',
@@ -211,7 +215,7 @@ class UserController extends AbstractController
     }
 
 
-    private function delete(Request $request, User $user): Response
+    private function delete(Request $request, User $user)
     {
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();

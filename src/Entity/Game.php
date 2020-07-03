@@ -38,7 +38,7 @@ class Game
     /**
      * @ORM\Column(type="integer", options={"default" : 1})
      * @Assert\PositiveOrZero
-     * @Assert\LessThan(propertyPath ="maxPlayers")
+     * @Assert\LessThanOrEqual(propertyPath ="maxPlayers")
      */
     private $minPlayers;
 
@@ -51,7 +51,7 @@ class Game
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\PositiveOrZero
-     * @Assert\LessThan(propertyPath ="maxPlaytime")
+     * @Assert\LessThanOrEqual(propertyPath ="maxPlaytime")
      */
     private $minPlaytime;
 
@@ -108,7 +108,7 @@ class Game
     /**
      * @ORM\Column(type="json", nullable=true)
      */
-    private $publishers;
+    private $publishers = [];
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -186,6 +186,13 @@ class Game
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Url(message = "The image url '{{ value }}' is not a valid url")
+     * @Assert\Regex(
+     *     pattern="/\.(?:jpg|gif|png,ico)$/m",
+     *     htmlPattern = "\.(?:jpg|gif|png,ico)$",
+     *     match=true,
+     *     message="The image url '{{ value }}' is not a valid url"
+     * )
      */
     private $imageUrl;
 
@@ -195,7 +202,7 @@ class Game
     function __construct()
     {
         $this->minAge = $this->minAge | 0;
-        $this->minPlayers = $this->minPlayers | 1;
+        $this->minPlayers = $this->minPlayers | 0;
         $this->maxPlayers = $this->maxPlayers | 0;
         $this->yearPublished = $this->yearPublished | 1900;
     }
@@ -237,7 +244,7 @@ class Game
 
     public function setMinPlayers(int $minPlayers): self
     {
-        $this->minPlayers = $minPlayers;
+        $this->minPlayers = $minPlayers > 0 ? $minPlayers : null;
 
         return $this;
     }
@@ -249,7 +256,7 @@ class Game
 
     public function setMaxPlayers(?int $maxPlayers): self
     {
-        $this->maxPlayers = $maxPlayers;
+        $this->maxPlayers = $maxPlayers > 0 ? $maxPlayers : null;
 
         return $this;
     }
@@ -350,14 +357,20 @@ class Game
         return $this;
     }
 
-
-    public function addArtists(string $artist): self
+    public function artistsList(string $value = null)
     {
-        if ($artist && in_array($artist, $this->artists)) {
-            $this->artists[] = $artist;
+        $artists =[];
+        if ($value) {
+            $artists = explode(',',$value);
+        }
+        foreach ($artists as $artist) {
+            if ($artist && !in_array($artist, $this->artists)) {
+                $this->artists[] = $artist;
+            }
         }
 
-        return $this;
+        $value = implode (',',$this->artists);
+        return $value;
     }
 
     public function getNames(): ?array
@@ -372,9 +385,43 @@ class Game
         return $this;
     }
 
+
+    public function namesList(?string $value = null)
+    {
+        $names =[];
+        if ($value) {
+            $names = explode(',',$value);
+        }
+        foreach ($names as $name) {
+            if ($name && !in_array($name, $this->names)) {
+                $this->names[] = $name;
+            }
+        }
+
+        $value = implode (',',$this->names);
+        return $value;
+    }
+
+
     public function getPublishers(): ?array
     {
         return $this->publishers;
+    }
+
+
+    public function publishersList(?string $value = null)
+    {
+        $publishers =[];
+        if ($value) {
+            $publishers = explode(',',$value);
+        }
+        foreach ($publishers as $publisher) {
+            if ($publisher && !in_array($publisher, $this->publishers)) {
+                $this->publishers[] = $publisher;
+            }
+        }
+        $value = implode (',',$this->publishers);
+        return $value;
     }
 
     public function setPublishers(?array $publishers): self

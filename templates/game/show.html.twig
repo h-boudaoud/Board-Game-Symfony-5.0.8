@@ -10,25 +10,6 @@
 
         <table id="gameTable" class="table jumbotron">
             <tbody>
-            {% if is_granted("ROLE_STOREKEEPER") %}
-                <tr>
-                    <th>Id</th>
-                    <td>{{ game.id }}</td>
-                </tr>
-
-                <tr>
-                    <th>GameId</th>
-                    <td>{{ game.gameId }}</td>
-                </tr>
-                <tr>
-                    <th>Published</th>
-                    <td>{{ game.published ? 'Yes' : 'No' }}</td>
-                </tr>
-                <tr>
-                    <th>Msrp</th>
-                    <td>{{ game.msrp }}</td>
-                </tr>
-            {% endif %}
             <tr>
                 <td colspan="3" class="text-center w-100 m-0 p-3 bg-white">
                     <img src="{{ game.imageUrl ?game.imageUrl :asset('asset/img/no-image-available.svg') }}"
@@ -41,6 +22,25 @@
                 <td>
                     <table class="jumbotron">
                         <tbody>
+                        {% if is_granted("ROLE_STOREKEEPER") %}
+                            <tr>
+                                <th>Id</th>
+                                <td>{{ game.id }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>GameId</th>
+                                <td>{{ game.gameId }}</td>
+                            </tr>
+                            <tr>
+                                <th>Published</th>
+                                <td>{{ game.published ? 'Yes' : 'No' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Msrp</th>
+                                <td>{{ game.msrp }}</td>
+                            </tr>
+                        {% endif %}
 
                         <tr>
                             <th>Price</th>
@@ -67,18 +67,27 @@
                         </tr>
                         <tr>
                             <th>Players</th>
-                            <td>For {{ game.minPlayers }} - {{ game.maxPlayers }}</td>
+                            <td>
+                                {% if game.minPlayers + game.maxPlayers > 0 %}
+                                For {{ game.minPlayers }} - {{ game.maxPlayers>0?game.maxPlayers: '' }}
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <th>Time</th>
-                            <td>Between {{ game.minPlaytime ? game.minPlaytime|date('H:i:s') : '' }}
+                            <td>
+                                {% if game.minPlaytime + game.maxPlaytime > 0 %}
+                                Between {{ game.minPlaytime ? game.minPlaytime|date('H:i:s') : '' }}
                                 and
                                 {{ game.maxPlaytime ? game.maxPlaytime|date('H:i:s') : '' }}
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th>Age</th>
-                            <td>+{{ game.minAge }}</td>
+                            <td>
+                                {% if game.minAge > 0 %} {{ game.minAge }}+ {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <th></th>
@@ -100,15 +109,15 @@
 
             <tr>
                 <th>Description</th>
-                <td colspan="3">{{ game.description |raw  }}</td>
+                <td colspan="3" style="min-width:65vw;">{{ game.description |raw  }}</td>
             </tr>
 
             <tr>
                 <th>Artists</th>
-                <td colspan="3">
+                <td>
                     {% if game.artists %}
                         <ul>
-                            {% for item in game.publishers %}
+                            {% for item in game.artists %}
                                 <li> {{ item }}</li>
                             {% endfor %}
                         </ul>
@@ -120,7 +129,7 @@
                 <td colspan="3">
                     {% if game.names %}
                         <ul>
-                            {% for item in game.publishers %}
+                            {% for item in game.names %}
                                 <li> {{ item }}</li>
                             {% endfor %}
                         </ul>
