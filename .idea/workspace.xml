@@ -2,27 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02a019ab-4b9e-4960-a60f-e4ec107f3cbd" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/asset/css/indexStylesheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/asset/css/indexStylesheet.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Game.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Game.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/GameType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/GameType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/User/RegisterUserType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/User/RegisterUserType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/User/RoleUserType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/User/RoleUserType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/User/UserInfoType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/User/UserInfoType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/UserRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/UserRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Layout.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Layout.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/_admins_index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/_admins_index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/new.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/security/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/security/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/_delete_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/_delete_form.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/_form.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/edit.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/edit.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/new.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/show.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../install.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.env" beforeDir="false" afterPath="$PROJECT_DIR$/../.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/board-game.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/board-game.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../run-server.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/../src/DataFixtures/AppFixtures.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../symfony.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +21,7 @@
     <execution />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="JsFlowSettings">
     <service-enabled>true</service-enabled>
@@ -131,18 +118,19 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../public/asset/js" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\www\PHP\Symfony\board-game\public\asset\js" />
       <recent name="F:\www\PHP\Symfony\board-game\templates" />
       <recent name="F:\www\PHP\Symfony\board-game\src\Controller" />
       <recent name="F:\www\PHP\Symfony\board-game\src\Form" />
       <recent name="F:\www\PHP\Symfony\board-game\templates\game" />
-      <recent name="F:\www\PHP\Symfony\board-game\public\asset" />
     </key>
   </component>
   <component name="RunManager" selected="Shell Script.run-server.sh (1)">
@@ -192,6 +180,13 @@
       <workItem from="1592395080214" duration="11466000" />
       <workItem from="1592407337355" duration="14608000" />
       <workItem from="1593735975693" duration="6367000" />
+      <workItem from="1593792008370" duration="4566000" />
+      <workItem from="1593896241060" duration="3320000" />
+      <workItem from="1593903026512" duration="15605000" />
+      <workItem from="1593950009153" duration="9272000" />
+      <workItem from="1593968224256" duration="4473000" />
+      <workItem from="1594115917530" duration="40065000" />
+      <workItem from="1594338072239" duration="3268000" />
     </task>
     <servers />
   </component>
@@ -229,5 +224,9 @@
       <screen x="0" y="0" width="1360" height="728" />
     </state>
     <state x="375" y="187" key="com.intellij.ide.util.TipDialog/0.0.1360.728@0.0.1360.728" timestamp="1590572444662" />
+    <state x="336" y="157" key="run.anything.popup" timestamp="1594259713392">
+      <screen x="0" y="0" width="1360" height="728" />
+    </state>
+    <state x="336" y="157" key="run.anything.popup/0.0.1360.728@0.0.1360.728" timestamp="1594259713392" />
   </component>
 </project>
