@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -113,6 +115,24 @@ class User implements UserInterface
      * Une restriction d’âge s’applique  pour s'inscrire sur ce site.
      */
     private $birthday;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Review::class, mappedBy="user")
+     */
+    private $reviews;
+
+//    /**
+//     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="reviews")
+//     */
+//    private $orders;
+//
+
+
+
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -226,6 +246,42 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection|Review[]
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->contains($review)) {
+            $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getUser() === $this) {
+                $review->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
+
 
     /**
      * @inheritDoc

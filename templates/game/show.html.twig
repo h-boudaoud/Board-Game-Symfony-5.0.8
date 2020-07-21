@@ -89,6 +89,31 @@
                                 {% if game.minAge > 0 %} {{ game.minAge }}+ {% endif %}
                             </td>
                         </tr>
+
+                        <tr>
+                            <th>
+                                Reviews
+                            </th>
+                            <td>
+
+                                <a href="{{ path('review_byGame', {'id': game.id, 'name':game.name}) }}"
+                                   data-value="{{ game.id }}"
+                                   title="View rating" class="btn btn-info js-view-reviews"
+                                ><i class="fa fa-rating" aria-hidden="true"></i>
+                                    <small>
+                                        <span class="d-none d-sm-inline">View reviews</span>
+                                    </small>
+                                    {% if game.avgRating %}
+                                        <span class="badge badge-warning">
+                                        {{ game.avgRating }}
+                                        <i class="fa fa-star" aria-hidden="true" style="color:darkgoldenrod;"></i>
+                                    </span>
+                                    {% else %}
+                                        <i class="fas fa-star" style="text-decoration: red line-through;"></i>
+                                    {% endif %}
+                                </a>
+                            </td>
+                        </tr>
                         <tr>
                             <th></th>
                             <td>

@@ -127,7 +127,7 @@ class GamesFixtures extends Fixture implements DependentFixtureInterface
             $new->setPublished(random_int(1, 9) % 5 != 2);
             $manager->persist($new);
             $manager->flush();
-            // $this->loadReview($manager, $new);
+            $this->loadReview($manager, $new);
             // dump([$newGame->getId()=>$newGame->getGameId().' - '.$newGame->getName()]);
             $newData[$new->getGameId()] = $new;
         }
@@ -145,10 +145,91 @@ class GamesFixtures extends Fixture implements DependentFixtureInterface
     }
 
     // Upload reviews
+
     private function loadReview(ObjectManager $manager, Game $game)
     {
-        // code for upload reviews
+        // dump("Reviews".($game->getName()));
+        $limit = random_int(0, 30);
+        $url = "https://www.boardgameatlas.com/api/reviews?&client_id=JLBr5npPhV" .
+            "&description_required=true&order_by=date" .
+            "&limit=$limit&game_id=" . $game->getGameId();
+        // dd($url);
+        $data = (new UploadDataService)
+            ->uploadDataFromApi(
+                $url,
+                'reviews',
+                '\reviews\game_' . $game->getGameId()
+            );
+
+        foreach ($data as $review) {
+            $review->game = null;
+            $review->user = null;
+            $review->date = \DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $review->date);
+            $review->rating = $review->rating > 0 && $limit % $review->rating != 1 ? $review->rating : null;
+            // dd($review);
+            $review->title = isset($review->title) && strlen($review->title) > 0
+                ? $review->title
+                : 'No title for review :' . $review->id
+            ;
+
+            $review->description = isset($review->description) &&  strlen($review->description) > 0
+                ? $review->description
+                : 'No description for review :' . $review->id
+            ;
+
+
+            dump(['review_'. $review->id=>$review]);
+
+            $newReviews = new Review();
+            foreach ($review as $key => $value) {
+                $key = $key != 'id' ? $key != 'date' ? $key : 'created_At' : 'review_Id';
+                $dynamicMethodName = "set" . str_replace(
+                        ' ', '',
+                        ucwords(
+                            strtolower(
+                                str_replace('_', ' ', $key)
+                            )
+                        )
+                    );
+
+                if (method_exists($newReviews, $dynamicMethodName) && $value) {
+
+                    try {
+
+                        $newReviews->$dynamicMethodName($value);
+                    } catch (\Exception $exception) {
+                        dump([
+                            'Error message : ' => $exception->getMessage(),
+                            'dynamicMethodName' => $dynamicMethodName,
+                            'value' => $value
+                        ]);
+                    }
+                }
+            }
+
+            $i = random_int(1, 29);
+            $user = new User();
+            try {
+                $newReviews->setUser($this->getReference('User_' . $i));
+            } catch (\Exception $e) {
+                dump("Exeption add user " . $e->getMessage());
+            }
+
+            $newReviews->setGame($game);
+            $newReviews->setValidated($i % 5 != 0);
+            // dd(['newReviews'=>$newReviews]);
+            $manager->persist($newReviews);
+            $manager->persist($game);
+            $manager->flush();
+            // dd($newReviews);
+
+        }
+
+        // dump(['Reviews Fixtures' => Count($newData). " new Reviews in database"]);
 
     }
+
+
+
 
 }

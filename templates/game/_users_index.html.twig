@@ -45,15 +45,22 @@
 {% endblock %}
 
 {% block body %}
+    {% if games|length ==0 %}
+    <div class="js-no-data"></div>
+    {% else %}
     <div id="carouselGameIndicators" class="carousel slide mb-2 mx-auto bg-secondary  text-center p-auto"
          data-ride="carousel">
-        <ol class="carousel-indicators">
-            {% for game in games %}
-                <li data-target="#carouselGameIndicators" data-slide-to="{{ game.id }}"
-                    {% if loop.index ==1 %}class="active"{% endif %}></li>
-            {% endfor %}
-        </ol>
+        {% if games|length < 30 %}
+            <ol class="carousel-indicators">
+                {#                    {% for game in games |slice(0, 20) %}#}
+                {% for game in games %}
+                    <li data-target="#carouselGameIndicators" data-slide-to="{{ game.id }}"
+                        {% if loop.index ==1 %}class="active"{% endif %}></li>
+                {% endfor %}
+            </ol>
+        {% endif %}
         <div class="carousel-inner">
+            {#                    {% for game in games |slice(0, 20) %}#}
             {% for game in games %}
                 <div class="carousel-item {% if loop.index ==1 %}active{% endif %}">
                     <a href="{{ path('game_show', {'id':game.id}) }}">
@@ -142,31 +149,38 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="card-foot text-right inverse">
+                    <div class="card-foot inverse">
 
-                        <small>
-                            <a href="{{ path('game_show', {'id': game.id}) }}"
-                               title="Show" class="btn btn-info"
-                            ><i class="fas fa-info" aria-hidden="true"></i>
-                                <small>
-                                    <span class="d-none d-sm-inline">Show</span>
-                                </small>
-                            </a>
-                        </small>
-                        <small>
-                            <a href="#game-{{ game.id }}" data-value="{{ game.id }}"
-                               title="Add to cart" class="btn btn-warning js-add-to-cart"
-                            ><i class="fa fa-cart-plus" aria-hidden="true"></i>
-                                <small>
-                                    <span class="d-none d-sm-inline">Add to cart</span>
-                                </small>
-                            </a>
-                        </small>
+                        <div class="js-starRating">{{ game.avgRating }}</div>
+
+                        <div class="text-right">
+                            <small>
+                                <a href="{{ path('game_show', {'id': game.id, 'name':game.name}) }}"
+                                   title="Show" class="btn btn-info"
+                                ><i class="fas fa-info" aria-hidden="true"></i>
+                                    <small>
+                                        <span class="d-none d-sm-inline">Show</span>
+                                    </small>
+                                </a>
+                            </small>
+                            <small>
+
+                                <a href="#game-{{ game.id }}" data-value="{{ game.id }}"
+                                   title="Add to cart" class="btn btn-warning js-add-to-cart"
+                                ><i class="fa fa-cart-plus" aria-hidden="true"></i>
+                                    <small>
+                                        <span class="d-none d-sm-inline">Add to cart</span>
+                                    </small>
+                                </a>
+                            </small>
+                        </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
+
+    {% endif %}
 
 {% endblock %}
 

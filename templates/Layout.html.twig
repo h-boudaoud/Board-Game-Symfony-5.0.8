@@ -161,7 +161,7 @@
                                                 </a>
                                             {% endif %}
                                             {% if is_granted('ROLE_MODERATOR') %}
-                                                <a class="dropdown-item" href="#">
+                                                <a class="dropdown-item" href="{{ path('review_index') }}">
                                                     <i class="fa fa-comments"></i>
                                                     Reviews <span class="sr-only">(current)</span>
                                                 </a>

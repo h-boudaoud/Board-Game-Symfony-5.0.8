@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Review index{% endblock %}
+
+{% block body %}
+    <h2>{{ title? title: 'Reviews' }} </h2>
+
+    {% if is_granted("ROLE_USER") and game is defined  %}
+        <a href="{{ path('review_new', {'id': game.id, 'name':game.name}) }}">Create new</a>
+    {% endif %}
+
+    {% if reviews|length >0 %}
+
+    {% for review in reviews %}
+        {{ include('review/_show_review.html.twig',{'show':true}) }}
+    {% endfor %}
+    {% else %}
+        <div class="alert alert-warning"> no records found</div>
+    {% endif %}
+
+{% endblock %}

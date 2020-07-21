@@ -2,70 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="463b0bec-e534-49ec-894c-02801559bca4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/public/asset/js/jsonData/categories.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/asset/js/jsonData/games.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/asset/js/jsonData/mechanics.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/CategoryController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/MechanicController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DataFixtures/CategoriesFixtures.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DataFixtures/GamesFixtures.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DataFixtures/MechanicsFixtures.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DataFixtures/UsersFixtures.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/Category.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/Mechanic.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/CategoryType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/MechanicType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/User/ChangePasswordUserType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/User/EditeUserType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/User/RegisterPasswordType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200720160148.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Repository/CategoryRepository.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Repository/MechanicRepository.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Service/UploadDataService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/category/_delete_form.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/category/_form.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/category/edit.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/category/index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/category/new.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/category/show.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/game/_operator_index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/mechanic/_delete_form.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/mechanic/_form.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/mechanic/edit.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/mechanic/index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/mechanic/new.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/mechanic/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/board-game.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/board-game.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/ReviewController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Review.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Form/ReviewType.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Repository/ReviewRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/review/_delete_form.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/review/_form.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/review/_show_review.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/review/_validate_form.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/review/edit.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/review/index.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/review/new.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/review/show.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/framework.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/framework.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/twig.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/twig.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/asset/css/indexStylesheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/asset/css/indexStylesheet.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/asset/js/games.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/asset/js/indexScript.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/asset/js/indexScript.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/GameController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/GameController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/asset/js/jsonData/games.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/asset/js/jsonData/games.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataFixtures/GamesFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/GamesFixtures.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Game.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Game.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/GameType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/GameType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/User/RegisterUserType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/User/RegisterUserType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/User/RoleUserType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/User/RoleUserType.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/Layout.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Layout.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/_admins_index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/_admins_index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/_form.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/_js_form.html.twig" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/game/_users_index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/_users_index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/edit.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/edit.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/game/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/index.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/game/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/game/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/edit.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/edit.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/show.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,14 +126,15 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/game" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Repository" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="F:\www\PHP\Symfony\board-game\templates\game" />
-      <recent name="F:\www\PHP\Symfony\board-game\public\asset" />
-      <recent name="F:\www\PHP\Symfony\board-game\src" />
-      <recent name="F:\www\PHP\Symfony\board-game\src\DataFixtures" />
+      <recent name="F:\www\PHP\Symfony\board-game\src\Repository" />
+      <recent name="F:\www\PHP\Symfony\board-game\templates" />
+      <recent name="F:\www\PHP\Symfony\board-game\src\Form" />
+      <recent name="F:\www\PHP\Symfony\board-game\src\Controller" />
+      <recent name="F:\www\PHP\Symfony\board-game\src\Entity" />
     </key>
   </component>
   <component name="SvnConfiguration">
@@ -190,7 +147,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1595258297709</updated>
-      <workItem from="1595258302702" duration="23452000" />
+      <workItem from="1595258302702" duration="25626000" />
     </task>
     <servers />
   </component>

@@ -42,7 +42,7 @@ class Game
      * @Assert\PositiveOrZero
      * @Assert\LessThanOrEqual(propertyPath ="maxPlayers")
      */
-    private $minPlayers;
+    private $minPlayers = 1;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -222,6 +222,12 @@ class Game
      */
     private $categories;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Review::class, mappedBy="game" , cascade={"persist"})
+     */
+    private $reviews;
+
+
 
 
     //***************//
@@ -231,6 +237,7 @@ class Game
 
     function __construct()
     {
+        $this->reviews = new ArrayCollection();
         $this->categories = new ArrayCollection();
         $this->mechanics = new ArrayCollection();
     }
@@ -682,5 +689,49 @@ class Game
         return $this;
     }
 
+    /**
+     * @return Collection|Review[]
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->contains($review)) {
+            $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getGame() === $this) {
+                $review->getGame(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAvgRating():?float
+    {
+        //return $this->avgRating;
+
+        $ratings = [];
+        foreach ($this->reviews as $review){
+            if($review->getRating()){
+                $ratings[] = $review->getRating();
+            }
+        }
+        return (Count($ratings))? round(array_sum($ratings) / Count($ratings), 2):null;
+
+    }
 
 }

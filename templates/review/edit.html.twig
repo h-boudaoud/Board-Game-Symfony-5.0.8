@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ include('review/_form.html.twig', {'game_form_button_label': 'Update'}) }}
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+    <script>
+        displayElement('review', 'addRating');
+    </script>
+{% endblock %}
+
+
