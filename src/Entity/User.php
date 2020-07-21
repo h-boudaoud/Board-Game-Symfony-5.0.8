@@ -163,7 +163,7 @@ class User implements UserInterface
 
     public function setPassword(?string $password): self
     {
-        if($password) {
+        if ($password) {
             $this->password = $password;
         }
 
@@ -235,12 +235,14 @@ class User implements UserInterface
         // TODO: Implement getSalt() method.
     }
 
+
     /**
      * @inheritDoc
      */
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+        $this->setConfirmPassword(null);
     }
 
 }

@@ -32,6 +32,17 @@ h1, h2, h3, h4 {
     color:white;
     background:rgb(27, 38, 49);
 }
+.btn-reg {
+    color:rgb(27, 38, 49);
+    background:white;
+}
+.btn-reg:hover {
+    color:rgb(27, 38, 49);
+    background:lightyellow;
+}
+.bg-inverse{
+    background:rgb(27, 38, 49);
+}
 
 .right {
     background:white;
@@ -75,14 +86,14 @@ header h1, footer {
 }
 
 nav ul{
-     list-style-type: none;
+    list-style-type: none;
     padding-left: 0;
 }
 
 #navigationLeft a, header a, footer a {
     text-decoration: none;
     color: white;
-    // background-color: rgb(27, 38, 49);
+// background-color: rgb(27, 38, 49);
 }
 header .navbar li{
     border-radius: .5rem .5rem 0 .5rem;

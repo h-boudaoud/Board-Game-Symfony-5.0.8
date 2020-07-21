@@ -1,5 +1,10 @@
 {% if is_granted("ROLE_STOREKEEPER") %}
+
     {{ include('game/_admins_index.html.twig') }}
+
+{% elseif is_granted("ROLE_OPERATOR") %}
+
+    {{ include('game/_operator_index.html.twig') }}
 
 {% else %}
 

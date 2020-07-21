@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\GameRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Validator\Constraints as Assert;
@@ -29,7 +31,7 @@ class Game
     private $name;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      * @Assert\GreaterThanOrEqual(1900)
      *
      */
@@ -196,15 +198,41 @@ class Game
      */
     private $imageUrl;
 
+
     /**
-     *
+     * @ORM\Column(type="integer", nullable=true)
+     * @Assert\PositiveOrZero
      */
+    private $inStock;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Assert\PositiveOrZero
+     */
+    private $stockShortageAlarm;
+
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Mechanic::class, inversedBy="games")
+     */
+    private $mechanics;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="games")
+     */
+    private $categories;
+
+
+
+    //***************//
+      //    Methods    //
+     //***************//
+
+
     function __construct()
     {
-        $this->minAge = $this->minAge | 0;
-        $this->minPlayers = $this->minPlayers | 0;
-        $this->maxPlayers = $this->maxPlayers | 0;
-        $this->yearPublished = $this->yearPublished | 1900;
+        $this->categories = new ArrayCollection();
+        $this->mechanics = new ArrayCollection();
     }
 
 
@@ -235,6 +263,11 @@ class Game
         $this->yearPublished = $yearPublished;
 
         return $this;
+    }
+
+    public function getInStock(): ?int
+    {
+        return $this->inStock;
     }
 
     public function getMinPlayers(): ?int
@@ -574,4 +607,80 @@ class Game
 
         return $this;
     }
+
+
+    public function setInStock(?int $inStock): self
+    {
+        $this->inStock = $inStock;
+
+        return $this;
+    }
+
+    public function getStockShortageAlarm(): ?int
+    {
+        return $this->yearPublished;
+    }
+
+    public function setStockShortageAlarm(?int $stockShortageAlarm): self
+    {
+        $this->stockShortageAlarm = $stockShortageAlarm;
+
+        return $this;
+    }
+
+
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Mechanic[]
+     */
+    public function getMechanics(): Collection
+    {
+        return $this->mechanics;
+    }
+
+    public function addMechanic(Mechanic $mechanic): self
+    {
+        if (!$this->mechanics->contains($mechanic)) {
+            $this->mechanics[] = $mechanic;
+        }
+
+        return $this;
+    }
+
+    public function removeMechanic(Mechanic $mechanic): self
+    {
+        if ($this->mechanics->contains($mechanic)) {
+            $this->mechanics->removeElement($mechanic);
+        }
+
+        return $this;
+    }
+
+
 }

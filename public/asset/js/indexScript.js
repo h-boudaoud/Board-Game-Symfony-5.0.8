@@ -1,27 +1,38 @@
-let displayHeader = true;
+let displayHeader = false;
 let cart = [];
 let user = 'anon';
 let sessionCart = null;
 
-
+$(document).change(function () {
+    changeHeight()
+})
 $(document).ready(function () {
-// Bootstrap 4 Responsive Dropdown Multi Submenu
-    $(function () {
-        $('.dropdown-menu a.dropdown-toggle').on('click', function () {
-            if (!$(this).next().hasClass('show')) {
-                $(this).parents('.dropdown-menu').find('.show').removeClass("show");
-            }
-            let $subMenu = $(this).next(".dropdown-menu");
-            $subMenu.toggleClass('show'); // appliqué au ul
-            $(this).parent().toggleClass('show'); // appliqué au li parent
-
-            $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function () {
-                $('.dropdown-submenu .show').removeClass("show") // appliqué au ul
-                    .removeClass("show"); // appliqué au li parent
-            });
-            return false;
-        });
-    });
+// warning if array is empty
+    $('.js-no-data').html('no records found')
+    $('td, .js-no-data').each(function(){
+        if($(this).html() =='no records found'){
+            $(this).addClass('alert alert-warning')
+        }
+    })
+// Resize Header
+    $('.show').removeClass("show");
+    // Bootstrap 4 Responsive Dropdown Multi Submenu
+    // $(function () {
+    //     $('.dropdown-menu a.dropdown-toggle').on('click', function () {
+    //         if (!$(this).next().hasClass('show')) {
+    //             $(this).parents('.dropdown-menu').find('.show').removeClass("show");
+    //         }
+    //         let $subMenu = $(this).next(".dropdown-menu");
+    //         $subMenu.toggleClass('show'); // appliqué au ul
+    //         $(this).parent().toggleClass('show'); // appliqué au li parent
+    //
+    //         $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function () {
+    //             $('.dropdown-submenu .show').removeClass("show") // appliqué au ul
+    //                 .removeClass("show"); // appliqué au li parent
+    //         });
+    //         return false;
+    //     });
+    // });
 
 // Session
     if ($('#user').length) {
@@ -48,7 +59,7 @@ $(document).ready(function () {
         sessionCart.forEach(function (value) {
             const id = value['id']
             cart['game-' + id] = value
-            console.log('session cart ', id, value)
+            //console.log('session cart ', id, value)
             addToCartGame(id);
         })
 
@@ -65,12 +76,13 @@ $(document).ready(function () {
     );
     /**/
 
+
 // Resize Windows
     changeHeight();
     $(window).bind('resizeEnd', function () {
-        console.log('change : ', $('body').height());
+        //console.log('change : ', $('body').height());
         changeHeight();
-    });
+    })
 
     $(window).resize(function () {
         if (this.resizeTO) clearTimeout(this.resizeTO);
@@ -82,7 +94,7 @@ $(document).ready(function () {
 
 //  StarRating management
     $(".js-starRating").each(function () {
-        console.log('starRating  ->', $(this));
+        //console.log('starRating  ->', $(this));
         $(this).html(starRating($(this).text()));
     });
 
@@ -91,7 +103,7 @@ $(document).ready(function () {
         const newClass = "fa-" + $(this).val();
         const oldClass = "fa-" + (($(this).val() === "folder") ? "database" : "folder");
         $("#saveTo i").removeClass(oldClass).addClass(newClass);
-        console.log($(this).val());
+        //console.log($(this).val());
     });
 
 //  Cart management
@@ -101,31 +113,12 @@ $(document).ready(function () {
         }
         const id = $(this).attr('data-value');
 
-        console.log('$(this).parents(#game-id)', $(this).parents('#game-'+id).html())
+        //console.log('$(this).parents(#game-id)', $(this).parents('#game-'+id).html())
         // console.log('$(this).parents(.game-info)', $(this).parents('.game-info').html())
-        //const id = $(this).parents('.game-info').find('.js-id').html() || $(this).attr('aria-valuetext');
         const gameName = $(this).parents('#game-'+id).find('.js-name').html()
-        // const gameName = $(this).parents('.game-info').find('.js-name').html()
-        // const price = $(this).parents('.game-info').find('.js-price').html()
+
         const price = parseFloat($(this).parents('#game-'+id).find('.js-price').attr('data-value'))
 
-        // console.log('$(this).parents(.game-info)', $(this).parents('#game-'+id).html())
-        // console.log('$(this).parents(.game-info)', $(this).parents('.game-info').html())
-        //
-        // alert(
-        //     $(this).attr('aria-valuetext'),
-        //     '\n id', id,
-        //     '\n price', price,
-        //     '\n gameName', gameName
-        // )
-        // console.log(
-        //     $(this).attr('aria-valuetext'),
-        //     '\n id', id,
-        //     '\n price', price,
-        //     '\n gameName', gameName
-        // )
-        //
-        //
         let cartGame = cart['game-' + id]
             ? cart['game-' + id]
             : {
@@ -142,9 +135,15 @@ $(document).ready(function () {
     })
 });
 
+
+
+
+// funsctions js
+
+//  Cart management
 function inputCartChange(id) {
     $("#input-" + id).change(function () {
-        console.log('#js-games-selected input', id);
+        //console.log('#js-games-selected input', id);
         if ($("#input-" + id).val() < 1) {
             deleteCartGame(id)
         } else {
@@ -160,7 +159,7 @@ function numberOfGamesInCart() {
 
 function updateTotalBuy(sum) {
     const total = parseFloat($('#js-total-cart').html()) + sum
-    console.log('total', total)
+    //console.log('total', total)
     $('#js-total-cart').html(total.toFixed(2))
 }
 
@@ -193,15 +192,14 @@ function addToCartGame(id) {
     const sum = Math.round(cart['game-' + id]['price'] * 100 * cart['game-' + id]['nb']) / 100
     $('#js-sum-' + id).html(sum.toFixed(2))
     updateTotalBuy(sum)
-    // updateTotalBuy(cart['game-'+id]['price'],cart['game-'+id]['nb'])
 
 }
 
 
 function updateCartGame(id) {
-    console.log(id, ' - cart ', cart)
+    //console.log(id, ' - cart ', cart)
 
-    console.log('cartGame :', cart[id])
+    //console.log('cartGame :', cart[id])
     let sum = -Math.round(cart[id]['price'] * 100 * cart[id]['nb']) / 100
     updateTotalBuy(sum)
     cart[id]['nb'] = $('#input-' + id).val()
@@ -213,28 +211,32 @@ function updateCartGame(id) {
 
 
 function deleteCartGame(id) {
-    console.log('deleteCartGame ', cart)
-    console.log('deleteCartGame ', id, cart[id])
+    //console.log('deleteCartGame ', cart)
+    //console.log('deleteCartGame ', id, cart[id])
     const sum = -Math.round(cart[id]['price'] * 100 * cart[id]['nb']) / 100
     updateTotalBuy(sum)
     delete cart[id];
     $('#js-cart-' + id).remove();
 
-    console.log('cart ', cart)
+    //console.log('cart ', cart)
     numberOfGamesInCart();
     setCartSession('cart', cart);
 
 }
 
+// Session
+
 function setCartSession(name, jsonObject) {
     const myObject_json = JSON.stringify(Object.values(jsonObject));
     sessionStorage.setItem(name, myObject_json);
-    console.log(
-        'set session jsonObject ', jsonObject,
-        '\nmyObject_json', myObject_json,
-        '\nsessionStorage', sessionStorage,
-    )
+    /**
+     console.log(
 
+     'set session jsonObject ', jsonObject,
+     '\nmyObject_json', myObject_json,
+     '\nsessionStorage', sessionStorage,
+     )
+     /**/
 
 }
 
@@ -244,8 +246,6 @@ function getCartSession(name) {
 }
 
 
-
-// funsctions js
 
 //nav bar Layout
 function changeDisplayHeader() {
@@ -260,20 +260,23 @@ function changeDisplayHeader() {
 function changeHeight() {
     $("#content, body > section").css(
         'min-height',
-        ($('html').height() - ($('body > header').height() + $('body > footer').height() + 20)) + 'px');
+        ($('html').height() - (1.1*$('body > header').height() + $('body > footer').height())) + 'px');
 
-    $("body").css('padding-bottum', $("body > footer").height() + 'px')
-        .css('padding-top', $("body > header").height() + 'px');
+    $("body,body >section").css('margin-bottom', (1.1*$("body > footer").height() )+ 'px')
+        .css('margin-top', 1.1*$("body > header").height() + 'px');
+
     //$("#navigationLeft").css('top', $("body > header").height() + 'px')
 
 
 }
 
 
+//  StarRating management
 function starRating(value) {
-    console.log('starRating ->', value);
+    //console.log('starRating ->', value);
 
-    let htmlCode = (value) + ' : ';
+    //let htmlCode = (value) + ' : ';
+    let htmlCode = '';
     if (value.trim() !== '') {
         for (let i = 1; i <= 5; i++) {
             if (i - .25 <= value) {
@@ -284,15 +287,64 @@ function starRating(value) {
             } else {
                 htmlCode += '<i class="far fa-star"></i>'
             }
-            console.log(i, '\t', value, '\n--', htmlCode);
+            //.log(i, '\t', value, '\n--', htmlCode);
         }
     } else {
-        htmlCode += '<i class="far fa-star px-3 badge badge-secondary"' +
-            'style="text-decoration: line-through;"></i>';
+        htmlCode += '<i class="fas fa-star" style="text-decoration: red line-through;"></i>';
     }
 
-    console.log('starRating', htmlCode);
+    //console.log('starRating', htmlCode);
     return htmlCode
 }
 
+// Form : display or no input element
+// className : entity name
+// element   : property name
+// add an html tag to the form with the class 'js-element'
+
+function displayElement(className, element) {
+
+    let divId = $('#'+className+'_' + element);
+    let divClass = $('.js-' + element);
+    console.log('divId', divId.val())
+
+    const values = divClassMapValues(divClass);
+    const valueDivId = divId.val()
+    if (divId.val() && divId.val().length) {
+        divClass.parent().removeClass('d-none');
+    } else {
+        divClass.parent().addClass('d-none');
+    }
+    console.log('$(\'#',className,'-',element+'\').val()', divId.val());
+    divId.change(function () {
+        console.log(element, ' : ', values)
+        console.log('$(\'#js-element\').val()', divId.val());
+        if (divId.val().length) {
+            divClass.parent().removeClass('d-none');
+            divId.prop('required', true);
+        } else {
+            divClass.parent().addClass('d-none');
+            divClassOriginValues(divClass);
+            divId.prop('required', false);
+        }
+    });
+}
+
+function divClassMapValues(divClass) {
+    let vals = [];
+    divClass.each(function () {
+        vals[$(this).attr('id')] = $(this).val();
+    })
+    return vals;
+}
+
+function divClassOriginValues(divClass) {
+    console.log('values : ',values)
+    divClass.each(function () {
+        $(this).val(values[$(this).attr('id')]);
+        console.log('val', $(this).val(),' values :',values[$(this).attr('id')] );
+    })
+}
+
+// end js script
 

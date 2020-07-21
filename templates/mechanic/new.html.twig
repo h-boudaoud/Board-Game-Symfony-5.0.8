@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Mechanic{% endblock %}
+
+{% block body %}
+    <h2>Create new Mechanic</h2>
+
+    {{ include('mechanic/_form.html.twig') }}
+    
+    <a href="{{ path('mechanic_index') }}" title="Mechanics list" class="btn btn-inverse"><i class="fa fa-list"></i> Mechanics list</a>
+{% endblock %}

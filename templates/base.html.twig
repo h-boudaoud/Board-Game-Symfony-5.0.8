@@ -1,5 +1,7 @@
 {% extends 'Layout.html.twig' %}
-
+{% if title is not defined %}
+    {% set title='' %}
+{% endif %}
 {#      the view title      #}
 {% block title title %}
 
@@ -9,8 +11,8 @@
 
 
 {# Replace dropdown in the header index  #}
-{% block headerDropdown  %}
-{{ parent() }}
+{% block headerDropdown %}
+    {{ parent() }}
 {% endblock %}
 
 {#      the title h1 of the view   #}
@@ -18,13 +20,24 @@
 
 {% block LayoutBody %}
 
-<div id="content" class="bg-white container-fluid  p-5 my-0"  style="overflow: auto" >
+    <div id="content" class="bg-white container-fluid  p-5 my-0" style="overflow: auto">
+        <div id="flashMessages">
+            {# pass an array argument to get the messages of those types  #}
+            {% for label, messages in app.flashes(['success','warning', 'error']) %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}">
+                        {{ message |raw }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <div>
+            {% block body %}
+                Page index
+            {% endblock %}
+        </div>
 
-    {% block body %}
-    Page index
-    {% endblock %}
-
-</div>
+    </div>
 {% endblock %}
 
 

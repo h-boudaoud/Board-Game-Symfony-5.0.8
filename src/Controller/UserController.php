@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\User\ChangePasswordUserType;
+use App\Form\User\EditeUserType;
 use App\Form\User\RegisterUserType;
 use App\Form\User\RoleUserType;
 use App\Form\User\UserInfoType;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,6 +23,14 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
  */
 class UserController extends AbstractController
 {
+    private $encoder;
+
+    public function __construct(
+        UserPasswordEncoderInterface $encoder)
+    {
+        $this->encoder = $encoder;
+    }
+
     /**
      * @IsGranted("ROLE_ADMIN", statusCode=401, message="No access! Get out!")
      *
@@ -39,15 +50,10 @@ class UserController extends AbstractController
      *
      * @Route("/new", name="user_new", methods={"GET","POST"})
      * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
      * @param User|null $user
      * @return Response
      */
-    public function new(
-        UserPasswordEncoderInterface $encoder,
-        Request $request, User $user = null
-
-    ): Response
+    public function new(Request $request, User $user = null): Response
     {
 
         $user = new User();
@@ -55,15 +61,20 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->encodePassword($encoder);
+            $user->encodePassword($this->encoder);
             // dd($user);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
             $path = $this->getUser() && in_array('ROLE_ADMIN', $this->getUser()->getRoles())
-                ?'user_index'
-                :'login'
-            ;
+                ? 'user_index'
+                : 'login';
+
+            $this->addFlash(
+                'success',
+                'The request has been accepted'
+            );
+
             return $this->redirectToRoute($path);
 //            return $this->render('security/login.html.twig', [
 //                'lastUserName' => $user->getUserName(),
@@ -97,22 +108,6 @@ class UserController extends AbstractController
 
     /**
      *
-     * @IsGranted("ROLE_ADMIN", statusCode=401, message="No access! Get out!")
-     *
-     * @Route("/admin/{id}/delete", name="user_delete", methods={"DELETE"})
-     * @param Request $request
-     * @param User $user
-     * @return Response
-     */
-    public function adminDelete(Request $request, User $user): Response
-    {
-        $this->delete($request, $user);
-        return $this->redirectToRoute('user_index');
-    }
-
-
-    /**
-     *
      * @IsGranted("ROLE_USER", statusCode=401, message="No access! Get out!")
      *
      * @Route("/profile/", name="user_profile", methods={"GET"})
@@ -138,9 +133,43 @@ class UserController extends AbstractController
      */
     public function userEdit(Request $request): Response
     {
-        $user = $this->getUser() ;
-        $form = $this->createForm(UserInfoType::class, $user);
-        return $this->edit($request, $user, $form);
+        $user = $this->getUser();
+
+        $form = $this->createForm(EditeUserType::class, $user);
+        $form->handleRequest($request);
+
+        $isAuthorized = password_verify($form->get('userPassword')->getData(), $user->getPassword());
+        return $this->edit($request, $user, $form, $isAuthorized);
+
+    }
+
+    /**
+     *
+     * @IsGranted("ROLE_USER", statusCode=401, message="No access! Get out!")
+     *
+     * @Route("/profile/password", name="user_profile_password", methods={"GET","POST"})
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function userPasswordEdit(Request $request): Response
+    {
+        $user = $this->getUser();
+        $userPassword = $user->getPassword();
+
+        $form = $this->createForm(ChangePasswordUserType::class, $user);
+        $form->handleRequest($request);
+        $isAuthorized=false;
+        if ($form->get('userPassword')->getData()) {
+            $isAuthorized = password_verify($form->get('userPassword')->getData(), $userPassword);
+//            dd([
+//                'isAuthorized'=>$isAuthorized,
+//                'userPassword'=>$form->get('userPassword')->getData(),
+//                'Password'=>$userPassword,
+//                'isValid'=>$this->encoder->isPasswordValid($user, $form->get('userPassword')->getData())
+//            ]);
+        }
+        return $this->edit($request, $user, $form, $isAuthorized);
 
     }
 
@@ -165,9 +194,23 @@ class UserController extends AbstractController
 //                in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())
 //            )
 //        ) {
-            $form = $this->createForm(RoleUserType::class, $user);
 
-        return $this->edit($request, $user, $form);
+        if (
+            $this->isGranted('ROLE_ADMIN') &&
+            in_array('ROLE_SUPER_ADMIN', $user->getRoles())
+        ) {
+            $this->addFlash(
+                'error',
+                '401 Access unauthorized : You don\'t authorized to perform this operation.'
+            );
+
+            return $this->redirectToRoute('user_edit', ['id' => $user->getId()]);
+        }
+
+        $form = $this->createForm(RoleUserType::class, $user);
+        $form->handleRequest($request);
+
+        return $this->edit($request, $user, $form, in_array('ROLE_ADMIN', $this->getUser()->getRoles()));
     }
 
 
@@ -183,11 +226,51 @@ class UserController extends AbstractController
     public function userDelete(Request $request): Response
     {
         $this->delete($request, $this->getUser());
+
+        $this->addFlash(
+            'success',
+            '202 Accepted : The request was accepted'
+        );
+
         return $this->redirectToRoute('logout', [], 301);
 
     }
 
+    /**
+     *
+     * @IsGranted("ROLE_ADMIN", statusCode=401, message="No access! Get out!")
+     *
+     * @Route("/admin/{id}/delete", name="user_delete", methods={"DELETE"})
+     * @param Request $request
+     * @param User $user
+     * @return Response
+     */
+    public function adminDelete(Request $request, User $user): Response
+    {
+        if (
+            $this->isGranted('ROLE_ADMIN') &&
+            (
+                in_array('ROLE_SUPER_ADMIN', $user->getRoles()) ||
+                $user->getId() < 36
+            )
+        ) {
+            if ($user->getId() < 36) {
+                $this->addFlash(
+                    'warning',
+                    '403 Access forbidden: only the author of this solution who can delete or modify this entity <br /> Create a new entity to test this function.'
+                );
+            } else {
+                $this->addFlash(
+                    'error',
+                    '401 Access unauthorized : You don\'t authorized to perform this operation.'
+                );
+            }
 
+            return $this->redirect($request->headers->get('referer'));
+        }
+        $this->delete($request, $user);
+        return $this->redirectToRoute('user_index');
+    }
 
 
 
@@ -196,15 +279,45 @@ class UserController extends AbstractController
     /*       Privates functions     */
     /********************************/
 
-    private function edit(Request $request, User $user, $form): Response
+    /**
+     * @param Request $request
+     * @param User $user
+     * @param $form
+     * @param bool $isAuthorized
+     * @return Response
+     */
+    private function edit(Request $request, User $user, $form, ?bool $isAuthorized = false): Response
     {
-        $form->handleRequest($request);
+        if ($user->getId() < 36 && !in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
+            $this->addFlash(
+                'warning',
+                '403 Access forbidden: only the author of this solution who can delete or modify this entity <br /> Create a new entity to test this function.'
+            );
+        } else {
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
+                $path = $this->getUser() == $user ? 'user_profile' : 'user_index';
+                if ($isAuthorized) {
+                    //dump($user);
+                    if($user->getConfirmPassword()){
+                        $user->encodePassword($this->encoder);
+                    }
+                    //dd($user);
+                    $this->getDoctrine()->getManager()->flush();
 
-            $path = $this->getUser()==$user?'user_profile':'user_index';
-            return $this->redirectToRoute($path);
+                    $this->addFlash(
+                        'success',
+                        '202 Accepted : The request was accepted'
+                    );
+                } else {
+                    $this->addFlash(
+                        'error',
+                        '401 Access unauthorized : You don\'t authorized to perform this operation.'
+                    );
+                }
+
+                return $this->redirectToRoute($path);
+            }
         }
 
         return $this->render('user/edit.html.twig', [
@@ -221,6 +334,15 @@ class UserController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($user);
             $entityManager->flush();
+            $this->addFlash(
+                'success',
+                '202 Accepted : The request was accepted'
+            );
+        } else {
+            $this->addFlash(
+                'error',
+                '401 Access unauthorized : You don\'t authorized to perform this operation.'
+            );
         }
     }
 

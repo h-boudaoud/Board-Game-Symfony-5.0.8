@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Game;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -28,6 +29,23 @@ class GameType extends AbstractType
             ->add('price')
             ->add('msrp')
             ->add('discount')
+            ->add('categories', EntityType::class, [
+                'help'=>'Use the "Ctrl" key on the keyboard to choose one or more categories',
+                'multiple' => true,
+                'class' => 'App:Category',
+                'choice_label' => function ($category) {
+                    return $category->getName();
+                }
+            ])
+            ->add('mechanics', EntityType::class, [
+                'expanded' => true,
+                'multiple' => true,
+                'attr'=>['class'=>'jumbotron row js-choice'],
+                'class' => 'App:Mechanic',
+                'choice_label' => function ($mechanic) {
+                    return $mechanic->getName();
+                }
+            ])
             ->add('artistsList',null,[
                 'help'=>'use comma as separator',
                 'attr'=>['class'=>'js-add'],

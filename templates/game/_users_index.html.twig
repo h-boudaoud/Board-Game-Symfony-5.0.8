@@ -172,40 +172,55 @@
 
 
 {% block javascripts %}
-    /*
-    *
-    * script de la vue
-    *
-    * */
-    {#    let games = {{ games |json_encode()}}#}
-    {#    console.log('games',games )#}
-    console.log('vue /games', $(".game"))
+    <script>
+        /*
+        *
+        * script de la vue
+        *
+        * */
+        let game = $('.game')
+        {#    let games = {{ games |json_encode()}}#}
+        {#    console.log('games',games )#}
+        // console.log('vue /games', $(".game"))
 
-    $('.game').click(function() {
-    let url ='{{ path("game_show", {"id":"0"}) }}'
-    url = url.replace('0','')+$(this).attr('id')
-    console.log("click : ", $(this).attr('id'),'\n', url)
-    $(location).attr('href', url);
+        game.click(function () {
+            let url = '{{ path("game_show", {'id': 0, 'name':'name'}) }}'
+            url = url.replace('0-name', $(this).attr('id'))
+            // console.log("click : ", $(this).attr('id'),'\n', url)
+            $(location).attr('href', url);
 
-    });
+        });
 
-    $('.game').mousemove(function () {
-    $(this).css('opacity',1)
-    .css('cursor','pointer');
+        game.mousemove(function () {
+            $(this).css('opacity', 1)
+                .css('cursor', 'pointer');
 
-    });
-    $('.game').mouseout(function () {
-    $(this).css('opacity',.8)
-    .css('cursor','auto');
-    });
+        });
+        game.mouseout(function () {
+            $(this).css('opacity', .8)
+                .css('cursor', 'auto');
+        });
 
-    var hauteur=0;
-    $('.game').each(function(){
-    if($(this).height()>hauteur) hauteur = $(this).height();
-    });
-    $('.game').css('height', hauteur)
+        $(document).ready(function () {
+            var max = Math.max.apply(Math, $('.card-foot div:first-child').map(function () {
+                return $(this).height();
+            }))
+            var max = Math.max.apply(Math, $('h5.js-name').map(function () {
+                return $(this).height();
+            }))
+            var hauteur = 0;
+            $('h5.js-name').each(function () {
+                if ($(this).height() > hauteur) hauteur = $(this).height();
+            });
+
+            $('h5.js-name').css('height', hauteur)
+            $('.card-foot div:first-child').css('height', hauteur)
+
+        })
+    </script>
 
 {% endblock %}
+
 
 
 

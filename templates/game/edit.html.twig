@@ -6,7 +6,10 @@
 {% endblock %}
 
 
-
 {% block javascripts %}
-    {{ include('game/_js_form.html.twig') }}
+    <script>
+        displayElement('game', 'weightUnits');
+        displayElement('game', 'sizeUnits');
+        $('.js-choice > div').addClass('col-lg-3 col-md-4 col-6')
+    </script>
 {% endblock %}

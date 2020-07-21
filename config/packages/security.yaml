@@ -2,9 +2,10 @@ security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
 
     role_hierarchy:
-        ROLE_MODERATOR: ROLE_USER
-        ROLE_OPERATOR: ROLE_USER
-        ROLE_STOREKEEPER: ROLE_USER
+        ROLE_EMPLOYEE: ROLE_USER
+        ROLE_MODERATOR: ROLE_EMPLOYEE
+        ROLE_OPERATOR: ROLE_EMPLOYEE
+        ROLE_STOREKEEPER: ROLE_EMPLOYEE
         ROLE_ADMIN: [ROLE_MODERATOR, ROLE_OPERATOR, ROLE_STOREKEEPER]
         ROLE_SUPER_ADMIN: ROLE_ADMIN
 

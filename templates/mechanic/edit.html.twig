@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Mechanic{% endblock %}
+
+{% block body %}
+    <h1>Edit Mechanic</h1>
+
+    {{ include('mechanic/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('mechanic_index') }}" class="btn btn-inverse" title="Mechanics list"><i class="fa fa-list"></i> Mechanics list</a>
+
+    
+    {% if is_granted('ROLE_STOREKEEPER') %}
+        {{ include('mechanic/_delete_form.html.twig') }}
+    {% endif %}
+    
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Category index{% endblock %}
+
+{% block body %}
+    <h2>Category index</h2>
+
+    {% if categories|length ==0 %}
+        <div class="js-no-data"></div>
+    {% else %}
+        <table class="table">
+            <thead>
+            <tr>
+                {% if is_granted('ROLE_STOREKEEPER') %}
+                    <th>Id</th>
+                    <th>CategoryId</th>
+                {% endif %}
+                <th>Name</th>
+                <th>items number</th>
+                <th>actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if categories|length>0 %}
+                {% for category in categories %}
+                    {% if category.games|length>0 %}
+                        <tr>
+                            {% if is_granted('ROLE_STOREKEEPER') %}
+                                <td>{{ category.id }}</td>
+                                <td>{{ category.categoryId }}</td>
+                            {% endif %}
+                            <td>{{ category.name }}</td>
+                            <td>{{ category.games|length }}</td>
+                            <td>
+                                {% set name = category.name|lower|replace({' ': '','/':''}) %}
+                                <a href="{{ path('category_show',{'id': category.id, 'name':name}) }}"
+                                   class="btn btn-info">
+                                    <i class="fas fa-list"></i> Games
+                                </a>
+                                {% if is_granted('ROLE_STOREKEEPER') %}
+                                    <a href="{{ path('category_edit', {'id': category.id, 'name':name}) }}"
+                                       class="btn btn-primary">
+                                        <i class="fas fa-edit"></i> edit
+                                    </a>
+                                    {{ include('category/_delete_form.html.twig') }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">no records found</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
+    {% endif %}
+    {% if is_granted('ROLE_STOREKEEPER') %}
+        <a href="{{ path('category_new') }}" class="btn btn-inverse" title="Add new category"><i class="fa fa-plus"></i>
+            Create new</a>
+    {% endif %}
+{% endblock %}

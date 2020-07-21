@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mechanic{% endblock %}
+
+{% block body %}
+    <h1>Mechanic</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ mechanic.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ mechanic.name }}</td>
+            </tr>
+            <tr>
+                <th>MechanicId</th>
+                <td>{{ mechanic.mechanicId }}</td>
+            </tr>
+            
+            <tr>
+                <th>Items numbers</th>
+                <td>{{ mechanic.games|length }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% set name = mechanic.name|lower|replace({' ': '','/':''}) %}
+    <a href="{{ path('mechanic_index') }}" title="Mechanics list" class="btn btn-inverse"><i class="fa fa-list"></i> Mechanics list</a>
+    {% if is_granted('ROLE_STOREKEEPER') %}
+    <a href="{{ path('mechanic_edit', {'id': mechanic.id, 'name':name}) }}" class="btn btn-primary">edit</a>
+
+    {{ include('mechanic/_delete_form.html.twig') }}
+    {% endif %}
+    
+    {% if mechanic.games|length %}
+    <h4>Games list</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="inverse">Actions</th>
+                <th class="inverse">Id</th>
+                <th class="inverse">Name</th>
+                <th class="inverse">Price</th>
+                <th class="inverse">MSRP</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for game in mechanic.games %}
+            <tr id="game-{{ game.id }}" class="game-info">
+                <td>
+                    <div class="row">
+                        <div class="col-sm-3 col-12 m-0 px-1">
+                            <small>
+                                <a href="{{ path('game_show', {'id': game.id, 'name':game.name}) }}"
+                                   title="Show" class="btn btn-info w-lg-50 w-100"
+                                ><i class="fas fa-info"></i></a>
+                            </small>
+                        </div>
+                        <div class="col-sm-3 col-12 m-0 px-1">
+                            <small>
+                                <a href="#" data-value="{{ game.id }}"
+                                   title="Cart" class="btn btn-warning w-lg-50 w-100 js-add-to-cart"
+                                ><i class="fa fa-cart-plus" aria-hidden="true"></i>
+                                </a>
+                            </small>
+                        </div>
+                        <div class="col-sm-3 col-12 m-0 px-1">
+                            <small>
+                                <a href="{{ path('game_edit', {'id': game.id, 'name':game.name}) }}"
+                                   title="Edit" class="btn btn-primary w-lg-50 w-100"
+                                ><i class="fas fa-edit"></i></a>
+                            </small>
+                        </div>
+                        {#                        {% if is_granted("ROLE_ADMIN") %}#}
+                        <div class="col-sm-3 col-12 m-0 px-1">
+                            <small>
+                                {{ include('game/_delete_form.html.twig',
+                                    {
+                                        'game_delete_button_label': ' ',
+                                        'game_delete_button_class':'w-lg-50 w-100'
+                                    }
+                                ) }}
+                            </small>
+                        </div>
+                        {#                        {% endif %}#}
+
+                    </div>
+                </td>
+                <td class="js-id">{{ game.id }}</td>
+                <td class="js-name">{{ game.name }}</td>
+                
+                {% set newPrice = game.price*(1+game.discount) %}
+                <td class="js-price" data-value="{{ newPrice |round(2, 'common') }}">
+                    {% if game.discount %}
+                        <span class="border border-warning">{{ newPrice |round(2, 'common') }}$</span>
+                        <br/>
+                        <small>
+                            <small>
+                            <span class="btn-outline-warning">
+                                <span style="text-decoration: line-through;">{{ game.price }}$</span>
+                            </span>
+                                <span class="badge badge-warning">{{ game.discount*100 }}%</span>
+                            </small>
+                        </small>
+
+                    {% else %}
+                        {{ game.price }}$
+                    {% endif %}
+
+                </td>
+                
+                <td>{{ game.msrp }}</td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    
+    </table>
+    {% endif %}
+    
+{% endblock %}

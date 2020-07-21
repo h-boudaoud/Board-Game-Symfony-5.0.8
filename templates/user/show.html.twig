@@ -20,6 +20,10 @@
                 <th>Email</th>
                 <td>{{ user.email }}</td>
             </tr>
+            <tr>
+                <th>Password</th>
+                <td><a href="{{ path('user_profile_password') }}">change the password</a></td>
+            </tr>
             {% if is_granted("ROLE_ADMIN") %}
             <tr>
                 <th>Roles</th>

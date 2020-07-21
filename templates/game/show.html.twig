@@ -151,13 +151,17 @@
             <tr>
                 <th>RulesUrl</th>
                 <td colspan="3">
+                    {%  if game.rulesUrl %}
                     <a href="{{ game.rulesUrl }}" target="_blank">{{ game.rulesUrl }}</a>
+                    {% endif %}
                 </td>
             </tr>
             <tr>
                 <th>OfficialUrl</th>
                 <td colspan="3">
+                    {% if game.officialUrl %}
                     <a href="{{ game.officialUrl }}" target="_blank">{{ game.officialUrl }}</a>
+                    {% endif %}
                 </td>
             </tr>
 

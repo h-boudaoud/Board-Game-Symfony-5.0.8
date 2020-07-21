@@ -22,51 +22,68 @@
         </thead>
         <tbody>
         {% for user in users %}
-            <tr>
-                <td>
-                    <div class="row">
-                        <div class="col-sm-4 col-12 m-0 px-1">
-                            <small>
-                                <a href="{{ path('user_show', {'id': user.id}) }}"
-                                   title="Show" class="btn btn-info w-lg-50 w-100"
-                                ><i class="fas fa-info"></i></a>
-                            </small>
-                        </div>
-                        <div class="col-sm-4 col-12 m-0 px-1">
-                            <small>
-                                <a href="{{ path('user_edit', {'id': user.id}) }}"
-                                   title="Edit" class="btn btn-primary w-lg-50 w-100"
-                                ><i class="fas fa-edit"></i></a>
-                            </small>
-                        </div>
-                        <div class="col-sm-4 col-12 m-0 px-1">
-                            <small>
-                                {{ include('user/_delete_form.html.twig',
-                                    {
-                                        'user_delete_button_label': ' ',
-                                        'user_delete_button_class':'w-lg-50 w-100'
-                                    }
-                                ) }}
-                            </small>
-                        </div>
+            {% if 'ROLE_SUPER_ADMIN' in user.roles and not is_granted('ROLE_SUPER_ADMIN')%}
+                <tr>
+                    <td>
+                        <i class="fa fa-ban" aria-hidden="true"></i>Forbidden access
+                    </td>
+                    <td>*******</td>
+                    <td>*******</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.lastName }}</td>
+                    <td>*********</td>
+                    <td>
+                        *********
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>
+                        <div class="row">
+                            <div class="col-sm-4 col-12 m-0 px-1">
+                                <small>
+                                    <a href="{{ path('user_show', {'id': user.id}) }}"
+                                       title="Show" class="btn btn-info w-lg-50 w-100"
+                                    ><i class="fas fa-info"></i></a>
+                                </small>
+                            </div>
+                            <div class="col-sm-4 col-12 m-0 px-1">
+                                <small>
+                                    <a href="{{ path('user_edit', {'id': user.id}) }}"
+                                       title="Edit" class="btn btn-primary w-lg-50 w-100"
+                                    ><i class="fas fa-edit"></i></a>
+                                </small>
+                            </div>
+                            <div class="col-sm-4 col-12 m-0 px-1">
+                                <small>
+                                    {{ include('user/_delete_form.html.twig',
+                                        {
+                                            'user_delete_button_label': ' ',
+                                            'user_delete_button_class':'w-lg-50 w-100'
+                                        }
+                                    ) }}
+                                </small>
+                            </div>
 
-                    </div>
-                </td>
-                <td>{{ user.id }}</td>
-                <td>{{ user.userName }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.firstName }}</td>
-                <td>{{ user.lastName }}</td>
-                <td>{{ user.birthday ? user.birthday|date('Y-m-d') : '' }}</td>
-                <td>
-                    {#  {{ user.roles ? user.roles|json_encode : '' }}#}
-                    <ul>
-                        {% for item in user.roles %}
-                            <li> {{ item }}</li>
-                        {% endfor %}
-                    </ul>
-                </td>
-            </tr>
+                        </div>
+                    </td>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.userName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.lastName }}</td>
+                    <td>{{ user.birthday ? user.birthday|date('Y-m-d') : '' }}</td>
+                    <td>
+                        {#  {{ user.roles ? user.roles|json_encode : '' }}#}
+                        <ul>
+                            {% for item in user.roles %}
+                                <li> {{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            {% endif %}
         {% else %}
             <tr>
                 <td colspan="9">no records found</td>

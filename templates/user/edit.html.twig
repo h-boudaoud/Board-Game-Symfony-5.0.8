@@ -8,7 +8,6 @@
         Update User : {{ user.userName }}
     </h2>
     {% endif %}
-
     {{ include('user/_form.html.twig') }}
 
     {% if app.user and 'ROLE_ADMIN' in app.user.roles %}

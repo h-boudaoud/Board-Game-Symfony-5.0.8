@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mechanic index{% endblock %}
+
+{% block body %}
+    <h2>Mechanic index</h2>
+
+    {% if mechanics|length ==0 %}
+        <div class="js-no-data"></div>
+    {% else %}
+        <table class="table">
+            <thead>
+            <tr>
+                {% if is_granted('ROLE_STOREKEEPER') %}
+                    <th>Id</th>
+                <th>MechanicId</th>
+                {% endif %}
+                <th>Name</th>
+                <th>items number</th>
+                <th>actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if mechanics|length>0 %}
+                {% for mechanic in mechanics %}
+                    {% if mechanic.games|length>0 %}
+                        <tr>
+                            {% if is_granted('ROLE_STOREKEEPER') %}
+                                <td>{{ mechanic.id }}</td>
+                            <td>{{ mechanic.mechanicId }}</td>
+                            {% endif %}
+                            <td>{{ mechanic.name }}</td>
+                            <td>{{ mechanic.games|length }}</td>
+                            <td>
+                                {% set name = mechanic.name|lower|replace({' ': '','/':''}) %}
+                                <a href="{{ path('category_show',{'id': mechanic.id, 'name':name}) }}"
+                                   class="btn btn-info">
+                                    <i class="fas fa-list"></i> Games
+                                </a>
+                                {% if is_granted('ROLE_STOREKEEPER') %}
+                                    <a href="{{ path('mechanic_edit', {'id': mechanic.id, 'name':name}) }}"
+                                       class="btn btn-primary">
+                                        <i class="fas fa-edit"></i> edit
+                                    </a>
+                                    {{ include('mechanic/_delete_form.html.twig') }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">no records found</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
+    {% endif %}
+    {% if is_granted('ROLE_STOREKEEPER') %}
+        <a href="{{ path('mechanic_new') }}" class="btn btn-inverse" title="Add new mechanic"><i class="fa fa-plus"></i>
+            Create new</a>
+    {% endif %}
+{% endblock %}
