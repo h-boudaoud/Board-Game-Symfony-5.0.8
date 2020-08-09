@@ -4,9 +4,45 @@
 namespace App\Service;
 
 
-class UploadDataService
+class FixturesUploadDataService
 {
+    public function dataFormatting($dataObject, Object $dataclass, string $nameClass)
+    {
+    // dd(['array'=> $dataObject, 'Object' => $dataclass, 'string'=> $nameClass]);
+        foreach ($dataObject as $key => $value) {
 
+            $key = $key != 'id' ? $key : $nameClass.'_Id';
+
+            if ($key == "name" && empty($value)) {
+                $value = ($dataObject->names && Count($dataObject->names) > 0) ? $dataObject->names[0] : $dataObject->id;
+                $dataObject->name = $value;
+            }
+            $dynamicMethodName = "set" . str_replace(
+                    ' ', '',
+                    ucwords(
+                        strtolower(
+                            str_replace('_', ' ', $key)
+                        )
+                    )
+                );
+
+            if (method_exists($dataclass, $dynamicMethodName) && $value) {
+
+                try {
+                    $dataclass->$dynamicMethodName($value);
+                } catch (\Exception $exception) {
+                    dump([
+                        'Error message : '=>$exception->getMessage(),
+                        'dynamicMethodName'=>$dynamicMethodName,
+                        'value'=>$value
+                    ]);
+                }
+            }
+
+        }
+
+
+    }
     public function uploadDataFromApi(string $url,string $nameData,?string $folder=''): ?array
     {
         $data =[];
@@ -69,6 +105,8 @@ class UploadDataService
             return true;
         }
     }
+
+
 
 
 }

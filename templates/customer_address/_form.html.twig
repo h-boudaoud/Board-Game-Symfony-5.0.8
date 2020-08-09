@@ -1,0 +1,8 @@
+<div class="container">
+    {{ form_start(form) }}
+    <div id="ajaxForm">
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-inverse">{{ button_label|default('Save') }}</button>
+    </div>
+    {{ form_end(form) }}
+</div>

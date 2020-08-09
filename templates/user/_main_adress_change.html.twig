@@ -1,0 +1,48 @@
+
+{% set customer= customer is defined ? customer: user.customer %}
+{% if customer and customer.addresses| length>1 %}
+<div class="d-inline-block w-100 m-0 p-0">
+    <form method="post" action="{{ path('user_customer_mainAddress', {'id': customer.id}) }}"
+          onsubmit="return confirm('Item id : {{ customer.id }}\nAddress : {{ customer.mainAddress.toString
+          }}\nDo you want to change your main address?');">
+
+        {% for key, role in app.user.roles %}
+            <input type="hidden" name="roles[{{ key }}]" value="{{ csrf_token(role) }}">
+        {% endfor %}
+
+        <input type="hidden" name="_method" value="POST">
+        <input type="hidden" name="_token" value="{{ csrf_token('mainAddress' ~ customer.id) }}">
+        <div class="form-group">
+            <!-- Material checked disabled -->
+
+            <label for="customer_mainAddress">Choose new main address</label>
+            {% for address in customer.addresses %}
+
+                <!-- Group of default radios - option 2 -->
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input"
+                           id="mainAddress_{{ address.id }}" name="mainAddress" value="{{ address.id }}"
+                           {% if address==customer.mainAddress %}checked{% endif %}
+                    >
+                    <label class="custom-control-label" for="mainAddress_{{ address.id }}">
+                        {{ address.toString }}</label>
+                </div>
+            {% endfor %}
+
+
+
+{#            <select id="customer_mainAddress" name="mainAddress" class="form-control form-control">#}
+{#                {% for address in customer.addresses %}#}
+{#                <option value="{{ address.id }}"#}
+{#                        {% if address==customer.mainAddress %} selected="selected"{% endif %}#}
+{#                >{{ address.toString }}</option>#}
+{#                {% endfor %}#}
+{#            </select>#}
+        </div>
+        <button class="btn btn-info {{ button_class|default('') }} d-none">
+            <i class="fa fa-check-square-o }}"></i>
+            {{ button_label | default('Save') }}
+        </button>
+    </form>
+</div>
+{% endif %}

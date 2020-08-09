@@ -1,56 +1,75 @@
 <div class="row bg-inverse mx-0 my-2 p-1">
-    <div class="col-md-3 col-12 jumbotron mx-0 my-2 p-0">
-        <h6 class="inverse text-center mt-0 py-2">{{ review.user.userName }}</h6>
+    <div class="col-md-3 col-12"><h6 class="inverse text-center mt-0 p-2">{{ review.user.userName }}</h6></div>
+    <div class="col-md-9 col-12 d-flex justify-content-between inverse">
+        <div class="mt-0 p-2">Title :</div>
+        <div class="mt-0 p-2"><h6 class="text-center">{{ review.title }}</h6></div>
+        <div class="mt-0 p-2">
+            {% set name = review.game.name|replace({'/': ""}) %}
+            <small>
+                <a href="{{ path('game_show', {'id': review.game.id, 'name':name}) }}"
+                   title="Show" class="btn btn-info m-0 py-0 px-2"
+                ><i class="fas fa-info"></i> {{ review.game.name }}</a>
+            </small>
+        </div>
+    </div>
+
+
+    <div class="col-md-3 col-12
+            {{ is_granted("ROLE_MODERATOR") or review.user == app.user?
+    review.validated ? 'alert alert-success' :'alert alert-warning'
+    :'jumbotron' }} m-0 py-0">
         <p>
-            <br />{{ review.createdAt ? review.createdAt|date('Y-m-d \n H:i:s') : '' }}
+            <br/>{{ review.createdAt ? review.createdAt|date('Y-m-d \n H:i:s') : '' }}
 
             {% if is_granted("ROLE_MODERATOR") %}
                 <br/>Id : {{ review.id }}
-                <br/>validated : {{ review.validated ? 'Yes' : include('review/_validate_form.html.twig') }}
+                <br/>validated :
+                {% if review.validated %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+                <br/>{{ include('review/_validate_form.html.twig',{'validate_button_class':'w-lg-50 w-100'}) }}
             {% endif %}
         </p>
+        {% if review.user == app.user and not is_granted("ROLE_MODERATOR") %}
+            <p>
+                {{ review.validated ? 'validated' :'No validated' }}
+            </p>
+        {% endif %}
     </div>
-    <div class="col-md-9 col-12 bg-white mx-0 mt-0 mb-2 p-0">
-        <div class="d-flex justify-content-between inverse mt-0 py-2">
-            <div class="p-0 m-0">Title : </div>
-            <div class="p-0 m-0"><h6 class="text-center">{{ review.title }}</h6></div>
-            <div class="p-0 m-0">
-                {% set name = review.game.name|replace({'/': ""}) %}
-                  <small>
-                      <a href="{{ path('game_show', {'id': review.game.id, 'name':name}) }}"
-                         title="Show" class="btn btn-info m-0 py-0 px-2"
-                      ><i class="fas fa-info"></i> {{review.game.name}}</a>
-                  </small>
-            </div>
-        </div>
-       
-        <div>{{ review.description |raw }}</div>
+    <div class="col-md-9 col-12 bg-white  m-0 py-0">
+        {{ review.description |raw }}
     </div>
-    <div class="col-md-3 col-12 m-0 p-0" style="font-size: .7rem">
+
+
+    <div class="col-md-3 col-12 m-0 py-2" style="font-size: .7rem">
 
         <small>
-            {% if show is defined and show%}
+            {% if is_granted("ROLE_MODERATOR") and show is defined and show %}
+                show
                 <a href="{{ path('review_show', {'id': review.id}) }}"
-                        class="btn btn-reg mr-1 mb-1">show</a>
+                   class="btn btn-reg mr-1 mb-1">show</a>
             {% endif %}
-            {% if is_granted("ROLE_MODERATOR") %}
+            {% if is_granted("ROLE_MODERATOR") or review.user == app.user %}
                 {{ include('review/_delete_form.html.twig') }}
             {% endif %}
         </small>
     </div>
-    <div class="col-md-9 col-12 m-0 p-0">
+    <div class="col-md-9 col-12 m-0 py-2">
+        <div class="js-starRating d-inline-block float-right" style="height: 32px;" >{{ review.rating }}</div>
         <small>
             {% if user is not defined %}
-            <a href="{{ path('review_byUser', {'id': review.user.id, 'username':review.user.userName}) }}"
-               class="btn btn-reg mr-1 mb-1">
-                <small>All {{ review.user.userName }}'s reviews</small>
-            </a>
+                <a href="{{ path('review_byUser', {'id': review.user.id, 'username':review.user.userName}) }}"
+                   class="btn btn-reg mr-1 mb-1">
+                    <small>All {{ review.user.userName }}'s reviews</small>
+                </a>
             {% endif %}
-            {% if  game is not defined  %}
-            <a href="{{ path('review_byGame', {'id': review.game.id, 'name':review.game.name}) }}"
-               class="btn btn-reg">
-                <small>All {{ review.game.name }} game  reviews</small>
-            </a>
+            {% if  game is not defined %}
+                <a href="{{ path('review_byGame', {'id': review.game.id, 'name':review.game.name}) }}"
+                   class="btn btn-reg">
+                    <small>All {{ review.game.name }} game reviews</small>
+                </a>
             {% endif %}
         </small>
     </div>

@@ -4,6 +4,6 @@
 
 {% block body %}
     <h2>Review {{ review.game.name }} board-game By  {{ review.user.userName }}</h2>
-    {{ include('review/_show_review.html.twig',{'show':false}) }}
+    {{ include('review/_show_review.html.twig') }}
 
 {% endblock %}

@@ -31,7 +31,22 @@
             </div>
         </div>
         <div id="content" class="col-12 col-lg-9 bg-white container-fluid p-5" style="overflow: auto">
-            {% block body %} Page Articles {% endblock %}
+            <div id="flashMessages">
+                {# pass an array argument to get the messages of those types  #}
+                {% for label, messages in app.flashes(['success','warning', 'error']) %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label!='error'?label:'danger' }}">
+                            {{ message |raw }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div id="blocBody">
+                {% block body %}
+                    Page index
+                {% endblock %}
+            </div>
+
         </div>
     </div>
 {% endblock %}

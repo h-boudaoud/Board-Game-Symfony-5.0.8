@@ -153,7 +153,7 @@
                     </div>
                 </td>
                 <td class="js-id">{{ game.id }}</td>
-                <td class="js-name">{{ game.name }}</td>
+                <td class="js-name"><small>{{ game.name }}</small></td>
                 {% set newPrice = game.price*(1+game.discount) %}
                 <td class="js-price" data-value="{{ newPrice |round(2, 'common') }}">
                     {% if game.discount %}

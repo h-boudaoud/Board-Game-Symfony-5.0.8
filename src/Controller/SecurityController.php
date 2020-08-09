@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Repository\GameRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +24,6 @@ class SecurityController extends AbstractController
     }
 
 
-
     /**
      * @Route("/login", name="login")
      * @param Request $request
@@ -31,8 +33,9 @@ class SecurityController extends AbstractController
     public function login(Request $request, AuthenticationUtils $authenticationUtils)
     {
         $lastUserName = $authenticationUtils->getLastUsername();
+        //dd($this->getDoctrine()->getRepository(User::class)->findBy(['userName'=>$lastUserName]));
         $error = $authenticationUtils->getLastAuthenticationError();
-        // dump($request->getSession());
+//        dump($request->getSession());
         return $this->render('security/login.html.twig', [
             'title' => 'Login',
             'lastUserName' => $lastUserName,
@@ -44,8 +47,10 @@ class SecurityController extends AbstractController
     /**
      * @Route("/logout", name="logout")
      */
-    public function logout()
+    public static function logout()
     {
     }
+
+
 
 }

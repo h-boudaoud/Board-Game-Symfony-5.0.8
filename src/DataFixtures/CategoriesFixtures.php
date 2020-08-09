@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
-use App\Service\UploadDataService;
+use App\Service\FixturesUploadDataService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -13,70 +13,38 @@ class CategoriesFixtures extends Fixture
 {
     private $data;
     public const CATEGORIES_REFERENCE = 'categoriesFixtures';
+    private $service;
 
-    public function __construct(UploadDataService $dataService)
+    public function __construct(FixturesUploadDataService $dataService)
     {
-        $url = 'https://www.boardgameatlas.com/api/game/categories?client_id=JLBr5npPhV';
+        $url = 'https://www.boardgameatla.com/api/game/categories?client_id=JLBr5npPhV';
         $this->data = $dataService->uploadDataFromApi($url, 'categories');
+        $this->service = $dataService;
     }
 
     public function load(ObjectManager $manager)
     {
-        dump('Category Fixtures : ' .Count($this->data));
-        $newData=[];
+        dump('CategoriesFixtures : ' . Count($this->data));
+        $newCategories=[];
 
         foreach ($this->data as $category) {
-            $new = new Category();
-    
-            foreach ($category as $key => $value) {
-                $key = $key != 'id' ? $key : 'category_Id';
-                $dynamicMethodName = "set" . str_replace(
-                        ' ', '',
-                        ucwords(
-                            strtolower(
-                                str_replace('_', ' ', $key)
-                            )
-                        )
-                    );
+            $newCategory = new Category();
+            $categoryId =$category->id;
+            $category->name= strlen($category->name)>0 ? $category->name : "$category->id. category";
 
-                if ($key == "name" && empty($value)) {
-                    $value = (Count($category->names)>0)?$category->names[0]:$category->id;
-                    $category->name=$value;
-                }
 
-                if (method_exists($new, $dynamicMethodName) && $value) {
+            // dd(['array'=> $category,'is_array'=> is_array($category), 'Object' => $newCategory, 'string'=> 'category']);
+            $this->service->dataFormatting($category,$newCategory,'category');
 
-                    try {
-                        $new->$dynamicMethodName($value);
-                    } catch (\Exception $exception) {
-                        dump([
-                            'Error message : '=>$exception->getMessage(),
-                            'dynamicMethodName'=>$dynamicMethodName,
-                            'value'=>$value
-                        ]);
-                    }
-
-//                    dump([
-//                        'dynamicMethodName' => $dynamicMethodName,
-//                        'value' => $value,
-//                        'method_exists' => method_exists($newGame, $dynamicMethodName)
-//                    ]);
-
-                }
-
-            }
-
-            $manager->persist($new);
+            $manager->persist($newCategory);
             $manager->flush();
-            $this->addReference('Category_'.$category->id,(object)$new );
-            // dump([$newGame->getId()=>$newGame->getGameId().' - '.$newGame->getName()]);
-            $newData[$new->getCategoryId()] = $new;
-            // dd($newData);
+            $this->addReference("Category_$categoryId",(object)$newCategory);
+            // dump(["Category_$categoryId"=>$this->getReference("Category_$categoryId")]);
+            $newCategories[$newCategory->getCategoryId()] = $newCategory;
         }
 
-        dump(['Categories Fixtures' => Count($newData). " new Categories in database"]);
+        dump(['Categorys Fixtures' => Count($newCategories). " new Categorys in database"]);
 
     }
-
 
 }

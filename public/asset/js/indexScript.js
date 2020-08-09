@@ -6,75 +6,75 @@ let sessionCart = null;
 $(document).change(function () {
     changeHeight()
 })
+
 $(document).ready(function () {
+
+    // $('.dropdown-submenu a.js-dropdown-submenu').on("click", function(e){
+    //     if($('.js-dropdown-submenu + .dropdown-menu').hasClass('d-block')){
+    //         $('.js-dropdown-submenu + .dropdown-menu').next('div').addClass('d-none')
+    //     }
+    //     $(this).next('div').toggle()
+    //     e.stopPropagation()
+    //     e.preventDefault()
+    // });
+
+    $('.dropdown-item > button').click(function (e) {
+        e.stopPropagation()
+        e.preventDefault()
+    });
+
+    $(".dropdown-item").hover(
+        function () {
+            $(this).addClass("inverse")
+        },
+        function () {
+            $(this).removeClass("inverse")
+        }
+    );
+
+
+    $('.dropdown-submenu > button').hover(
+        function () {
+            $('.dropdown-submenu > button').next('.dropdown-menu').removeClass('show');
+            $(this).next('.dropdown-menu').addClass('show');
+            $(this).next('.dropdown-menu').hover(
+                function () {
+                    $(this).addClass('show');
+                },
+                function () {
+                    $(this).removeClass('show');
+                }
+            )
+        },
+        function () {
+            $('.dropdown-submenu > button').next('.dropdown-menu').removeClass('show');
+        }
+    );
+
 // warning if array is empty
     $('.js-no-data').html('no records found')
-    $('td, .js-no-data').each(function(){
-        if($(this).html() =='no records found'){
+    $('td, .js-no-data').each(function () {
+        if ($(this).html() == 'no records found') {
             $(this).addClass('alert alert-warning')
         }
     })
 // Resize Header
     $('.show').removeClass("show");
-    // Bootstrap 4 Responsive Dropdown Multi Submenu
-    // $(function () {
-    //     $('.dropdown-menu a.dropdown-toggle').on('click', function () {
-    //         if (!$(this).next().hasClass('show')) {
-    //             $(this).parents('.dropdown-menu').find('.show').removeClass("show");
-    //         }
-    //         let $subMenu = $(this).next(".dropdown-menu");
-    //         $subMenu.toggleClass('show'); // appliqué au ul
-    //         $(this).parent().toggleClass('show'); // appliqué au li parent
-    //
-    //         $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function () {
-    //             $('.dropdown-submenu .show').removeClass("show") // appliqué au ul
-    //                 .removeClass("show"); // appliqué au li parent
-    //         });
-    //         return false;
-    //     });
-    // });
 
 // Session
-    if ($('#user').length) {
-        user = $('#user').text()
-    }
-    // clear session if user logout
-    if (sessionStorage.getItem('user') !== 'anon' && user !== sessionStorage.getItem('user')) {
-        sessionStorage.clear();
-        $('#cardButton').addClass('d-none')
-    }
+    sessionInitialize()
+    $('#cardButton').click(function () {
+        // console.log('this user ', user, 'getCartSession ', getCartSession('cart'))
 
-    if (!sessionStorage.getItem('user') || user !== sessionStorage.getItem('user')) {
-        sessionStorage.setItem('user', user)
-    }
+        // console.log(
+        //
+        //     'user ', user,
+        //     '\nwindow.sessionStorage', window.sessionStorage,
+        //     '\nlocalStorage', localStorage
+        // );
 
-
-    if (getCartSession('cart').length) {
-        sessionCart = JSON.parse(getCartSession('cart'))
-        $('#cardButton').removeClass('d-none')
-    }
-
-
-    if (sessionCart && sessionCart.length > 0) {
-        sessionCart.forEach(function (value) {
-            const id = value['id']
-            cart['game-' + id] = value
-            //console.log('session cart ', id, value)
-            addToCartGame(id);
-        })
-
-        // console.log('session cart ', cart)
-    }
-
-    // console.log('this user ', user, getCartSession('cart'))
-    /*
-    console.log(
-
-        'user ', user,
-        '\nwindow.sessionStorage', window.sessionStorage,
-        '\nlocalStorage', localStorage
-    );
-    /**/
+        sessionInitialize()
+    })
 
 
 // Resize Windows
@@ -107,17 +107,87 @@ $(document).ready(function () {
     });
 
 //  Cart management
+    // Ajax : Submit to pay
+    $('#cartShopping').submit(function (e) {
+        e.preventDefault()
+        if ($('#cartShopping-userId').length > 0) {
+
+            let url = $(this).attr("action")
+            let flashMessages = $('#flashMessages')
+            let data = $(this).serialize()
+            let html = null
+            let js = null
+            let message = null
+            let type = null
+            let title = null;
+
+            // console.log('data form ', data,
+            //     '\ncart,', cart,
+            //     '\nsessionCart,', sessionCart,
+            //     '\nform,', $(this).find('input')
+            // )
+
+            flashMessages.html(
+                '       <div class="d-flex justify-content-center my-0 py-0' +
+                '           <div class="spinner-border" role="status">\n' +
+                '               <span class="sr-only">Loading...</span>\n' +
+                '           </div>\n' +
+                '       </div>'
+            )
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+
+                success: function (result, xhr) {
+                    // console.log('result : ', result,'\nxhr : ', xhr,'\ncart : ', cart,'\nsessionCart : ', sessionCart)
+                    type = 'success'
+                    // message = 'Success ' + xhr.status + ' : ' + xhr.statusText
+                    html = result.data.html
+                    js = result.data.js
+                    title = result.data.title
+                    $('#cardModalLong').modal('hide')
+                    sessionInitialize()
+                },
+
+                error: function (xhr, result, status, error) {
+                    type = 'error'
+                    message = 'Error ' + xhr.status + ' : ' + xhr.statusText
+                    html = xhr.responseJSON.data.html
+                },
+
+                complete: function (xhr, result) {
+                    $("#blocBody").html(html)
+                    if (message) {
+                        flashMessages.html('<div class="alert alert-warning"> ' + message + ' </div>')
+                    }
+                    if (js) {
+                        $('body').append('<script>\n' + js + '\n</script>')
+                        //displayEvent()
+                    }
+                    $('h1').html(title)
+                }
+            });
+        } else {
+            alert('login to your account to continue')
+            window.location.href = '/login';
+        }
+    })
+
+
     $('.js-add-to-cart').click(function () {
-        if($('#cardButton').hasClass('d-none')){
+        if ($('#cardButton').hasClass('d-none')) {
             $('#cardButton').removeClass('d-none')
         }
         const id = $(this).attr('data-value');
 
         //console.log('$(this).parents(#game-id)', $(this).parents('#game-'+id).html())
         // console.log('$(this).parents(.game-info)', $(this).parents('.game-info').html())
-        const gameName = $(this).parents('#game-'+id).find('.js-name').html()
+        const gameName = $(this).parents('#game-' + id).find('.js-name small').html().replace('\n', '').trim()
 
-        const price = parseFloat($(this).parents('#game-'+id).find('.js-price').attr('data-value'))
+        const price = parseFloat($(this).parents('#game-' + id).find('.js-price').attr('data-value'))
 
         let cartGame = cart['game-' + id]
             ? cart['game-' + id]
@@ -131,11 +201,9 @@ $(document).ready(function () {
         cartGame['nb'] += 1
         cart['game-' + id] = cartGame
         setCartSession('cart', cart);
-        addToCartGame(id)
+        addToCartGame(id, cart['game-' + id]);
     })
 });
-
-
 
 
 // funsctions js
@@ -163,21 +231,22 @@ function updateTotalBuy(sum) {
     $('#js-total-cart').html(total.toFixed(2))
 }
 
-function addToCartGame(id) {
+function addToCartGame(id, order) {
+    // console.log('addToCartGame('+id+') total', $('#js-total-cart').html() ,'\norder', order ,'\ncart[game-' + id+'][nb]', cart['game-' + id]['nb'])
     const divId = 'js-cart-game-' + id;
     const newP = $("#js-cart-game-" + id);
     if (newP.length) {
-        newP.find('input').val(cart['game-' + id]['nb'])
+        newP.find('input').val(order['nb'])
     } else {
         $('#js-games-selected').append
         (
             '<div id="' + divId
             + '" class="row m-0 py-1">' +
-            '<div class="col-5 m-0 p-0">' + cart['game-' + id]['name'] + '</div>' +
+            '<div class="col-5 m-0 p-0">' + order['name'] + '</div>' +
             '<div class="col-2 m-0 p-0"> : $<span id="js-sum-' + id + '"> - </span></div>' +
-            '<div class="col-2 m-0 p-0">= ' + cart['game-' + id]['price'] + '</div> ' +
+            '<div class="col-2 m-0 p-0">= ' + order['price'] + '</div> ' +
             '<div class="col-2 m-0 p-0"><i class="fas fa-times"></i> ' +
-            '<input id="input-game-' + id + '" name="input-game-' + id + '" type="number" value="1" min="0" class="w-50 js-input-games-selected" />' +
+            '<input id="input-game-' + id + '" name="orders[' + id + ']" type="number" value="1" min="0" class="w-50 js-input-games-selected" />' +
             '</div>' +
             '<div class="col-1 m-0"><button class="js-cart-delete btn-danger mx-5" onclick="deleteCartGame(\'game-' + id + '\')">' +
             '<i class="fa fa-trash"></i></button>' +
@@ -189,7 +258,7 @@ function addToCartGame(id) {
     }
     numberOfGamesInCart();
 
-    const sum = Math.round(cart['game-' + id]['price'] * 100 * cart['game-' + id]['nb']) / 100
+    const sum = Math.round(order['price'] * 100 * order['nb']) / 100
     $('#js-sum-' + id).html(sum.toFixed(2))
     updateTotalBuy(sum)
 
@@ -224,7 +293,50 @@ function deleteCartGame(id) {
 
 }
 
+function SaveCartGame() {
+    console.log('SaveCartGame')
+}
+
 // Session
+
+function sessionInitialize() {
+
+    $('#js-total-cart').html(0)
+    // console.log('sessionInitialize')
+
+    if ($('#user').length) {
+        user = $('#user').text()
+    }
+    // clear session if user logout
+    if (sessionStorage.getItem('user') !== 'anon' && user !== sessionStorage.getItem('user')) {
+        sessionStorage.clear();
+        $('#cardButton').addClass('d-none')
+    }
+
+    if (!sessionStorage.getItem('user') || user !== sessionStorage.getItem('user')) {
+        sessionStorage.setItem('user', user)
+    }
+
+
+    if (getCartSession('cart').length) {
+        sessionCart = JSON.parse(getCartSession('cart'))
+        $('#cardButton').removeClass('d-none')
+    }
+
+
+    if (sessionCart && sessionCart.length > 0) {
+        sessionCart.forEach(function (value) {
+            const id = value['id']
+            cart['game-' + id] = value
+            //console.log('session cart ', id, value)
+            addToCartGame(id, cart['game-' + id]);
+        })
+
+        // console.log('session cart ', cart)
+    }
+
+
+}
 
 function setCartSession(name, jsonObject) {
     const myObject_json = JSON.stringify(Object.values(jsonObject));
@@ -241,10 +353,8 @@ function setCartSession(name, jsonObject) {
 }
 
 function getCartSession(name) {
-    const myObject_json = JSON.stringify();
     return sessionStorage.getItem(name) || [];
 }
-
 
 
 //nav bar Layout
@@ -260,10 +370,10 @@ function changeDisplayHeader() {
 function changeHeight() {
     $("#content, body > section").css(
         'min-height',
-        ($('html').height() - (1.1*$('body > header').height() + $('body > footer').height())) + 'px');
+        ($('html').height() - (1.1 * $('body > header').height() + $('body > footer').height())) + 'px');
 
-    $("body,body >section").css('margin-bottom', (1.1*$("body > footer").height() )+ 'px')
-        .css('margin-top', 1.1*$("body > header").height() + 'px');
+    $("body,body >section").css('margin-bottom', (1.1 * $("body > footer").height()) + 'px')
+        .css('margin-top', 1.1 * $("body > header").height() + 'px');
 
     //$("#navigationLeft").css('top', $("body > header").height() + 'px')
 
@@ -285,12 +395,12 @@ function starRating(value) {
             } else if (i - .75 < value) {
                 htmlCode += '<i class="fas fa-star-half-alt" style="color:goldenrod"></i>'
             } else {
-                htmlCode += '<i class="far fa-star"></i>'
+                htmlCode += '<i class="far fa-star"  style="color:white"></i>'
             }
             //.log(i, '\t', value, '\n--', htmlCode);
         }
     } else {
-        htmlCode += '<i class="fas fa-star" style="text-decoration: red line-through;"></i>';
+        htmlCode += '<i class="fas fa-star noStarRating"></i>'
     }
 
     //console.log('starRating', htmlCode);
@@ -303,10 +413,11 @@ function starRating(value) {
 // add an html tag to the form with the class 'js-element'
 
 function displayElement(className, element) {
+    // console.log('displayElement(',className,', ',element,')')
 
-    let divId = $('#'+className+'_' + element);
+    let Id = className + '_' + element;
+    let divId = $('#' + className + '_' + element);
     let divClass = $('.js-' + element);
-    console.log('divId', divId.val())
 
     const values = divClassMapValues(divClass);
     const valueDivId = divId.val()
@@ -315,10 +426,12 @@ function displayElement(className, element) {
     } else {
         divClass.parent().addClass('d-none');
     }
-    console.log('$(\'#',className,'-',element+'\').val()', divId.val());
+    //console.log('$(\'#', className, '-', element + '\').val()', divId.val());
+
     divId.change(function () {
-        console.log(element, ' : ', values)
-        console.log('$(\'#js-element\').val()', divId.val());
+        //console.log(Id, '\ndivId', divId.val())
+        //console.log(element, ' : ', values)
+        //console.log('$(#js-element).val()', divId.val());
         if (divId.val().length) {
             divClass.parent().removeClass('d-none');
             divId.prop('required', true);
@@ -339,10 +452,9 @@ function divClassMapValues(divClass) {
 }
 
 function divClassOriginValues(divClass) {
-    console.log('values : ',values)
     divClass.each(function () {
-        $(this).val(values[$(this).attr('id')]);
-        console.log('val', $(this).val(),' values :',values[$(this).attr('id')] );
+        $(this).val([$(this).attr('id')]);
+        // console.log('divClassOriginValues val', $(this).val(), ' values :', [$(this).attr('id')]);
     })
 }
 

@@ -17,6 +17,9 @@
         .game, .game + div {
             background-color: #999999 !important;
         }
+        img {
+            margin : 1rem auto;
+        }
 
 
         .game .btn, .game + div .btn {
@@ -55,22 +58,37 @@
                 {#                    {% for game in games |slice(0, 20) %}#}
                 {% for game in games %}
                     <li data-target="#carouselGameIndicators" data-slide-to="{{ game.id }}"
-                        {% if loop.index ==1 %}class="active"{% endif %}></li>
+                        {% if loop.index ==1 %}class="active"{% endif %}>
+
+                    </li>
                 {% endfor %}
             </ol>
         {% endif %}
         <div class="carousel-inner">
             {#                    {% for game in games |slice(0, 20) %}#}
             {% for game in games %}
-                <div class="carousel-item {% if loop.index ==1 %}active{% endif %}">
+                <div class="carousel-item {% if loop.index ==1 %}active{% endif %}"  class="mb-5">
                     <a href="{{ path('game_show', {'id':game.id}) }}">
-                        <img class="d-block mw-75  m-auto"
+                        <img class="d-block mw-75 mt-2 mb-5 mx-auto"
                              src="{{ game.imageUrl ?game.imageUrl :asset('asset/img/no-image-available.svg') }}"
+{#                             src="{{ asset('asset/img/no-image-available.svg') }}"#}
                              style="max-width: 75%; height:20rem;"
                              alt="{{ game.name |capitalize }}">
                     </a>
                     <div class="carousel-caption d-none d-md-block">
-                        <h5>{{ game.name |capitalize }} </h5>
+                        <h5>
+                            <span class="inverse w-75 m-0 p-2 opacity-4">
+                            {{ game.name |capitalize }}
+                            {% if game.avgRating %}
+                                <span class="badge badge-warning">
+                                        {{ game.avgRating }}
+                                        <i class="fa fa-star" aria-hidden="true" style="color:darkgoldenrod;"></i>
+                                    </span>
+                            {% else %}
+                                <i class="fas fa-star noStarRating"></i>
+                            {% endif %}
+                            </span>
+                        </h5>
                         <div style="overflow: hidden;text-overflow: ellipsis; height: 2rem;white-space: nowrap; ">
                             {{ game.description |raw }}
                         </div>
@@ -121,6 +139,7 @@
                     </div>
                     <div class="text-center">
                         <img src="{{ game.imageUrl ?game.imageUrl :asset('asset/img/no-image-available.svg') }}"
+{#                        <img src="{{asset('asset/img/no-image-available.svg') }}"#}
                              alt="{{ game.name |capitalize }}"
                              style="height: 10rem"
                         >
@@ -234,279 +253,3 @@
     </script>
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-{#{% extends 'base.html.twig' %}#}
-
-{#{% block title "Game index" %}#}
-
-{#{% block h1 "Game index" %}#}
-
-
-{#{% block stylesheets %}#}
-
-{#    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css"/>#}
-
-{#    #}{#    <link rel="stylesheet" href="https://drvic10k.github.io/bootstrap-sortable/Contents/bootstrap-sortable.css"/>#}
-
-{#    <style type="text/css">#}
-
-{#        th.sortable {#}
-{#            color: white;#}
-{#            background: rgb(27, 38, 49) !important;;#}
-{#        }#}
-
-{#        th.sortable:hover {#}
-{#            background: rgba(27, 38, 49, .7) !important;#}
-{#        }#}
-
-{#        .visible-column {#}
-{#            color: rgba(27, 38, 49, .7) !important;#}
-{#            background: rgba(27, 38, 49, .2) !important;#}
-{#        }#}
-
-{#    </style>#}
-{#{% endblock %}#}
-
-{#{% block body %}#}
-{#    <div>#}
-{#        <small id="columnToggle">#}
-{#            Toggle column:#}
-{#            <a class="toggle-vis" data-column="1">Id</a> -#}
-{#            <a class="toggle-vis" data-column="2">Name</a> -#}
-{#            <a class="toggle-vis" data-column="3">Price</a> -#}
-{#            <a class="toggle-vis" data-column="4">MSRP</a> -#}
-{#            <a class="toggle-vis" data-column="5">Year</a> -#}
-{#            <a class="toggle-vis" data-column="6-7">Players</a> -#}
-{#            <a class="toggle-vis" data-column="8-9">Time</a> -#}
-{#            <a class="toggle-vis" data-column="10">Age</a> -#}
-{#            <a class="toggle-vis" data-column="11">Published</a> -#}
-{#            <a class="toggle-vis" data-column="12-">Others</a>#}
-{#        </small>#}
-{#    </div>#}
-
-
-{#    <table id="gamesTable"#}
-{#           class="table table-bordered"#}
-{#           cellspacing="0">#}
-{#        <thead>#}
-{#        <tr>#}
-{#            <th class="sortable align-middle" rowspan="2">actions</th>#}
-{#            <th class="sortable align-middle" rowspan="2">Id</th>#}
-{#            <th class="sortable align-middle" rowspan="2">Name</th>#}
-{#            <th class="sortable align-middle" rowspan="2">Price</th>#}
-{#            <th class="sortable align-middle" rowspan="2">MSRP</th>#}
-{#            <th class="sortable align-middle" rowspan="2">Year</th>#}
-{#            <th class="inverse align-middle" colspan="2">Players</th>#}
-{#            <th class="inverse align-middle" colspan="2">Time</th>#}
-{#            <th class="sortable align-middle" rowspan="2">Age</th>#}
-{#            <th class="sortable align-middle" rowspan="2">Published</th>#}
-{#            <th class="sortable align-middle" rowspan="2">Description</th>#}
-{#            <th class="sortable align-middle" rowspan="2">RulesUrl</th>#}
-{#            <th class="sortable align-middle" rowspan="2">OfficialUrl</th>#}
-{#            <th class="sortable align-middle" rowspan="2">Weight</th>#}
-{#            <th class="sortable align-middle" rowspan="2">#}
-{#                <span class="d-inline-block">#}
-{#                    Sizes h#}
-{#                    <span style="font-size: .7rem;">#}
-{#                        <i class="fas fa-times"></i>#}
-{#                    </span>#}
-{#                    w#}
-{#                    <span style="font-size: .7rem;">#}
-{#                        <i class="fas fa-times"></i>#}
-{#                    </span>#}
-{#                    d#}
-{#                </span>#}
-{#            </th>#}
-{#        </tr>#}
-{#        <tr>#}
-{#            <th class="sortable">min</th>#}
-{#            <th class="sortable">max</th>#}
-{#            <th class="sortable">min</th>#}
-{#            <th class="sortable">max</th>#}
-{#        </tr>#}
-{#        </thead>#}
-
-{#        <tbody>#}
-{#        {% for game in games %}#}
-{#            <tr>#}
-{#                <td>#}
-{#                    <div class="row">#}
-{#                        <div class="col-sm-4 col-12 m-0 px-1">#}
-{#                            <small>#}
-{#                                <a href="{{ path('game_show', {'id': game.id}) }}"#}
-{#                                   title="Show" class="btn btn-info w-lg-50 w-100"#}
-{#                                ><i class="fas fa-info"></i></a>#}
-{#                            </small>#}
-{#                        </div>#}
-{#                        <div class="col-sm-4 col-12 m-0 px-0">#}
-{#                            <small>#}
-{#                                <a href="#"#}
-{#                                   title="Cart" class="btn btn-warning w-lg-50 w-100 js-add-to-cart"#}
-{#                                ><i class="fa fa-cart-plus" aria-hidden="true"></i>#}
-{#                                </a>#}
-{#                            </small>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </td>#}
-{#                <td class="js-id">{{ game.id }}</td>#}
-{#                <td class="js-name">{{ game.name }}</td>#}
-{#                {% set newPrice = game.price*(1+game.discount) %}#}
-{#                <td class="js-price" data-value="{{ newPrice |round(2, 'common') }}">#}
-{#                    {% if game.discount %}#}
-{#                        <span class="border border-warning">{{ newPrice |round(2, 'common') }}$</span>#}
-{#                        <br/>#}
-{#                        <small>#}
-{#                            <small>#}
-{#                            <span class="btn-outline-warning">#}
-{#                                <span style="text-decoration: line-through;">{{ game.price }}$</span>#}
-{#                            </span>#}
-{#                                <span class="badge badge-warning">{{ game.discount*100 }}%</span>#}
-{#                            </small>#}
-{#                        </small>#}
-
-{#                    {% else %}#}
-{#                        {{ game.price }}$#}
-{#                    {% endif %}#}
-
-{#                </td>#}
-{#                <td>{{ game.msrp }}</td>#}
-{#                <td>{{ game.yearPublished }}</td>#}
-{#                <td>{{ game.minPlayers }} </td>#}
-{#                <td>{{ game.maxPlayers }}</td>#}
-{#                <td>#}
-{#                    {{ game.minPlaytime ? game.minPlaytime|date('H:i:s') : '' }}#}
-{#                </td>#}
-{#                <td>#}
-{#                    {{ game.maxPlaytime ? game.maxPlaytime|date('H:i:s') : '' }}#}
-{#                </td>#}
-{#                <td>{{ game.minAge ? "+"~game.minAge:"--" }}</td>#}
-{#                <td>{{ game.published ? 'Yes' : 'No' }}</td>#}
-{#                <td>{{ game.description }}</td>#}
-{#                <td>{{ game.rulesUrl }}</td>#}
-{#                <td>{{ game.officialUrl }}</td>#}
-{#                <td>{{ game.weightAmount }} {{ game.weightUnits }}</td>#}
-{#                <td>#}
-{#                    {% if game.sizeUnits %}#}
-{#                        <span class="d-inline-block">#}
-{#                        {{ game.sizeHeight |round(1, 'common') }}#}
-{#                    <span style="font-size: .7rem;">#}
-{#                        <i class="fas fa-times"></i>#}
-{#                    </span>#}
-{#                    {{ game.sizeWidth |round }}#}
-{#                    <span style="font-size: .7rem;">#}
-{#                        <i class="fas fa-times"></i>#}
-{#                    </span>#}
-{#                    {{ game.sizeDepth |round(1) }}#}
-{#                    ({{ game.sizeUnits }})#}
-{#                    </span>#}
-{#                    {% endif %}#}
-{#                </td>#}
-{#            </tr>#}
-{#        {% endfor %}#}
-{#        </tbody>#}
-{#        <tfoot>#}
-
-{#        <tr>#}
-{#            <th class="inverse">Actions</th>#}
-{#            <th class="inverse">Id</th>#}
-{#            <th class="inverse">Name</th>#}
-{#            <th class="inverse">Price#}
-{#            <th class="inverse">MSRP</th>#}
-{#            <th class="inverse">Year</th>#}
-{#            <th class="inverse align-middle" colspan="2">Players</th>#}
-{#            <th class="inverse align-middle" colspan="2">Time</th>#}
-{#            <th class="inverse">Age</th>#}
-{#            <th class="inverse">Published</th>#}
-{#            <th class="inverse">Description</th>#}
-{#            <th class="inverse">RulesUrl</th>#}
-{#            <th class="inverse">OfficialUrl</th>#}
-{#            <th class="inverse">Weight</th>#}
-{#            <th class="inverse">Sizes</th>#}
-{#        </tr>#}
-{#        </tfoot>#}
-{#    </table>#}
-
-{#{% endblock %}#}
-
-{#{% block javascripts %}#}
-{#    #}{#    <script src="https://drvic10k.github.io/bootstrap-sortable/Scripts/bootstrap-sortable.js"></script>#}
-
-
-{#    <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>#}
-
-{#    {{ parent() }}#}
-{#    <script>#}
-
-
-
-{#        // https://datatables.net/examples/basic_init/language.html#}
-
-{#        $(document).ready(function () {#}
-{#            let columnDefs = [];#}
-{#            let gamesTable = $("#gamesTable > tbody  tr:first-child td");#}
-{#            console.log('gamesTable.length : ', gamesTable.length)#}
-{#            gamesTable.each(function (index, elm) {#}
-{#                columnDefs.push({"orderable": index > 0 && index < 12, "targets": index})#}
-
-{#            });#}
-{#            let table = $('#gamesTable').DataTable({#}
-{#                // data:{{ games|json_encode() }},   // serializable data only#}
-{#                "order": [[3, "asc"]],#}
-{#                "columnDefs": columnDefs,#}
-{#                // "columnDefs": [#}
-{#                //     {"orderable": false, "targets": ($("#gamesTable > tfoot  th").length - 1)},#}
-{#                //     {"orderable": false, "targets":  0}#}
-{#                // ],#}
-{#                "dom": '<"top"f>tr<"bottom"lip><"clear">',#}
-{#                "scrollY": "40vh",#}
-{#                "scrollX": true,#}
-{#                "lengthChange": true,#}
-{#                // "pagingType": "first_last_numbers",#}
-{#                // "scrollCollapse": true,#}
-{#                // "paging":         false,#}
-
-{#            });#}
-
-{#            $('#gamesTable_paginate a').addClass('btn btn-inverse m-1');#}
-
-{#            $('a.toggle-vis').on('click', function (e) {#}
-{#                e.preventDefault();#}
-{#                console.log('e :  ', e, ' - $(this) : ', $(this));#}
-
-{#                // Get the column API object#}
-{#                const min_max = $(this).attr('data-column').split('-');#}
-{#                console.log('min_max : ', min_max)#}
-{#                if (min_max.length === 1) {#}
-{#                    let column = table.column($(this).attr('data-column'));#}
-{#                    // Toggle the visibility#}
-{#                    column.visible(!column.visible());#}
-{#                } else {#}
-{#                    const imax = Number(min_max[1]) > Number(min_max[0]) ? Number(min_max[1]) + 1 : gamesTable.length;#}
-{#                    console.log('min_max for  imax :', imax, Number(min_max[1]) > Number(min_max[0]), Number(min_max[1]) + 1, gamesTable.length)#}
-{#                    for (let i = min_max[0]; i < imax; i++) {#}
-{#                        let column = table.column(i);#}
-{#                        // Toggle the visibility#}
-{#                        column.visible(!column.visible());#}
-{#                        console.log('min_max for : ', i, ' - imax :', imax)#}
-{#                    }#}
-{#                }#}
-{#                if ($(this).hasClass('visible-column')) {#}
-{#                    $(this).removeClass('visible-column');#}
-{#                } else {#}
-{#                    $(this).addClass('visible-column');#}
-{#                }#}
-{#            });#}
-{#        });#}
-
-{#    </script>#}
-
-{#{% endblock %}#}

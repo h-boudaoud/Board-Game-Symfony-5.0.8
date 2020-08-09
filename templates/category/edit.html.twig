@@ -3,12 +3,14 @@
 {% block title %}Edit Category{% endblock %}
 
 {% block body %}
-    <h1>Edit Category</h1>
+    <h2>Edit Category</h2>
+    {{ include('category/_form.html.twig', {'button_label': category.id is not null?'Update':'Save'}) }}
 
-    {{ include('category/_form.html.twig', {'button_label': 'Update'}) }}
 
+    <a href="{{ path('category_index') }}" class="btn btn-inverse my-2" title="Category list"><i class="fa fa-list"></i>
+        Category list</a>
 
-    <a href="{{ path('category_index') }}" class="btn btn-inverse" title="Category list"><i class="fa fa-list"></i> Category list</a>
-
-    {{ include('category/_delete_form.html.twig') }}
+    {% if category.id is not null %}
+        {{ include('category/_delete_form.html.twig') }}
+    {% endif %}
 {% endblock %}

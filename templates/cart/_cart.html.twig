@@ -1,0 +1,75 @@
+{% if errorMessage %}
+<div class="alert alert-warning">{{ errorMessage  }}</div>
+{% else %}
+<div class="container">
+    <table class="table">
+        <thead>
+
+        <tr>
+            <th>Ref</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Discount</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.gameId }}</td>
+                <td>{{ order.name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.price }} ($)</td>
+                <td>{{ order.discount }}</td>
+                <td>{{ order.total |round(3, 'common') }}</td>
+            </tr>
+        {% endfor %}
+
+        <tr>
+            <td colspan="5" class="text-right">Total : $</td>
+            <td>{{ total |round(2, 'common') }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form action="{{ path('cart_orders') }}" method="post">
+
+        {% for order in cart %}
+            <input type="hidden" name="orders[{{ loop.index }}]" value="{{ order }}"/>
+        {% endfor %}
+        {% if customer %}
+            <a id="customer_address" class="btn btn-inverse" href="{{ path('customer_address_new') }}">
+                <i class="fa fa-plus-square"></i>
+                Add New Address</a>
+            <div id="customerAddresses" class="form-group">
+                <!-- Material checked disabled -->
+
+                <label for="customer_mainAddress">Choose the delivery address</label>
+                {% for address in customer.addresses %}
+
+                    <!-- Group of default radios - option 2 -->
+                    <div id="customer_mainAddress" class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input"
+                               id="address_{{ address.id }}" name="address" value="{{ address.id }}"
+                               {% if address==customer.mainAddress %}checked{% endif %}
+                        >
+                        <label class="custom-control-label" for="address_{{ address.id }}">
+                            {{ address.toString }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <a id="user_profile_edit" class="btn btn-inverse js-ajax" href="{{ path('user_profile_edit') }}"><i
+                        class="fa fa-user"></i> Complete your profile</a>
+        {% endif %}
+        <button class="btn btn-inverse" type="submit"><i class="fa fa-shopping-cart"></i> Pay</button>
+    </form>
+
+    <div id="ajax-div">
+    </div>
+
+</div>
+{% endif %}

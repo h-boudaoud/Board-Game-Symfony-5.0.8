@@ -19,6 +19,21 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
+
+    public function findSortedBy( ?array $orderBy = null)
+    //public function findSortedBy(string $orderBy, ?string $sortParam='DESC'): ?array
+    {
+        return $this->findBy([],$orderBy);
+//        if(!in_array($sortParam,['ASC', 'DESC'])) {
+//            $sortParam='DESC';
+//        }
+//            return $this->createQueryBuilder('r')
+//                //->andWhere('r.id = 1')
+//                ->orderBy('r.'.$orderBy, $sortParam)
+//                ->getQuery()
+//                ->getResult();
+    }
+
     // /**
     //  * @return Review[] Returns an array of Review objects
     //  */

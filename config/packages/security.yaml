@@ -6,7 +6,8 @@ security:
         ROLE_MODERATOR: ROLE_EMPLOYEE
         ROLE_OPERATOR: ROLE_EMPLOYEE
         ROLE_STOREKEEPER: ROLE_EMPLOYEE
-        ROLE_ADMIN: [ROLE_MODERATOR, ROLE_OPERATOR, ROLE_STOREKEEPER]
+        ROLE_USER_MANAGER: ROLE_EMPLOYEE
+        ROLE_ADMIN: [ROLE_MODERATOR, ROLE_OPERATOR, ROLE_STOREKEEPER, ROLE_USER_MANAGER]
         ROLE_SUPER_ADMIN: ROLE_ADMIN
 
     providers:
@@ -26,6 +27,10 @@ security:
                     storekeeper:
                         password: storekeeper
                         roles: ROLE_STOREKEEPER
+
+                    user_manager:
+                        password: user_manager
+                        roles: ROLE_USER_MANAGER
                     admin:
                         password: admin
                         roles: ROLE_ADMIN

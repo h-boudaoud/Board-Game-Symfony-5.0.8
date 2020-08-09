@@ -7,6 +7,8 @@ use App\Entity\Review;
 use App\Entity\User;
 use App\Form\ReviewType;
 use App\Repository\ReviewRepository;
+use App\Service\IsAuthorized;
+use Doctrine\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,77 +20,84 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ReviewController extends AbstractController
 {
+
     /**
-     * @Route("/", name="review_index", methods={"GET"})
-     * @param ReviewRepository $reviewRepository
+     * Only for the demo solution. So as not to modify the initial themes by the testers of the solution.
+     * This is the number of objects persisted in the database with the fixed data.
+     */
+    private const NB_INITIAL_IN_DATABASE =  1619;
+
+    /**
+     * @var ReviewRepository
+     */
+    private $repository;
+
+    /**
+     * @var ObjectManager
+     */
+    private $manager;
+
+    public function __construct(ReviewRepository $repository, ObjectManager $manager)
+    {
+        $this->repository = $repository;
+        $this->manager = $manager;
+    }
+
+    /**
+     * @IsGranted("ROLE_MODERATOR", statusCode=401, message="No access! Get out!")
+     * @Route("/admin", name="review_index", methods={"GET"})
      * @return Response
      */
-    public function index(ReviewRepository $reviewRepository): Response
+    public function index(): Response
     {
-        $reviews=[];
-        if (in_array('ROLE_MODERATOR', $this->getUser()->getRoles())) {
-            $reviews = $reviewRepository->findAll();
-        }else{
-            $reviews = $reviewRepository->findBy(['user'=>$this->getUser()]);
-        }
         return $this->render('review/index.html.twig', [
-            'reviews' => $reviews,
+            'reviews' => $this->repository->findBy([], ['createdAt' => 'DESC']),
             'title' => 'Reviews List',
         ]);
     }
 
     /**
-     * @IsGranted("ROLE_USER", statusCode=401, message="No access! Get out!")
+     * @IsGranted("ROLE_MODERATOR", statusCode=401, message="No access! Get out!")
+     * @Route("/admin/new_reviews", name="review_newReviews", methods={"GET"})
+     * @return Response
+     */
+    public function newReviews(): Response
+    {
+        return $this->render('review/index.html.twig', [
+            'reviews' => $this->repository->findBy(['validated' => false], ["createdAt" => "ASC"]),
+            //'reviews' => $this->repository->findAll(),
+            'title' => 'Reviews List',
+        ]);
+    }
+
+    /**
+     * IsGranted("ROLE_USER", statusCode=401, message="No access! Get out!")
      * @Route("/user/{id<\d+>}-{username}", name="review_byUser", methods={"GET"})
-     * @param ReviewRepository $reviewRepository
      * @param User $user
      * @return Response
      */
-    public function reviewsByUser(ReviewRepository $reviewRepository,User $user): Response
+    public function reviewsByUser(User $user): Response
     {
-        if (!($this->getUser() && in_array('ROLE_MODERATOR', $this->getUser()->getRoles()))) {
-            $user = $this->getUser();
-        }
-        //if ($this->getUser() && in_array('ROLE_MODERATOR', $this->getUser()->getRoles())) {
-        //    $reviews = $user->getReviews();
-        //}else{
-        //    $reviews = $reviewRepository->findBy(['user'=>$this->getUser()]);
-        //}
         return $this->render('review/index.html.twig', [
-            'user'=>$user,
+            'user' => $user,
             'reviews' => $user->getReviews(),
-            'title' => $user->getUserName().' user reviews list',
+            'title' => $user->getUserName() . ' user reviews list',
         ]);
     }
 
     /**
      * @Route("/game/{id<\d+>}-{name}", name="review_byGame", methods={"GET"})
-     * @param ReviewRepository $reviewRepository
      * @param Game $game
      * @return Response
      */
-    public function reviewsByGame(ReviewRepository $reviewRepository,?Game $game=null): Response
+    public function reviewsByGame(Game $game): Response
     {
-        if(!$game){
-        
-            if (!($this->getUser() && in_array('ROLE_MODERATOR', $this->getUser()->getRoles()))) {
-                $user =$this->getUser();
-                return $this->render('review/index.html.twig', [
-                    'user'=>$user,
-                    'reviews' => $this->getUser()->getReviews(),
-                    'title' => $user->getUserName().' user reviews list',
-                ]);
-            }
-        
-            return $this->render('review/index.html.twig', [
-                'reviews' => $reviewRepository->findAll(),
-                'title' => 'Reviews list',
-            ]);
-        }
+
         return $this->render('review/index.html.twig', [
-            'reviews' => $reviewRepository->findBy(['game'=>$game]),
+            'reviews' => $game->getReviews(),
+            //'reviews' => $this->repository->findBy(['game' => $game, ['createdAt' => 'DESC']]),
             'game' => $game,
-            'title' => $game->getName().' game reviews list',
+            'title' => $game->getName() . ' game reviews list',
         ]);
     }
 
@@ -110,28 +119,37 @@ class ReviewController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // dd(['review'=>$review, 'form'=>$form->get('addRating')->getData()]);
-            if(!$form->get('addRating')->getData()) {
-                $review->setRating(null);
-            }
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($review);
-            $entityManager->flush();
-            
-        
-            $this->addFlash(
-                'success',
-                'The request has been accepted'
-            );
-            
-            return $this->redirectToRoute('review_byGame',[
-                    'id'=>$game->getId(),
-                    'name'=>$game->getName()
+            try{
+                if (!$form->get('addRating')->getData()) {
+                    $review->setRating(null);
+                }
+
+                $this->manager->persist($review);
+                $this->manager->flush();
+
+                $this->addFlash(
+                    'success',
+                    'The request has been accepted'
+                );
+
+                return $this->redirectToRoute('review_byGame', [
+                    'id' => $game->getId(),
+                    'name' => $game->getName()
                 ], 201);
+            }catch(\Exception $e){
+                $this->addFlash(
+                    'error',
+                    '400 Bad Request : The server was unable to process the request due to incorrect syntax.' .
+                    '<br />Message the administrator if the problem persists.'.
+                    (in_array("ROLE_STOREKEEPER", $this->getUser()->getRoles()))
+                        ?'<br />'.$e->getMessage():''
+                );
+            }
         }
-        
-        if($form->isSubmitted()){
-        
-            $this->addFlash('error','The request not has been accepted');
+
+        if ($form->isSubmitted()) {
+
+            $this->addFlash('error', 'The request not has been accepted');
         }
 
         return $this->render('review/new.html.twig', [
@@ -155,7 +173,9 @@ class ReviewController extends AbstractController
 //        $form->handleRequest($request);
 //
 //        if ($form->isSubmitted() && $form->isValid()) {
-//            $this->getDoctrine()->getManager()->flush();
+//            $review->setValidated(false);
+//            $this->manager->persist($review);
+//            $this->manager->flush();
 //
 //            return $this->redirectToRoute('review_index');
 //        }
@@ -168,11 +188,8 @@ class ReviewController extends AbstractController
 //    }
 
 
-
-
     /**
-     *
-     * @IsGranted("ROLE_MODERATOR", statusCode=401, message="No access! Get out!")
+     * @IsGranted("ROLE_USER", statusCode=401, message="No access! Get out!")
      * @Route("/{id<\d+>}/delete", name="review_delete", methods={"GET", "DELETE"})
      * @param Request $request
      * @param Review $review
@@ -180,40 +197,38 @@ class ReviewController extends AbstractController
      */
     public function delete(Request $request, Review $review): Response
     {
-        $deleted = $review->getId() > 1296 ;
-        if(
-            $deleted &&
+
+        //Only for the demo solution. So as not to modify the initial themes by the testers of the solution.
+        $isAuthorized = IsAuthorized::ToModifyEntity($review->getId(), 'review');
+        if (Count($isAuthorized)) {
+            $this->addFlash($isAuthorized['type'], $isAuthorized['message']);
+            return $this->redirect($request->headers->get('referer'));
+        } else if (
             (in_array('ROLE_MODERATOR', $this->getUser()->getRoles()) ||
                 $review->getUser() === $this->getUser()
             ) &&
             $this->isCsrfTokenValid('delete' . $review->getId(), $request->request->get('_token'))
-            ){
-                // dump(['id'=>$review->getId()]);
-                $entityManager = $this->getDoctrine()->getManager(); 
-                $entityManager->persist($review);           
-                // $review->setValidated(!$review->getValidated());
-                $entityManager->remove($review);
-                $entityManager->flush();
-        }
-        
-        if($deleted){
-        
+        ) {
+            // dump(['id'=>$review->getId()]);
+            $this->manager->persist($review);
+            // $review->setValidated(!$review->getValidated());
+            $this->manager->remove($review);
+            $this->manager->flush();
+
             $this->addFlash(
                 'success',
-                '202 Accepted : The request was accepted'
+                '202 Accepted : The request was accepted '
             );
-        }else{
+        } else {
             $this->addFlash(
-                'warning',
-                '403 Access forbidden: only the author of this solution who can delete or modify this entity <br /> Create a new entity to test this function.'
+                'error',
+                '401 Access unauthorized : You don\'t authorized to perform this operation.'
             );
         }
-        
-
         return $this->redirect($request->headers->get('referer'));
 
     }
-    
+
     /**
      * @IsGranted("ROLE_MODERATOR", statusCode=401, message="No access! Get out!")
      * @Route("/{id<\d+>}/validate", name="review_activate", methods={"POST"})
@@ -223,33 +238,30 @@ class ReviewController extends AbstractController
      */
     public function validateReview(Request $request, Review $review): Response
     {
-        $updated = $review->getId() > 1296 ;
-
-        if (
-            $updated &&
+        //Only for the demo solution. So as not to modify the initial themes by the testers of the solution.
+        $isAuthorized = IsAuthorized::ToModifyEntity($review->getId(), 'review');
+        if (Count($isAuthorized)) {
+            $this->addFlash($isAuthorized['type'], $isAuthorized['message']);
+        } else if (
             $this->isCsrfTokenValid('validate' . $review->getId(), $request->request->get('_token'))
         ) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $review->setValidated(true);
-            $entityManager->persist($review);
-            $entityManager->flush();
-        }
-        
-        if($updated){
-        
+            $review->setValidated(!$review->getValidated());
+            $this->manager->persist($review);
+            $this->manager->flush();
+
             $this->addFlash(
                 'success',
-                '202 Accepted : The request was accepted'
+                '202 Accepted : The request was accepted '
             );
-        }else{
+        } else {
             $this->addFlash(
-                'warning',
-                '403 Access forbidden: only the author of this solution who can delete or modify this entity <br /> Create a new entity to test this function.'
+                'error',
+                '401 Access unauthorized : You don\'t authorized to perform this operation.'
             );
         }
         return $this->redirect($request->headers->get('referer'));
     }
-    
+
 
     /**
      * @Route("/{id<\d+>}", name="review_show", methods={"GET"})
@@ -260,7 +272,7 @@ class ReviewController extends AbstractController
     {
         return $this->render('review/show.html.twig', [
             'review' => $review,
-            'title' => 'Show review : game '.$review->getGame()->getName(),
+            'title' => 'Show review : game ' . $review->getGame()->getName(),
         ]);
     }
 }

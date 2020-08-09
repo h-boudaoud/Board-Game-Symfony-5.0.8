@@ -25,13 +25,13 @@
             {# pass an array argument to get the messages of those types  #}
             {% for label, messages in app.flashes(['success','warning', 'error']) %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ label }}">
+                    <div class="alert alert-{{ label!='error'?label:'danger' }}">
                         {{ message |raw }}
                     </div>
                 {% endfor %}
             {% endfor %}
         </div>
-        <div>
+        <div id="blocBody">
             {% block body %}
                 Page index
             {% endblock %}

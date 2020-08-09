@@ -17,6 +17,7 @@ class Game
     public const SIZE_UNITS = ['inches', 'mm', 'cm', 'dm', 'm'];
     public const WEIGHT_UNITS = ['g', 'lbs', 'Kg'];
 
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -33,6 +34,7 @@ class Game
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\GreaterThanOrEqual(1900)
+     * @Assert\LessThanOrEqual(propertyPath ="year")
      *
      */
     private $yearPublished;
@@ -131,7 +133,7 @@ class Game
     private $gameId;
 
     /**
-     * @ORM\Column(type="boolean", options={"default" : true})* @ORM\Column(type="string", length=10, nullable=true)
+     * @ORM\Column(type="boolean", options={"default" : true})
      * @Assert\Choice(
      *     choices = { true, false },
      *     message = "Allowed values of published are true ou false."
@@ -224,6 +226,7 @@ class Game
 
     /**
      * @ORM\OneToMany(targetEntity=Review::class, mappedBy="game" , cascade={"persist"})
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $reviews;
 
@@ -233,6 +236,7 @@ class Game
     //***************//
       //    Methods    //
      //***************//
+
 
 
     function __construct()
@@ -258,6 +262,11 @@ class Game
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getYear(): ?int
+    {
+        return intval((new \DateTime())->format('Y'));;
     }
 
     public function getYearPublished(): ?int

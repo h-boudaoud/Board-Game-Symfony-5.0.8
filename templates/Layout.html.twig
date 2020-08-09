@@ -34,18 +34,23 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css"/>
 
-    {#    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"#}
-    {#          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"#}
-    {#          crossorigin="anonymous"/>#}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous"/>
 
-    {#    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"#}
-    {#          rel="stylesheet"/>#}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"/>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister">
 
 
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
           rel="stylesheet"/>
+
+    {#    <link rel="stylesheet" href="{{ asset('asset/css/bootstrap_4.1.3.css') }}"/>#}
+    {#    <link rel="stylesheet" href="{{ asset('asset/css/bootstrap-4.3.1/bootstrap.css') }}"/>#}
+    {#    <link rel="stylesheet" href="{{ asset('asset/css/font-awesome_5.14.0_static_All.css') }}"/>#}
+
     <link rel="stylesheet" href="{{ asset('asset/css/indexStylesheet.css') }}"/>
     {% block stylesheets %}{% endblock %}
 </head>
@@ -113,12 +118,12 @@
                             <li class="nav-item mx-1 border">
                                 <div class="dropdown">
                                     <button class="btn btn-inverse dropdown-toggle" type="button"
-                                            id="dropdownAdminButton" data-toggle="dropdown" aria-haspopup="true"
+                                            id="dropdownGamesList" data-toggle="dropdown" aria-haspopup="true"
                                             aria-expanded="false">
                                         <i class="far fa-list-alt"></i>
                                         Games
                                     </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownAdminButton">
+                                    <div class="dropdown-menu" aria-labelledby="dropdownGamesList">
                                         <a class="dropdown-item" href="{{ path('game_index') }}">
                                             All <span class="sr-only">(current)</span>
                                         </a><a class="dropdown-item" href="{{ path('category_index') }}">
@@ -129,46 +134,92 @@
                                     </div>
                                 </div>
                             </li>
+
+                            {% if is_granted('ROLE_STOREKEEPER') %}
+                                <li class="nav-item  mx-1 border active">
+                                    <a class="nav-link" href="{{ path('category_index') }}">
+                                        <i class="far fa-list-alt"></i>
+                                        Categories <span class="sr-only">(current)</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item  mx-1 border active">
+                                    <a class="nav-link" href="{{ path('mechanic_index') }}">
+                                        <i class="far fa-list-alt"></i>
+                                        Mechanics <span class="sr-only">(current)</span>
+                                    </a>
+                                </li>
+                            {% endif %}
                             {% if is_granted('ROLE_EMPLOYEE') %}
                                 <li class="nav-item mx-1 border">
 
                                     <div class="dropdown">
                                         <button class="btn btn-inverse dropdown-toggle" type="button"
-                                                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                id="dropdownAdminButton" data-toggle="dropdown" aria-haspopup="true"
                                                 aria-expanded="false">
                                             <i class="fa fa-cogs" aria-hidden="true"></i>
                                             Admin
                                         </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            {% if is_granted('ROLE_ADMIN') %}
+                                        <div class="dropdown-menu" aria-labelledby="dropdownAdminButton">
+
+                                            {% if is_granted('ROLE_USER_MANAGER') or  is_granted('ROLE_STOREKEEPER')  %}
+                                            <div class="dropdown-submenu dropright">
+                                                <button class="dropdown-item dropdown-toggle d-flex"
+                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+
+                                                    <span class="mr-auto">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                        Add
+                                                    </span>
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    {% if is_granted('ROLE_USER_MANAGER') %}
+                                                        <a class="dropdown-item" href="{{ path('user_new') }}"
+                                                           title="Add new user">New user</a>
+
+                                                    {% endif %}
+                                                    {% if is_granted('ROLE_STOREKEEPER') %}
+                                                        <a class="dropdown-item" href="{{ path('game_new') }}">
+                                                            New game <span class="sr-only">(current)</span>
+                                                        </a>
+                                                        <a class="dropdown-item" href="{{ path('category_new') }}">
+                                                            New Category <span class="sr-only">(current)</span>
+                                                        </a>
+                                                        <a class="dropdown-item" href="{{ path('mechanic_new') }}">
+                                                            New mechanic <span class="sr-only">(current)</span>
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% if is_granted('ROLE_USER_MANAGER') %}
                                                 <a class="dropdown-item" href="{{ path('user_index') }}">
                                                     <i class="fas fa-users"></i>
                                                     Users <span class="sr-only">(current)</span>
                                                 </a>
                                             {% endif %}
-                                            {% if is_granted('ROLE_STOREKEEPER') %}
-                                                <a class="dropdown-item" href="{{ path('game_new') }}">
-                                                    <i class="fa fa-plus"></i>
-                                                    New game <span class="sr-only">(current)</span>
-                                                </a>
-                                                <a class="dropdown-item" href="{{ path('category_new') }}">
-                                                    <i class="fa fa-plus"></i>
-                                                    New Category <span class="sr-only">(current)</span>
-                                                </a>
-                                                <a class="dropdown-item" href="{{ path('mechanic_new') }}">
-                                                    <i class="fa fa-plus"></i>
-                                                    New mechanic <span class="sr-only">(current)</span>
-                                                </a>
-                                            {% endif %}
                                             {% if is_granted('ROLE_MODERATOR') %}
-                                                <a class="dropdown-item" href="{{ path('review_index') }}">
-                                                    <i class="fa fa-comments"></i>
-                                                    Reviews <span class="sr-only">(current)</span>
-                                                </a>
-                                                {#                                                <a class="dropdown-item" href="{{ path('review_index') }}">#}
-                                                {#                                                <i class="fa fa-comments"></i>#}
-                                                {#                                                Reviews <span class="sr-only">(current)</span>#}
-{#                                                </a>#}
+
+                                                <div class="dropdown-submenu dropright w-100">
+                                                    <button class="dropdown-item dropdown-toggle d-flex"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+
+                                                    <span class="mr-auto">
+                                                        <i class="fa fa-comments" aria-hidden="true"></i>
+                                                        Reviews
+                                                    </span>
+                                                    </button>
+
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="{{ path('review_newReviews') }}">
+                                                            New reviews <span class="sr-only">(current)</span>
+                                                        </a>
+                                                        <a class="dropdown-item" href="{{ path('review_index') }}">
+                                                            All reviews <span class="sr-only">(current)</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             {% endif %}
                                             {% if is_granted('ROLE_OPERATOR') %}
                                                 <a class="dropdown-item" href="#">
@@ -190,16 +241,17 @@
                         </ul>
                     </div>
 
-                    <div class="d-inline-block  justify-content-between my-0 py-0 mx-auto">
+                    {#                    <div class="d-inline-block  justify-content-between my-0 py-0 mx-auto">#}
 
-                        <div class="collapse navbar-collapse my-0 py-0 mx-auto" id="navbarform">
+                    {#                        <div class="collapse navbar-collapse my-0 py-0 mx-auto" id="navbarform">#}
 
-                            {#            <form class="form-inline my-2 my-lg-0">#}
-                            {#                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">#}
-                            {#                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
-                            {#            </form>#}
-                        </div>
-                    </div>
+                    {#                            <form class="form-inline my-2 my-lg-0">#}
+                    {#                                <input class="form-control mr-sm-2" type="search" placeholder="Search"#}
+                    {#                                       aria-label="Search">#}
+                    {#                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
+                    {#                            </form>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
                 </nav>
             </div>
 
@@ -250,25 +302,28 @@
                                                 <i class="fa fa-info-circle"></i>
                                                 Profile <span class="sr-only">(current)</span>
                                             </a>
-{#                                            <a class="dropdown-item"#}
-{#                                               href="{{ path(#}
-{#                                                   'review_byUser',#}
-{#                                                   {'id':app.user.id,'username':app.user.username}#}
-{#                                               ) }}">#}
-{#                                                <i class="fa fa-comments"></i>#}
-{#                                                Reviews <span class="sr-only">(current)</span>#}
-{#                                                <span class="sr-only">(current)</span>#}
-{#                                            </a>#}
+                                            {% if app.user.reviews %}
+                                                <a class="dropdown-item"
+                                                   href="{{ path('review_byUser',
+                                                       {'id':app.user.id,'username':app.user.username}
+                                                   ) }}">
+                                                    <i class="fa fa-comments-o" aria-hidden="true"></i>
+{#                                                    <i class="fa fa-commenting"></i>#}
+                                                    My reviews <span class="sr-only">(current)</span>
+                                                    <span class="sr-only">(current)</span>
+                                                </a>
+
+                                            {% endif %}
                                             <hr/>
                                             <div id="cardButton" class="d-none">
                                                 <a class="dropdown-item" href="#" data-toggle="modal"
                                                    data-target="#cardModalLong">
-                                        <span class="badge badge-warning">
-                                            <i class="fa fa-shopping-cart" aria-hidden="true">
-                                                <span class="badge badge-warning js-nb-games"
-                                                      id="right-cart-num"></span>
-                                            </i>
-                                        </span>
+                                                    <span class="badge badge-warning">
+                                                        <i class="fa fa-shopping-cart" aria-hidden="true">
+                                                            <span class="badge badge-warning js-nb-games"
+                                                                  id="right-cart-num"></span>
+                                                        </i>
+                                                    </span>
                                                     Cart
                                                 </a>
                                             </div>
@@ -324,8 +379,13 @@
          aria-labelledby="exampleModalLongTitle" aria-hidden="true"
          style="min-width: 50% !important"
     >
+
         <div class="modal-dialog mw-100 mx-5 px-5" role="document">
-            <div class="modal-content">
+            <form id="cartShopping"
+                  action="{{ path('cart_index') }}"
+                  method="post"
+                    {#                  onsubmit="sessionStorage.clear();"#}
+                  class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Cart : <span class="js-nb-games">0</span> game(s)</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -344,16 +404,31 @@
                         <div class="col-4 m-0 p-0">Total</div>
                         <div class="col-3 m-0 p-0"> : $<span id="js-total-cart" class="ml-5">0</span></div>
                         <div class="col-5 m-0 p-0">
-                            <button type="button" class="btn btn-inverse">
+                            {% if app.user %}
+                                <input type="hidden" id="cartShopping-userId" name="userId" value="{{ app.user.id }}"/>
+                            {% endif %}
+                            <button type="submit" class="btn btn-inverse"
+                                    {% if not app.user %}disabled="disabled"{% endif %}
+                            >
                                 <i class="fa fa-credit-card-alt" aria-hidden="true"></i> buy
                             </button>
+                            {% if app.user %}
+                                <button type="button" class="btn btn-inverse"
+                                        onclick="SaveCartGame()"
+                                >
+                                    <i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+                                </button>
+                            {% endif %}
                         </div>
                     </div>
-                    <button type="button" class="btn btn-warning" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="btn btn-warning"
+                            data-dismiss="modal" aria-label="Close"
+                            onclick="SaveCartGame()"
+                    >
                         <i class="fa fa-cart-plus" aria-hidden="true"></i>
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -431,25 +506,39 @@
 </footer>
 
 <script src="https://kit.fontawesome.com/4f1b76d32c.js" crossorigin="anonymous"></script>
+
+
 <script
         src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
         crossorigin="anonymous"></script>
 
+
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"
 ></script>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
+
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"
 ></script>
-<script src="{{ asset('asset/js/indexScript.js') }}"
-></script>
+
+
+{#<script src="{{ asset('asset/js/fontawesome_5.14.0_All.js') }}"></script>#}
+{#<script src="{{ asset('asset/js/jquery-3.4.1.js') }}"></script>#}
+{#<script src="{{ asset('asset/js/npm_popper@1.16.0.js') }}"></script>#}
+{#<script src="{{ asset('asset/js/ajax_libs_popper_1.12.9.js') }}"></script>#}
+{#<script src="{{ asset('asset/js/bootstrap_4.4.1.js') }}"></script>#}
+
+
+<script src="{{ asset('asset/js/indexScript.js') }}"></script>
 
 
 {% block javascripts %}

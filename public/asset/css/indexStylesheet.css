@@ -21,8 +21,8 @@ h1, h2, h3, h4 {
     background:white;
 }
 .inverse {
-    color:white;
-    background:rgb(27, 38, 49);
+    color:white !important;
+    background:rgb(27, 38, 49) !important;
 }
 .btn-inverse, .paginate_button {
     color:white;
@@ -53,6 +53,7 @@ h1, h2, h3, h4 {
 }
 :root, html, body {
     font-family: 'Tippa' !important;
+    font-size:14px;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -113,14 +114,25 @@ header .navbar li{
     margin-top: 1rem;
 }
 
+.noStarRating{
+
+    text-decoration:red line-through;
+    text-decoration-style: solid;
+    color:white;
+    border: red solid;
+    border-radius: 20px/20px;
+    padding:.2rem;
+    transform: rotate(45deg);
+}
 
 
-/* --------------------- */
+
+    /* --------------------- */
 /* SPECIAL : ROTATION des flèches */
 .dropdown-submenu {
     position: relative;
 }
-.dropdown-submenu a::after {
+.dropdown-submenu a::after, .dropdown-submenu button::after {
     transform: rotate(-90deg);
     position: absolute;
     right: 6px;

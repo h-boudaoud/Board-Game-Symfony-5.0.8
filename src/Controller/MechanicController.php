@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Entity\Mechanic;
 use App\Form\MechanicType;
 use App\Repository\MechanicRepository;
+use App\Service\IsAuthorized;
+use Doctrine\Persistence\ObjectManager;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,46 +19,41 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MechanicController extends AbstractController
 {
+
     /**
-     * @Route("/", name="mechanic_index", methods={"GET"})
-     * @param MechanicRepository $mechanicRepository
-     * @return Response
+     * Only for the demo solution. So as not to modify the initial themes by the testers of the solution.
+     * This is the number of objects persisted in the database with the fixed data.
+     *
+     * @var integer
      */
-    public function index(MechanicRepository $mechanicRepository): Response
+    private const NB_INITIAL_IN_DATABASE = 122;
+
+    /**
+     * @var MechanicRepository
+     */
+    private $repository;
+
+    /**
+     * @var ObjectManager
+     */
+    private $manager;
+
+    public function __construct(MechanicRepository $repository, ObjectManager $manager)
     {
-        return $this->render('mechanic/index.html.twig', [
-            'mechanics' => $mechanicRepository->findAll(),
-        ]);
+        $this->repository = $repository;
+        $this->manager = $manager;
     }
 
+
     /**
-     * @IsGranted("ROLE_STOREKEEPER", statusCode=401, message="No access! Get out!")
-     * @Route("/new", name="mechanic_new", methods={"GET","POST"})
-     * @param Request $request
+     * @Route("/", name="mechanic_index", methods={"GET"})
      * @return Response
      */
-    public function new(Request $request): Response
+    public function index(): Response
     {
-        $mechanic = new Mechanic();
-        $form = $this->createForm(MechanicType::class, $mechanic);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($mechanic);
-            $entityManager->flush();
-            
-            $this->addFlash(
-                        'success',
-                        '202 Accepted : The request was accepted'
-                    );
-
-            return $this->redirectToRoute('mechanic_index');
-        }
-
-        return $this->render('mechanic/new.html.twig', [
-            'mechanic' => $mechanic,
-            'form' => $form->createView(),
+        return $this->render('mechanic/index.html.twig', [
+            'mechanics' => $this->repository->findAll(),
+            //'mechanics' => null,
         ]);
     }
 
@@ -75,39 +73,55 @@ class MechanicController extends AbstractController
 
         return $this->render('game/index.html.twig', [
             'games' => $mechanic->getGames(),
-            'title' => 'Games '.$mechanic->getName(),
+            'title' => 'Games ' . $mechanic->getName(),
         ]);
     }
 
     /**
      * @IsGranted("ROLE_STOREKEEPER", statusCode=401, message="No access! Get out!")
+     * @Route("/new", name="mechanic_new", methods={"GET","POST"})
      * @Route("/{id<\d+>}-{name}/edit", name="mechanic_edit", methods={"GET","POST"})
      * @param Request $request
      * @param Mechanic $mechanic
      * @return Response
      */
-    public function edit(Request $request, Mechanic $mechanic): Response
+    public function post(Request $request, Mechanic $mechanic=null): Response
     {
-        $form = $this->createForm(MechanicType::class, $mechanic);
-        if($mechanic->getId()<119){
-            $this->addFlash(
-                'warning',
-                '403 Access forbidden: only the author of this solution who can delete or modify this entity <br /> Create a new entity to test this function.'
-            );            
-        }else{
-                $form = $this->createForm(MechanicType::class, $mechanic);
-                $form->handleRequest($request);
-        
-                if ($form->isSubmitted() && $form->isValid()) {
-                    $this->getDoctrine()->getManager()->flush();
-                    
+        if(!$mechanic){
+            $mechanic = new Mechanic();
+            $isAuthorized =[];
+        }else {
+            //Only for the demo solution. So as not to modify the initial themes by the testers of the solution.
+            $isAuthorized = IsAuthorized::ToModifyEntity($mechanic->getId(), 'mechanic');
+        }
+        if (Count($isAuthorized)) {
+            $this->addFlash($isAuthorized['type'], $isAuthorized['message']);
+            return $this->redirect($request->headers->get('referer'));
+        } else {
+            $form = $this->createForm(MechanicType::class, $mechanic);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                try {
+                    $this->manager->persist($mechanic);
+                    $this->manager->flush();
+
                     $this->addFlash(
                         'success',
                         '202 Accepted : The request was accepted'
                     );
-        
+
                     return $this->redirectToRoute('mechanic_index');
+                } catch (Exception $e) {
+                    $this->addFlash(
+                        'error',
+                        '400 Bad Request : The server was unable to process the request due to incorrect syntax.' .
+                        '<br />Message the administrator if the problem persists.'.
+                        (in_array("ROLE_STOREKEEPER", $this->getUser()->getRoles()))
+                            ?'<br />'.$e->getMessage():''
+                    );
                 }
+            }
         }
         return $this->render('mechanic/edit.html.twig', [
             'mechanic' => $mechanic,
@@ -124,29 +138,30 @@ class MechanicController extends AbstractController
      */
     public function delete(Request $request, Mechanic $mechanic): Response
     {
-        if($mechanic->getId()<119){
-            $this->addFlash(
-                'warning',
-                '403 Access forbidden: only the author of this solution who can delete or modify this entity <br /> Create a new entity to test this function.'
-            );            
-        }else{
-            if ($this->isCsrfTokenValid('delete'.$mechanic->getId(), $request->request->get('_token'))) {
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->remove($mechanic);
-                $entityManager->flush();
+
+        //Only for the demo solution. So as not to modify the initial themes by the testers of the solution.
+        $isAuthorized = IsAuthorized::ToModifyEntity($mechanic->getId(), 'mechanic');
+        if (Count($isAuthorized)) {
+            $this->addFlash($isAuthorized['type'], $isAuthorized['message']);
+            return $this->redirect($request->headers->get('referer'));
+        } else {
+            if ($this->isCsrfTokenValid('delete' . $mechanic->getId(), $request->request->get('_token'))) {
+
+                $this->manager->remove($mechanic);
+                $this->manager->flush();
                 $this->addFlash(
-                   'success',
-                   '202 Accepted : The request was accepted'
+                    'success',
+                    '202 Accepted : The request was accepted'
                 );
-            }else{
+            } else {
                 $this->addFlash(
                     'error',
                     '401 Access unauthorized : You don\'t authorized to perform this operation.'
                 );
             }
-                
+
         }
-        
+
         return $this->redirect($request->headers->get('referer'));
     }
 }

@@ -6,6 +6,7 @@ use App\Entity\Game;
 use App\Entity\User;
 use App\Form\GameType;
 use App\Repository\GameRepository;
+use App\Service\IsAuthorized;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -100,17 +101,18 @@ class GameController extends AbstractController
      */
     public function edit(Request $request, Game $game): Response
     {
-        $form = $this->createForm(GameType::class, $game);
-        if($game->getId()<101){
-            $this->addFlash(
-                'warning',
-                '403 Access forbidden: only the author of this solution who can delete or modify this entity <br /> Create a new entity to test this function.'
-            );
-        }else{
+        //Only for the demo solution. So as not to modify the initial themes by the testers of the solution.
+        $isAuthorized = IsAuthorized::ToModifyEntity($game->getId(), 'game');
+        if (Count($isAuthorized)) {
+            $this->addFlash($isAuthorized['type'], $isAuthorized['message']);
+            return $this->redirect($request->headers->get('referer'));
+        } else {
+            $form = $this->createForm(GameType::class, $game);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $this->getDoctrine()->getManager()->flush();
+                $this->getDoctrine()->getManager()->persist($game);
+                    $this->getDoctrine()->getManager()->flush();
 
                 $this->addFlash(
                     'success',
@@ -129,6 +131,61 @@ class GameController extends AbstractController
         ]);
     }
 
+
+    /**
+     *
+     * Token in form : IsGranted("ROLE_STOREKEEPER", statusCode=401, message="No access! Get out!")
+     *
+     * @Route("/{id<\d+>}/publish", name="game_publish", methods={"POST"})
+     * @param Request $request
+     * @param Game $game
+     * @return Response
+     */
+    public function publish(Request $request, Game $game): Response
+    {
+        //Only for the demo solution. So as not to modify the initial themes by the testers of the solution.
+        $isAuthorized = IsAuthorized::ToModifyEntity($game->getId(), 'game');
+        if (Count($isAuthorized)) {
+            $this->addFlash($isAuthorized['type'], $isAuthorized['message']);
+            return $this->redirect($request->headers->get('referer'));
+        } else {
+
+
+            $userRoles = $this->tokenRoleUser($request);
+
+            if (
+                $this->isCsrfTokenValid('game_publish' . $game->getId(), $request->request->get('_token')) &&
+                //            (in_array('ROLE_USER', $userRoles) || in_array('ROLE_STOREKEEPER', $userRoles))
+                Count($userRoles) > 0
+            ) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $game->setPublished(!$game->getPublished());
+
+                $entityManager->persist($game);
+                $entityManager->flush();
+
+
+                $this->addFlash(
+                    'success',
+                    "202 Accepted : The request was accepted.<br />the article has been published"
+                );
+
+
+                $entityManager->flush();
+
+            }else{
+                $this->addFlash(
+                    'error',
+                    '401 Access unauthorized : You don\'t authorized to perform this operation.'
+                );
+            }
+        }
+
+        return $this->redirect($request->headers->get('referer'));
+    }
+
+
+
     /**
      *
      * Token in form : IsGranted("ROLE_STOREKEEPER", statusCode=401, message="No access! Get out!")
@@ -140,33 +197,14 @@ class GameController extends AbstractController
      */
     public function delete(Request $request, Game $game): Response
     {
-        if($game->getId()<101){
-            $this->addFlash(
-                'warning',
-                '403 Access forbidden: only the author of this solution who can delete or modify this entity <br /> Create a new entity to test this function.'
-            );
-        }else{
+        //Only for the demo solution. So as not to modify the initial themes by the testers of the solution.
+        $isAuthorized = IsAuthorized::ToModifyEntity($game->getId(), 'game');
+        if (Count($isAuthorized)) {
+            $this->addFlash($isAuthorized['type'], $isAuthorized['message']);
+            return $this->redirect($request->headers->get('referer'));
+        } else {
 
-            $userRoles = [];
-            // To check an token in the request matched a user role
-            //        foreach ($request->request->get('roles') as $tokenRole) {
-            //            foreach (User::ROLES as $role) {
-            //                if ($this->isCsrfTokenValid($role, $tokenRole)) {
-            //                    $userRoles[] = $role;
-            //                    break;
-            //                }
-            //            }
-            //        }
-            foreach ($request->request->get('roles') as $tokenRole) {
-                if (
-                    $this->isCsrfTokenValid('ROLE_ADMIN', $tokenRole) ||
-                    $this->isCsrfTokenValid('ROLE_SUPER_ADMIN', $tokenRole)
-                ) {
-                    $userRoles[] = 'ROLE_ADMIN';
-                }if ($this->isCsrfTokenValid('ROLE_STOREKEEPER', $tokenRole)) {
-                    $userRoles[] = 'ROLE_STOREKEEPER';
-                }
-            }
+            $userRoles = $this->tokenRoleUser($request);
 
             if (
                 $this->isCsrfTokenValid('delete' . $game->getId(), $request->request->get('_token')) &&
@@ -203,5 +241,20 @@ class GameController extends AbstractController
         }
 
         return $this->redirect($request->headers->get('referer'));
+    }
+
+    private function  tokenRoleUser(Request $request){
+        $userRoles = [];
+        foreach ($request->request->get('roles') as $tokenRole) {
+            if (
+                $this->isCsrfTokenValid('ROLE_ADMIN', $tokenRole) ||
+                $this->isCsrfTokenValid('ROLE_SUPER_ADMIN', $tokenRole)
+            ) {
+                $userRoles[] = 'ROLE_ADMIN';
+            }if ($this->isCsrfTokenValid('ROLE_STOREKEEPER', $tokenRole)) {
+                $userRoles[] = 'ROLE_STOREKEEPER';
+            }
+        }
+        return $userRoles;
     }
 }

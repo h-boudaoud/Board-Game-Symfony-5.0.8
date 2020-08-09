@@ -44,6 +44,7 @@
             <tr>
                 <th class="inverse">Actions</th>
                 <th class="inverse">Id</th>
+                <th class="inverse">Published</th>
                 <th class="inverse">Name</th>
                 <th class="inverse">Price</th>
                 <th class="inverse">MSRP</th>
@@ -54,14 +55,14 @@
             <tr id="game-{{ game.id }}" class="game-info">
                 <td>
                     <div class="row">
-                        <div class="col-sm-3 col-12 m-0 px-1">
+                        <div class="col-sm-2 col-6  m-0 px-1">
                             <small>
                                 <a href="{{ path('game_show', {'id': game.id, 'name':game.name}) }}"
                                    title="Show" class="btn btn-info w-lg-50 w-100"
                                 ><i class="fas fa-info"></i></a>
                             </small>
                         </div>
-                        <div class="col-sm-3 col-12 m-0 px-1">
+                        <div class="col-sm-2 col-6 m-0 px-1">
                             <small>
                                 <a href="#" data-value="{{ game.id }}"
                                    title="Cart" class="btn btn-warning w-lg-50 w-100 js-add-to-cart"
@@ -69,7 +70,7 @@
                                 </a>
                             </small>
                         </div>
-                        <div class="col-sm-3 col-12 m-0 px-1">
+                        <div class="col-sm-2 col-6 m-0 px-1">
                             <small>
                                 <a href="{{ path('game_edit', {'id': game.id, 'name':game.name}) }}"
                                    title="Edit" class="btn btn-primary w-lg-50 w-100"
@@ -77,7 +78,7 @@
                             </small>
                         </div>
                         {#                        {% if is_granted("ROLE_ADMIN") %}#}
-                        <div class="col-sm-3 col-12 m-0 px-1">
+                        <div class="col-sm-2 col-6 m-0 px-1">
                             <small>
                                 {{ include('game/_delete_form.html.twig',
                                     {
@@ -87,11 +88,22 @@
                                 ) }}
                             </small>
                         </div>
+                        <div class="col-sm-2 col-6 m-0 px-1">
+                            <small>
+                                {{ include('game/_publish_form.html.twig',
+                                    {
+                                        'publish_button_label': ' ',
+                                        'publish_button_class':'w-lg-50 w-100'
+                                    }
+                                ) }}
+                            </small>
+                        </div>
                         {#                        {% endif %}#}
 
                     </div>
                 </td>
                 <td class="js-id">{{ game.id }}</td>
+                <td class="js-name">{{ game.published?'Yes':'No' }}</td>
                 <td class="js-name">{{ game.name }}</td>
                 
                 {% set newPrice = game.price*(1+game.discount) %}

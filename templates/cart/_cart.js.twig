@@ -1,0 +1,139 @@
+let ajaxFormDiv = $('#ajax-div')
+
+function AjaxGet(id) {
+    const url = $('#' + id).attr("href")
+    // console.log('AjaxGet id : ', id, '\nurl', url, '\nthis', $('#' + id))
+
+    ajaxFormDiv.html(
+        '<div id="ajax-form-load">\n' +
+        '<div class="d-flex justify-content-center my-5 py-5 ">' +
+        '     <div class="spinner-border" role="status">\n' +
+        '           <span class="sr-only">Loading...</span>\n' +
+        '      </div>\n' +
+        '</div>\n' +
+        '</div>\n'
+    )
+    $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (result) {
+                $("#ajax-form-load").html(result.data)
+                $('#ajax-form-load form').attr('action', url).attr('id', 'ajax-form')
+
+                $('.js-choice > div').addClass('ml-5')
+                $('#edit_user_customer_newAddress').parent().addClass('d-none')
+                AjaxSubmitForm(url)
+            },
+
+            error: function (xhr, result, status, error) {
+                console.log('----------------------------',
+                    xhr, result, status, error,
+                    '----------------------------'
+                )
+                $('#flashMessages').html('<div class="alert alert-danger">' +
+                    'Error ' + xhr.status + ' : ' + xhr.statusText +
+                    '</div>')
+
+                $("#ajax-form-load").html('')
+
+            }
+        }
+    )
+}
+
+function AjaxSubmitForm(url) {
+    $('#ajax-form').submit(function (e) {
+        e.preventDefault()
+
+
+        let flashMessages = $('#flashMessages');
+        let data = $(this).serialize()
+        let addresses = null
+        let message = null
+        let type = null
+
+        flashMessages.html(
+            '       <div class="d-flex justify-content-center my-0 py-0' +
+            '           <div class="spinner-border" role="status">\n' +
+            '               <span class="sr-only">Loading...</span>\n' +
+            '           </div>\n' +
+            '       </div>'
+        )
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+
+            success: function (result, status) {
+
+                if ($('#user_profile_edit').length) {
+                    $('#user_profile_edit').replaceWith(
+                        '<a id="customer_address" class="btn btn-inverse" href="{{ path('customer_address_new') }}">\n' +
+                        '       <i class="fa fa-plus-square"></i> Add New Address' +
+                        '   </a>\n' +
+                        '<div id="customerAddresses" class="form-group">\n' +
+                        '   <label for="customer_mainAddress">Choose the delivery address</label>\n' +
+                        '</div>'
+                    )
+                    ;
+
+                    $("#customer_address").click(function (e) {
+                        e.preventDefault()
+                        AjaxGet('customer_address')
+                    })
+                }
+                type = 'success'
+                message = result.data.message
+                addresses = result.data.addresses
+            },
+
+            error: function (xhr) {
+                type = 'error'
+                message = 'Error ' + xhr.status + ' : ' + xhr.statusText
+            },
+
+            complete: function () {
+
+                $("#ajax-form-load").html('')
+                $('#customerAddresses').html('')
+
+                flashMessages.html('<div class="alert alert-' +
+                    (type === 'error' ? 'danger' : type) +
+                    '">' + message + '</div>')
+
+                addresses.forEach(function (a) {
+                    $('#customerAddresses')
+                        .append('' +
+                            '<div class="custom-control custom-radio">\n' +
+                            '    <input type="radio" class="custom-control-input"\n' +
+                            '    id="address_' + a.id + '" name="address" value="' + a.id + '"\n' +
+                            '           ' + ((a.mainAddress ? 'checked>' : '>') +
+                            '     <label class="custom-control-label" for="mainAddress_' + a.id + '">\n' +
+                            a.address + '</label>\n' +
+                            ' </div>')
+                        )
+                })
+            }
+
+        });
+    })
+
+}
+
+function displayEvent() {
+    console.log('displayEvent ok')
+    $("#user_profile_edit, #customer_address").click(function (e) {
+        e.preventDefault()
+        const url = $(this).attr('href')
+        console.log('id : ', $(this).attr('id'), '\nurl', url, '\nthis', $(this))
+        AjaxGet($(this).attr('id'))
+    })
+
+}
+$(document).ready(function () {
+    displayEvent()
+})
+

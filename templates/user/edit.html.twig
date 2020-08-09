@@ -3,11 +3,10 @@
 {% block title 'Update User' %}
 
 {% block body %}
-    {% if user.userName %}
+
     <h2>
-        Update User : {{ user.userName }}
+        {{ title }}{% if user.userName %} : {{ user.userName }} {% endif %}
     </h2>
-    {% endif %}
     {{ include('user/_form.html.twig') }}
 
     {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
@@ -16,8 +15,19 @@
         ><i class="fas fa-list" aria-hidden="true"></i> back to list</a>
     {% endif %}
 
+
+
+
 {% endblock %}
 
+
+{% block javascripts %}
+    <script>
+        displayElement('{{ form.vars.id }}_customer', 'newAddress')
+        console.log('div+div input', $('.js-choice > div+div').html())
+        $('.js-choice > div').addClass('ml-5')
+    </script>
+{% endblock %}
 
 
 

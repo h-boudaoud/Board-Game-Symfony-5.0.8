@@ -1,0 +1,74 @@
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4">
+            Boarder-Game
+            <br />65 rue Gabriel PERI
+            <br />69100 Villeurbanne FRANCE
+            <br />
+            <br />
+            <br />The order date :
+            <br />{{ commandedAt ? commandedAt :'now' | date("d, F Y ","America/Denver") }}
+            <br/>The dispatch date  is at the latest:
+            <br />{{ (dispatchedAt ? dispatchedAt : (commandedAt ? commandedAt :'now') |date_modify("+3 day"))|date("d, F Y ","America/Denver") }}
+        </div>
+        <div class="col-lg-2 col-d-none">
+        </div>
+        <div class="col-lg-6">
+            <br />{{ address.deliveryAt}}
+            <br />{{ address.streetAddress}}
+            {% if address.streetAddressLine2 %}
+                <br />{{ address.streetAddressLine2}}
+            {% endif %}
+            <br />{{ address.postal}}, {{ address.city}}
+            <br />{{ address.state~' '~address.country}}
+        </div>
+        <div class="col-lg-4 mt-5 pt-5">
+            Order N° BG-{{ ref }}
+        </div>
+        <div class="col-lg-8 mt-5 pt-5">
+            <div class="alert alert-danger m-0 p-0 w-100 text-center">Order example : this website isn't an online sales site</div>
+        </div>
+
+    </div>
+    <table class="table">
+        <thead>
+
+        <tr>
+            <th>Ref</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Discount</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.gameId }}</td>
+                <td>{{ order.name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.price }} ($)</td>
+                <td>{{ order.discount }}</td>
+                <td>{{ order.total }}</td>
+            </tr>
+        {% endfor %}
+
+        <tr>
+            <td colspan="5" class="text-right">Total : $</td>
+            <td>{{ total }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <div>{{ deliveredAt ? ( deliveredAt  | date("d, F Y ","America/Denver")) : 'The delivery date: maximum 15 days after the dispatch date'}}</div>
+
+</div>
+
+{#gameId#}
+{#quantity#}
+{#price#}
+{#discount#}
+{#deliveredAt#}
+{#dispatchedAt #}
+{#commandedAt#}

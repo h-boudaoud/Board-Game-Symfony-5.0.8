@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {{ include('cart/_cart.html.twig')}}
+
+{% endblock %}
+
+
+{% block javascripts %}
+    <script>
+
+        {{ include('cart/_cart.js.twig')}}
+    </script>
+{% endblock %}
+

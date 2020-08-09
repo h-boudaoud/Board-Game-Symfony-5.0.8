@@ -4,7 +4,7 @@
 {% block body %}
     <div id="game-{{ game.id }}">
         <h2>
-            <span class="js-name">{{ game.name }}</span>
+            <span class="js-name"><small>{{ game.name }}</small></span>
             {% if is_granted("ROLE_STOREKEEPER") %} : Details {% endif %}
         </h2>
 
@@ -32,9 +32,13 @@
                                 <th>GameId</th>
                                 <td>{{ game.gameId }}</td>
                             </tr>
-                            <tr>
+                            <tr class="alert alert-{{ game.published ? 'success' : 'danger' }}">
                                 <th>Published</th>
-                                <td>{{ game.published ? 'Yes' : 'No' }}</td>
+                                <td>
+                                    {{ game.published ? 'Yes' : 'No' }}
+
+                                    <br />{{ include('game/_publish_form.html.twig') }}
+                                </td>
                             </tr>
                             <tr>
                                 <th>Msrp</th>
@@ -109,7 +113,7 @@
                                         <i class="fa fa-star" aria-hidden="true" style="color:darkgoldenrod;"></i>
                                     </span>
                                     {% else %}
-                                        <i class="fas fa-star" style="text-decoration: red line-through;"></i>
+                                        <i class="fas fa-star noStarRating"></i>
                                     {% endif %}
                                 </a>
                             </td>
@@ -137,6 +141,45 @@
                 <td colspan="3" style="min-width:65vw;">{{ game.description |raw  }}</td>
             </tr>
 
+            <tr>
+                <th>Categories</th>
+                <td>
+                    {% if game.categories %}
+                        <ul>
+                            {% for item in game.categories %}
+                                <li>
+                                    {% set name = item.name|lower|replace({' ': '','/':''}) %}
+                                    <a href="{{ path('category_show',{'id': item.id, 'name':name}) }}">
+                                        {{ item.name }}
+                                    </a>
+                                    {{ item.games |length }} game in this category item
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
+            </tr>
+
+
+            <tr>
+                <th>Mechanics</th>
+                <td>
+                    {% if game.mechanics %}
+                        <ul>
+                            {% for item in game.mechanics %}
+                                <li>
+                                    {% set name = item.name|lower|replace({' ': '','/':''}) %}
+                                    <a href="{{ path('mechanic_show',{'id': item.id, 'name':name}) }}">
+                                        {{ item.name }}
+                                    </a>
+
+                                    {{ item.games |length }} game in this mechanic item
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
+            </tr>
             <tr>
                 <th>Artists</th>
                 <td>

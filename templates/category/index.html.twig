@@ -5,6 +5,11 @@
 {% block body %}
     <h2>Category index</h2>
 
+    {% if is_granted('ROLE_STOREKEEPER') %}
+        <a href="{{ path('category_new') }}" class="btn btn-inverse" title="Add new category"><i class="fa fa-plus"></i>
+            Create new</a>
+    {% endif %}
+
     {% if categories|length ==0 %}
         <div class="js-no-data"></div>
     {% else %}
@@ -21,9 +26,8 @@
             </tr>
             </thead>
             <tbody>
-            {% if categories|length>0 %}
                 {% for category in categories %}
-                    {% if category.games|length>0 %}
+                    {% if is_granted('ROLE_EMPLOYEE') or (not is_granted('ROLE_EMPLOYEE') and category.games|length >0) %}
                         <tr>
                             {% if is_granted('ROLE_STOREKEEPER') %}
                                 <td>{{ category.id }}</td>
@@ -35,7 +39,8 @@
                                 {% set name = category.name|lower|replace({' ': '','/':''}) %}
                                 <a href="{{ path('category_show',{'id': category.id, 'name':name}) }}"
                                    class="btn btn-info">
-                                    <i class="fas fa-list"></i> Games
+                                    <i class="fas fa-list"></i>
+                                    {{ category.games|length>0 ? 'Games':'Show'}}
                                 </a>
                                 {% if is_granted('ROLE_STOREKEEPER') %}
                                     <a href="{{ path('category_edit', {'id': category.id, 'name':name}) }}"
@@ -48,17 +53,8 @@
                         </tr>
                     {% endif %}
                 {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="4">no records found</td>
-                </tr>
-            {% endif %}
             </tbody>
         </table>
 
-    {% endif %}
-    {% if is_granted('ROLE_STOREKEEPER') %}
-        <a href="{{ path('category_new') }}" class="btn btn-inverse" title="Add new category"><i class="fa fa-plus"></i>
-            Create new</a>
     {% endif %}
 {% endblock %}

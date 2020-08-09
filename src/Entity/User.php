@@ -25,6 +25,7 @@ class User implements UserInterface
         'ROLE_MODERATOR',
         'ROLE_OPERATOR', //operator ou packaging_operator
         'ROLE_STOREKEEPER', // storekeeper   ou inventory_manager
+        'ROLE_USER_MANAGER',
         'ROLE_USER',
     ];
 
@@ -59,15 +60,12 @@ class User implements UserInterface
     private $email;
 
     /**
-     *
      * @ORM\Column(type="string", length=255)
-     *
      */
     private $password;
 
     /**
      * @Assert\EqualTo(propertyPath="password", message="Password confirmation is invalid")
-     *
      * @Assert\Length(min=8, minMessage="The password is short, it must contain at least 8 characters",
      *     max="50", maxMessage="The password is long, it must contain a maximum of 50 characters"
      * )
@@ -77,6 +75,7 @@ class User implements UserInterface
      *     match=true,
      *     message="The password is not valid, it must contain at least one lower case letter, a capital letter, a digital and a character: <, >,  &,  @, $, #, %, _, ~, ¤, £, !, §, *, (, [, ), ], /, ., |, *, -, ="
      * )
+     *
      */
     private $confirmPassword;
 
@@ -118,15 +117,22 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Review::class, mappedBy="user")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $reviews;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Customer::class, mappedBy="user")
+     * @ORM\JoinTable(name="customer")
+     * ORM\JoinColumn(name="user_id",nullable=true)
+     */
+    private $customer;
 
 //    /**
 //     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="reviews")
 //     */
 //    private $orders;
 //
-
 
 
     public function __construct()
@@ -193,8 +199,9 @@ class User implements UserInterface
 
     public function encodePassword(UserPasswordEncoderInterface $encoder): self
     {
-
-        $this->password = $encoder->encodePassword($this, $this->password);
+        if ($this->confirmPassword == $this->password) {
+            $this->password = $encoder->encodePassword($this, $this->password);
+        }
 
         return $this;
     }
@@ -206,6 +213,14 @@ class User implements UserInterface
 
     public function setRoles(?array $roles): self
     {
+        if (in_array('ROLE_SUPER_ADMIN', $roles)) {
+            $roles = $this::ROLES;
+        }
+
+        if (in_array('ROLE_ADMIN', $roles)) {
+            $roles = $this::ROLES;
+            array_shift($roles);
+        }
         $this->roles = $roles;
 
         return $this;
@@ -278,9 +293,17 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getCustomer(): ?Customer
+    {
+        return $this->customer;
+    }
 
+    public function setCustomer(?Customer $customer): self
+    {
+        $this->customer = $customer;
 
-
+        return $this;
+    }
 
 
     /**

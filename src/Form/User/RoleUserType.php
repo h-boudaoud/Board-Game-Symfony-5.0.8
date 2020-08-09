@@ -2,7 +2,9 @@
 
 namespace App\Form\User;
 
+use App\Entity\Customer;
 use App\Entity\User;
+use App\Form\CustomerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,19 +18,23 @@ class RoleUserType extends AbstractType
 
     public function __construct(Security $security)
     {
-        $roles = User::ROLES;
-        if (!in_array('ROLE_SUPER_ADMIN', $security->getUser()->getRoles())) {
-            array_shift($roles);
-        }
-        if (!in_array('ROLE_ADMIN', $security->getUser()->getRoles())) {
+        $roles = null;
+
+        // dd(in_array('ROLE_SUPER_ADMIN', $security->getUser()->getRoles()));
+        if (in_array('ROLE_SUPER_ADMIN', $security->getUser()->getRoles())) {
+            $roles = User::ROLES;
+        }elseif (!in_array('ROLE_SUPER_ADMIN', $security->getUser()->getRoles())) {
             $roles = array_unique(array_merge ($security->getUser()->getRoles(),['ROLE_USER']));
         }
         $this->roles = $roles;
+
 
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $customer = $options["data"]->getCustomer()?$options["data"]->getCustomer():new Customer($options["data"]);
+
         $builder
             ->add('user_infos', UserInfoType::class, [
                 // 'label'=>false,
@@ -55,7 +61,14 @@ class RoleUserType extends AbstractType
                     // or if you want to translate some key
                     //return 'form.choice.'.$key;
                 },
-            ]);
+            ])
+
+            ->add('customer', CustomerType::class,[
+                'inherit_data' => false,
+                'required' => false,
+                'data' => $customer,
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

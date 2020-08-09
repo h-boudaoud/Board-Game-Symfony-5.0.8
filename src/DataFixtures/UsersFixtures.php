@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UsersFixtures extends Fixture
 {
     private $encoder;
+
     // public const USERS_REFERENCE = 'users';
 
 
@@ -21,36 +22,63 @@ class UsersFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $newData = [] ;
-        $username ='';
+        $newData = [];
+        $username = '';
         foreach (User::ROLES as $role) {
-            $username = str_replace('ROLE_', '', $role);
-            $username = str_replace('_', '-', $username);
-            $user = new User();
-            $date = new \DateTime();
-            $date->setDate(2001, 2, 3);
-            $user->setUserName($username)
-                ->setPassword(strstr('ADMIN', $username) ? '1Housn1.' : 'P@ssw0rd.')
-                ->encodePassword($this->encoder)
-                ->setFirstName($username)
-                ->setEmail($username . '@board-game.biz.ht')
-                ->setLastName(str_replace('-', ' ', $username))
-                ->setBirthday($date)
-                ->setRoles([$role]);
+            if ($role != 'ROLE_USER') {
+                $username = str_replace('ROLE_', '', $role);
+                $username = str_replace('_', '-', $username);
+                $user = new User();
+                $date = new \DateTime();
+                $date->setDate(2001, 2, 3);
+                $user->setUserName($username)
+                    ->setPassword('P@ssw0rd.')
+                    ->setConfirmPassword('P@ssw0rd.')
+                    ->encodePassword($this->encoder)
+                    ->setFirstName($username)
+                    ->setEmail($username . '@board-game.biz.ht')
+                    ->setLastName(str_replace('-', ' ', $username))
+                    ->setBirthday($date)
+                    ->setRoles([$role]);
 
-            $manager->persist($user);
-            $newData[] = $user;
+                $manager->persist($user);
+                $newData[] = $user;
+            }
         }
 
+        $emailDomains = [
+            'gmail.com',
+            'yahoo.com',
+            'hotmail.com',
+            'aol.com',
+            'hotmail.co.uk',
+            'hotmail.fr',
+            'msn.com',
+            'yahoo.fr',
+            'live.com',
+            'free.fr',
+            'gmx.de',
+            'web.de',
+            'outlook.com',
+            'hotmail.it',
+            'live.fr',
+            'googlemail.com',
+            'facebook.com',
+            'mac.com'
+        ];
+
+        $username = 'user';
         for ($i = 1; $i <= 30; $i++) {
+            shuffle($emailDomains);  // Shuffle uses a pseudo random number generator
             $user = new User();
             $date = new \DateTime();
             $date->setDate(2001, 2, 3);
-            $user->setUserName($username.$i )
+            $user->setUserName($username . $i)
                 ->setPassword('P@ssw0rd.')
+                ->setConfirmPassword('P@ssw0rd.')
                 ->encodePassword($this->encoder)
-                ->setFirstName($username.' '.$i )
-                ->setEmail($username.'_'.$i . '@board-game.biz.ht')
+                ->setFirstName($username . ' ' . $i)
+                ->setEmail($username . '_' . $i . '@' . $emailDomains[0])
                 ->setLastName($username)
                 ->setBirthday($date);
 
@@ -67,11 +95,12 @@ class UsersFixtures extends Fixture
 //        {
 //            $user = $this->getReference("User_$i");
 //        }catch (\Exception $e){
-//            dump("Exeption add user " .$e->getMessage());
+//            dump("Exception add user " .$e->getMessage());
 //        }
 //        dump(["User User_$i" => $user]);
 
-        dump(['Users Fixtures' => Count($newData). " new Users in database"]);
+        dump(['Users Fixtures' => Count($newData) . " new Users in database"]);
     }
+
 
 }

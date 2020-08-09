@@ -1,13 +1,16 @@
 {# this tag only applies to the forms defined in this template #}
-{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{#{% form_theme form 'bootstrap_4_layout.html.twig' %}#}
 
 <div class="container">
+    <div class="ajaxForm">
+        {{ form_start(form) }}
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-inverse">{{ game_form_button_label|default('Save') }}</button>
-    {{ form_end(form) }}
 
+        {{ form_widget(form) }}
+
+        <button type ="submit" class="btn btn-inverse">{{ game_form_button_label|default('Save') }}</button>
+        {{ form_end(form) }}
+    </div>
     <div class="my-3">
         <a href="{{ path('game_index') }}" class="btn btn-inverse"><i class="fa fa-list"></i> Games list</a>
 

@@ -2,11 +2,12 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Category;
 use App\Entity\Game;
 use App\Entity\Mechanic;
 use App\Entity\Review;
 use App\Entity\User;
-use App\Service\UploadDataService;
+use App\Service\FixturesUploadDataService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -17,9 +18,9 @@ class GamesFixtures extends Fixture implements DependentFixtureInterface
 {
     private $data;
 
-    public function __construct(UploadDataService $dataService)
+    public function __construct(FixturesUploadDataService $dataService)
     {
-        $url = 'https://www.boardgameatlas.com/api/search?client_id=JLBr5npPhV';
+        $url = 'https://www.boardgameatla.com/api/search?client_id=JLBr5npPhV';
         $this->data = $dataService->uploadDataFromApi($url, 'games');
 
     }
@@ -32,6 +33,8 @@ class GamesFixtures extends Fixture implements DependentFixtureInterface
         foreach ($this->data as $game) {
             $new = new Game();
 
+            $game->rules_url = (strlen($game->rules_url) < 255) ? $game->rules_url : null;
+
             foreach ($game as $key => $value) {
                 $key = $key != 'id' ? $key : 'game_Id';
                 $dynamicMethodName = "set" . str_replace(
@@ -42,9 +45,6 @@ class GamesFixtures extends Fixture implements DependentFixtureInterface
                             )
                         )
                     );
-                if ($key == "rules_url") {
-                    $value = (strlen($value) < 255) ? $value : null;
-                }
                 if ($key == "name" && empty($value)) {
                     $value = (Count($game->names) > 0) ? $game->names[0] : $game->id;
                     $game->name = $value;
@@ -85,16 +85,40 @@ class GamesFixtures extends Fixture implements DependentFixtureInterface
                 if ($key == "categories") {
                     foreach ($value as $category) {
                         $categoryId = $category->id;
-                        $new->addCategory($this->getReference('Category_' . $categoryId));
+                        $newCategory = null;
+                        try {
+                            $newCategory = $this->getReference("Category_$categoryId");
+                        } catch (\Exception $e) {
+                            $newCategory = (new Category())->setCategoryId($categoryId)
+                                ->setName("Reference to $categoryId does not exist in API");
+                            $manager->persist($newCategory);
+                            $this->addReference("Category_$categoryId",(object)$newCategory);
+                            dump(['error' => $e->getMessage(), "Category_$categoryId" => $category]);
+
+
+                        }
+
+                        $new->addCategory($newCategory);
                     }
                     $value = null;
                 }
                 if ($key == "mechanics") {
                     foreach ($value as $mechanic) {
+                        $newMechanic =null;
                         $mechanicId = $mechanic->id;
-                        $mechanic = $this->getReference("Mechanic_$mechanicId");
-                        // dump(["Mechanic_$mechanicId"=>$mechanic]);
-                        $new->addMechanic($mechanic);
+                        try {
+                            $newMechanic = $this->getReference("Mechanic_$mechanicId");
+                        } catch (\Exception $e) {
+                            $newMechanic = (new Mechanic())->setMechanicId($mechanicId)
+                                ->setName("Reference to $mechanicId does not exist in API");
+                            $manager->persist($newMechanic);
+                            $this->addReference("Mechanic_$mechanicId",(object)$newMechanic);
+                            dump(['error' => $e->getMessage(), "Mechanic_$mechanicId" => $mechanic]);
+
+                        }
+
+                        $new->addMechanic($newMechanic);
+
                     }
                     $value = null;
                 }
@@ -150,11 +174,11 @@ class GamesFixtures extends Fixture implements DependentFixtureInterface
     {
         // dump("Reviews".($game->getName()));
         $limit = random_int(0, 30);
-        $url = "https://www.boardgameatlas.com/api/reviews?&client_id=JLBr5npPhV" .
+        $url = "https://www.boardgameatla.com/api/reviews?&client_id=JLBr5npPhV" .
             "&description_required=true&order_by=date" .
             "&limit=$limit&game_id=" . $game->getGameId();
         // dd($url);
-        $data = (new UploadDataService)
+        $data = (new FixturesUploadDataService)
             ->uploadDataFromApi(
                 $url,
                 'reviews',
@@ -169,16 +193,14 @@ class GamesFixtures extends Fixture implements DependentFixtureInterface
             // dd($review);
             $review->title = isset($review->title) && strlen($review->title) > 0
                 ? $review->title
-                : 'No title for review :' . $review->id
-            ;
+                : 'No title for review :' . $review->id;
 
-            $review->description = isset($review->description) &&  strlen($review->description) > 0
+            $review->description = isset($review->description) && strlen($review->description) > 0
                 ? $review->description
-                : 'No description for review :' . $review->id
-            ;
+                : 'No description for review :' . $review->id;
 
 
-            dump(['review_'. $review->id=>$review]);
+            // dump(['review_' . $review->id => $review]);
 
             $newReviews = new Review();
             foreach ($review as $key => $value) {
@@ -212,11 +234,11 @@ class GamesFixtures extends Fixture implements DependentFixtureInterface
             try {
                 $newReviews->setUser($this->getReference('User_' . $i));
             } catch (\Exception $e) {
-                dump("Exeption add user " . $e->getMessage());
+                dump("Exception add user " . $e->getMessage());
             }
 
             $newReviews->setGame($game);
-            $newReviews->setValidated($i % 5 != 0);
+            $newReviews->setValidated(random_int($i, $i*2) % 5 != 0);
             // dd(['newReviews'=>$newReviews]);
             $manager->persist($newReviews);
             $manager->persist($game);
@@ -228,8 +250,6 @@ class GamesFixtures extends Fixture implements DependentFixtureInterface
         // dump(['Reviews Fixtures' => Count($newData). " new Reviews in database"]);
 
     }
-
-
 
 
 }

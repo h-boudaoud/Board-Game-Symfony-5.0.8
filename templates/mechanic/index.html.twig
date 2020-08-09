@@ -5,6 +5,11 @@
 {% block body %}
     <h2>Mechanic index</h2>
 
+    {% if is_granted('ROLE_STOREKEEPER') %}
+        <a href="{{ path('mechanic_new') }}" class="btn btn-inverse" title="Add new mechanic"><i class="fa fa-plus"></i>
+            Create new</a>
+    {% endif %}
+
     {% if mechanics|length ==0 %}
         <div class="js-no-data"></div>
     {% else %}
@@ -23,7 +28,7 @@
             <tbody>
             {% if mechanics|length>0 %}
                 {% for mechanic in mechanics %}
-                    {% if mechanic.games|length>0 %}
+                    {% if is_granted('ROLE_EMPLOYEE') or (not is_granted('ROLE_EMPLOYEE') and mechanic.games|length >0) %}
                         <tr>
                             {% if is_granted('ROLE_STOREKEEPER') %}
                                 <td>{{ mechanic.id }}</td>
@@ -33,9 +38,10 @@
                             <td>{{ mechanic.games|length }}</td>
                             <td>
                                 {% set name = mechanic.name|lower|replace({' ': '','/':''}) %}
-                                <a href="{{ path('category_show',{'id': mechanic.id, 'name':name}) }}"
+                                <a href="{{ path('mechanic_show',{'id': mechanic.id, 'name':name}) }}"
                                    class="btn btn-info">
-                                    <i class="fas fa-list"></i> Games
+                                    <i class="fas fa-list"></i>
+                                        {{ mechanic.games|length>0 ? 'Games':'Show'}}
                                 </a>
                                 {% if is_granted('ROLE_STOREKEEPER') %}
                                     <a href="{{ path('mechanic_edit', {'id': mechanic.id, 'name':name}) }}"
@@ -56,9 +62,5 @@
             </tbody>
         </table>
 
-    {% endif %}
-    {% if is_granted('ROLE_STOREKEEPER') %}
-        <a href="{{ path('mechanic_new') }}" class="btn btn-inverse" title="Add new mechanic"><i class="fa fa-plus"></i>
-            Create new</a>
     {% endif %}
 {% endblock %}

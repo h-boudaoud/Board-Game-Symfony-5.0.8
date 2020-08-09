@@ -1,0 +1,17 @@
+{% set label = publish_button_label|default(game.published?'Not published':'Published') %}
+<div class="d-inline-block{% if publish_button_class is defined %}w-100 m-0 p-0{% endif %}">
+    <form method="post" action="{{ path('game_publish', {'id': game.id}) }}" onsubmit="return confirm('item id : {{ game.id }}\nAre you sure you want to {{game.published?'not published':'published'}} this item?');">
+
+        {% for key, role in app.user.roles %}
+            <input type="hidden" name="roles[{{ key }}]" value="{{ csrf_token(role) }}">
+        {% endfor %}
+
+        <input type="hidden" name="_method" value="POST">
+        <input type="hidden" name="_token" value="{{ csrf_token('game_publish' ~ game.id) }}">
+        <button class=" btn btn-{{game.published?'warning':'success'}} "
+                title="{{ label }}"
+        >
+            <i class="{{game.published?'fas fa-ban':'fa fa-check-square-o'}}"></i> {{ label}}
+        </button>
+    </form>
+</div>

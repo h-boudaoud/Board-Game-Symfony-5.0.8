@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Mechanic;
-use App\Service\UploadDataService;
+use App\Service\FixturesUploadDataService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -12,11 +12,16 @@ use Doctrine\Persistence\ObjectManager;
 class MechanicsFixtures extends Fixture
 {
     private $data;
+    /**
+     * @var FixturesUploadDataService
+     */
+    private $service;
 
-    public function __construct(UploadDataService $dataService)
+    public function __construct(FixturesUploadDataService $dataService)
     {
-        $url = 'https://www.boardgameatlas.com/api/game/mechanics?client_id=JLBr5npPhV';
+        $url = 'https://www.boardgameatla.com/api/game/mechanics?client_id=JLBr5npPhV';
         $this->data = $dataService->uploadDataFromApi($url, 'mechanics');
+        $this->service = $dataService;
     }
 
     public function load(ObjectManager $manager)
@@ -25,58 +30,19 @@ class MechanicsFixtures extends Fixture
         $newData=[];
 
         foreach ($this->data as $mechanic) {
-            $new = new Mechanic();
+            $newMechanic = new Mechanic();
             $mechanicId =$mechanic->id;
+            $mechanic->name= strlen($mechanic->name)>0
+                ? $mechanic->name
+                : "$mechanic->id. mechanic"
+            ;
+            $this->service->dataFormatting($mechanic,$newMechanic,'mechanic');
 
-            foreach ($mechanic as $key => $value) {
-                $key = $key != 'id' ? $key : 'mechanic_Id';
-                $dynamicMethodName = "set" . str_replace(
-                        ' ', '',
-                        ucwords(
-                            strtolower(
-                                str_replace('_', ' ', $key)
-                            )
-                        )
-                    );
-                if ($key == "rules_url") {
-                    $value = (strlen($value) < 255) ? $value : null;
-                }
-                if ($key == "name" && empty($value)) {
-                    $value = (Count($mechanic->names)>0)?$mechanic->names[0]:$mechanic->id;
-                    $mechanic->name=$value;
-                }
-
-
-                if (method_exists($new, $dynamicMethodName) && $value) {
-
-                    try {
-                        $new->$dynamicMethodName($value);
-                    } catch (\Exception $exception) {
-                        dump([
-                            'Error message : '=>$exception->getMessage(),
-                            'dynamicMethodName'=>$dynamicMethodName,
-                            'value'=>$value
-                        ]);
-                    }
-
-
-//                    if($key === 'mechanic_Id') {
-//                        dd([
-//                            'dynamicMethodName' => $dynamicMethodName,
-//                            'value' => $value,
-//                            'method_exists' => method_exists($new, $dynamicMethodName)
-//                        ]);
-//                    }
-
-                }
-
-            }
-
-            $manager->persist($new);
+            $manager->persist($newMechanic);
             $manager->flush();
-            $this->addReference("Mechanic_$mechanicId",(object)$new);
-            dump(["Mechanic_$mechanicId"=>$this->getReference("Mechanic_$mechanicId")]);
-            $newData[$new->getMechanicId()] = $new;
+            $this->addReference("Mechanic_$mechanicId",(object)$newMechanic);
+            // dump(["Mechanic_$mechanicId"=>$this->getReference("Mechanic_$mechanicId")]);
+            $newData[$newMechanic->getMechanicId()] = $newMechanic;
         }
 
         dump(['Mechanics Fixtures' => Count($newData). " new Mechanics in database"]);
