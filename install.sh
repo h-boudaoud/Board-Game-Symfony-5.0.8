@@ -2,42 +2,38 @@
 
 # Install the dependencies
 rep=""
-until [[ ${rep} =~ ^[y,n]+$ ]]; do
-echo "Install the priject ? y/n"
-read rep
+until [[ ${rep} =~ ^[y,n,Y,N]+$ ]]; do
+echo "Install the project ? y/n"
+read -n1 rep; echo
 done
 
-if [ $rep = "y" ];
+if [ $rep = "y" ] || [ $rep = "Y" ];
 then
 	rep=""
-	  
-	  
 	# Install the dependencies
 	rep=""
-	until [[ ${rep} =~ ^[y,n]+$ ]]; do
+	until [[ ${rep} =~ ^[y,n,Y,N]+$ ]]; do
 	echo "Install the dependencies ? y/n"
-	read rep
+	read -n1 rep; echo
 	done
 
-	if [ $rep = "y" ];
+	if [ $rep = "y" ] || [ $rep = "Y" ];
 	then
 	  composer install
 	fi
 
-
-
-	read -p "Press any key to continue ..."
+	read -n1 -p "Press any key to continue ..."
 	clear
 
 
 	# Drop and create the database, and execute migrations
 	rep=""
-	until [[ ${rep} =~ ^[y,n]+$ ]]; do
+	until [[ ${rep} =~ ^[y,n,Y,N]+$ ]]; do
 	echo "Drop if exist and create a new database ? y/n"
-	read rep
+	read -n1 rep; echo
 	done
 
-	if [ $rep = "y" ];
+	if [ $rep = "y" ] || [ $rep = "Y" ];
 	then
 	  echo "Drop database if exist"
 	  if (! php bin/console doctrine:database:drop --force)
@@ -54,72 +50,69 @@ then
 	  php bin/console doctrine:database:create
 	fi
 
-	read -p "Press any key to continue ..."
+	read -n1 -p "Press any key to continue ..."
 	clear
 
 	# Execute the migrations
 	rep=""
-	until [[ ${rep} =~ ^[y,n]+$ ]]; do
+	until [[ ${rep} =~ ^[y,n,Y,N]+$ ]]; do
 	echo "Execute migrations script ? y/n"
-	read rep
+	read -n1 rep; echo
 	done
 
 
-	if [ $rep = "y" ];
+	if [ $rep = "y" ] || [ $rep = "Y" ];
 	then
 	  php bin/console doctrine:migrations:migrate
 	fi
 
-	read -p "Press any key to continue ..."
+	read -n1 -p "Press any key to continue ..."
 	clear
 
 
 	# Executer the fixture
 	rep=""
-	until [[ ${rep} =~ ^[y,n]+$ ]]; do
+	until [[ ${rep} =~ ^[y,n,Y,N]+$ ]]; do
 	echo "Executer the fixture ? y/n"
-	read rep
+	read -n1 rep; echo
 	done
 
 
-	if [ $rep = "y" ];
+	if [ $rep = "y" ] || [ $rep = "Y" ];
 	then
 	  php bin/console doctrine:fixtures:load --no-interaction
 	fi
 
-	read -p "Press any key to continue ..."
+	read -n1 -p "Press any key to continue ..."
 	clear
 
 
 fi
 
-
-
-
 rep=""
-until [[ ${rep} =~ ^[y,n]+$ ]]; do
+until [[ ${rep} =~ ^[y,n,Y,N]+$ ]]; do
 echo "Launch the project in PhpStorm ? y/n"
-read rep
+read -n1 rep; echo
 done
 
-if [ $rep = "y" ];
+if [ $rep = "y" ] || [ $rep = "Y" ];
 then
  phpstorm . &
 fi
 
-read -p "Press any key to continue ..."
+read -n1 -p "Press any key to continue ..."
 clear
 
 rep=""
-until [[ ${rep} =~ ^[y,n]+$ ]]; do
+until [[ ${rep} =~ ^[y,n,Y,N]+$ ]]; do
 echo "Launch the server ? y/n"
-read rep
+read -n1 rep; echo
 
 done
-if [ $rep = "y" ];
+if [ $rep = "y" ] || [ $rep = "Y" ];
 then
  php -S 127.0.0.1:3906 -t public
 fi
 
 # Exit
-read -p "Press any key to exit ..."
+read -n1 -p "Press any key to exit ..."

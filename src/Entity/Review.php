@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
- * @ORM\Table(name="bg_review")
  * @ORM\Entity(repositoryClass=ReviewRepository::class)
  */
 class Review
